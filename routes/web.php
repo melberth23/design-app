@@ -16,13 +16,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
+Route::get('/solutions', [App\Http\Controllers\PageController::class, 'index'])->name('solutions');
+Route::get('/platform', [App\Http\Controllers\PageController::class, 'index'])->name('platform');
+Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])->name('ourworks');
+Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
+Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
 // Profile Routes
 Route::prefix('profile')->name('profile.')->middleware('auth')->group(function(){
