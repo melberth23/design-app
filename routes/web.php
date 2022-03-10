@@ -23,7 +23,7 @@ Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])-
 Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
 Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
 
-Auth::routes(['register' => false]);
+Auth::routes(['register' => true]);
 
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
@@ -58,13 +58,24 @@ Route::middleware('auth')->prefix('admin/users')->name('users.')->group(function
 
 });
 
-// Blogs 
-Route::middleware('auth')->prefix('admin/blogs')->name('blogs.')->group(function(){
-    Route::get('/', [BlogController::class, 'index'])->name('index');
-    Route::get('/create', [BlogController::class, 'create'])->name('create');
-    Route::post('/store', [BlogController::class, 'store'])->name('store');
-    Route::get('/edit/{user}', [BlogController::class, 'edit'])->name('edit');
-    Route::put('/update/{user}', [BlogController::class, 'update'])->name('update');
-    Route::delete('/delete/{user}', [BlogController::class, 'delete'])->name('destroy');
-    Route::get('/update/status/{user_id}/{status}', [BlogController::class, 'updateStatus'])->name('status');
+// Brands 
+Route::middleware('auth')->prefix('admin/brands')->name('brand.')->group(function(){
+    Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
+    Route::get('/edit/{user}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
+    Route::put('/update/{user}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
+    Route::delete('/delete/{user}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
+    Route::get('/update/status/{user_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
+});
+
+// Reque 
+Route::middleware('auth')->prefix('admin/requests')->name('request.')->group(function(){
+    Route::get('/', [App\Http\Controllers\RequestController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\RequestController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\RequestController::class, 'store'])->name('store');
+    Route::get('/edit/{user}', [App\Http\Controllers\RequestController::class, 'edit'])->name('edit');
+    Route::put('/update/{user}', [App\Http\Controllers\RequestController::class, 'update'])->name('update');
+    Route::delete('/delete/{user}', [App\Http\Controllers\RequestController::class, 'delete'])->name('destroy');
+    Route::get('/update/status/{user_id}/{status}', [App\Http\Controllers\RequestController::class, 'updateStatus'])->name('status');
 });
