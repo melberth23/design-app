@@ -59,7 +59,7 @@
 								<span class="c-black">Cancel monthly</span>
 							</li>
 						</ul>
-	                    <a href="#" class="btn btn-primary">GET STARTED</a>
+	                    <a href="{{ route('register') }}?plan=basic" class="btn btn-primary">GET STARTED</a>
 	                </div>
 	            </div>
 	        </div>
@@ -108,7 +108,7 @@
 								<span class="c-black">Cancel monthly</span>
 							</li>
 						</ul>
-	                    <a href="#" class="btn btn-custom btn-light">GET STARTED</a>
+	                    <a href="{{ route('register') }}?plan=premium" class="btn btn-custom btn-light">GET STARTED</a>
 	                </div>
 	            </div>
 	        </div>
@@ -157,7 +157,7 @@
 								<span class="c-black">Cancel monthly</span>
 							</li>
 						</ul>
-	                    <a href="#" class="btn btn-primary">GET STARTED</a>
+	                    <a href="{{ route('register') }}?plan=royal" class="btn btn-primary">GET STARTED</a>
 	                </div>
 	            </div>
 	        </div>

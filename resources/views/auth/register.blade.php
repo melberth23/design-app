@@ -100,6 +100,10 @@
                         </div>
                     </form>
                 </div>
+
+                <div class="card-footer text-muted">
+                  <a class="small" href="{{route('login')}}">Already have account? Login Here</a>
+                </div>
             </div>
         </div>
     </div>

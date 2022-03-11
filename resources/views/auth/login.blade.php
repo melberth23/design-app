@@ -65,7 +65,11 @@
                 </div>
 
                 <div class="card-footer text-muted">
-                  <a class="underlineHover" href="#">Forgot Password?</a>
+                  @if (Route::has('password.request'))
+                      <a class="btn btn-link" href="{{ route('password.request') }}">
+                          {{ __('Forgot Your Password?') }}
+                      </a>
+                  @endif
                 </div>
             </div>
         </div>

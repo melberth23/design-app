@@ -21,39 +21,37 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Requests -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#blogsDropdown"
-            aria-expanded="true" aria-controls="blogsDropdown">
-            <i class="fas fa-tags" aria-hidden="true"></i>
-            <span>Requests</span>
-        </a>
-        <div id="blogsDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('request.index') }}">All Requests</a>
-                <a class="collapse-item" href="{{ route('request.create') }}">Add Request</a>
+    @hasrole('User')
+        <!-- Requests -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#requestDropdown"
+                aria-expanded="true" aria-controls="requestDropdown">
+                <i class="fas fa-tags" aria-hidden="true"></i>
+                <span>Requests</span>
+            </a>
+            <div id="requestDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="{{ route('request.index') }}">All Requests</a>
+                    <a class="collapse-item" href="{{ route('request.create') }}">Add Request</a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
 
-    <!-- Brand Profiles -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#blogsDropdown"
-            aria-expanded="true" aria-controls="blogsDropdown">
-            <i class="fas fa-tags" aria-hidden="true"></i>
-            <span>Brand Profiles</span>
-        </a>
-        <div id="blogsDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('brand.index') }}">All Brands</a>
-                <a class="collapse-item" href="{{ route('brand.create') }}">Add Brand</a>
+        <!-- Brand Profiles -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#brandDropdown"
+                aria-expanded="true" aria-controls="brandDropdown">
+                <i class="fas fa-tags" aria-hidden="true"></i>
+                <span>Brand Profiles</span>
+            </a>
+            <div id="brandDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="{{ route('brand.index') }}">All Brands</a>
+                    <a class="collapse-item" href="{{ route('brand.create') }}">Add Brand</a>
+                </div>
             </div>
-        </div>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
+        </li>
+    @endhasrole
     @hasrole('Admin')
         
         <!-- Heading -->

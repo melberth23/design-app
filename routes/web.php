@@ -23,7 +23,7 @@ Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])-
 Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
 Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
 
-Auth::routes(['register' => true]);
+Auth::routes();
 
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
@@ -69,7 +69,7 @@ Route::middleware('auth')->prefix('admin/brands')->name('brand.')->group(functio
     Route::get('/update/status/{user_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
 });
 
-// Reque 
+// Requests 
 Route::middleware('auth')->prefix('admin/requests')->name('request.')->group(function(){
     Route::get('/', [App\Http\Controllers\RequestController::class, 'index'])->name('index');
     Route::get('/create', [App\Http\Controllers\RequestController::class, 'create'])->name('create');
