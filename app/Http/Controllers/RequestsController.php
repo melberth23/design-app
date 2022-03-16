@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Request;
+use App\Models\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
-class RequestController extends Controller
+class RequestsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -25,18 +25,18 @@ class RequestController extends Controller
     /**
      * List requests 
      * @param Nill
-     * @return Array $blog
+     * @return Array $requests
      */
     public function index()
     {
-        $requests = Blog::with('roles')->paginate(10);
+        $requests = Requests::with('roles')->paginate(10);
         return view('requests.index', ['requests' => $requests]);
     }
 
     /**
-     * Create Blog 
+     * Create Requests 
      * @param Nill
-     * @return Array $blog
+     * @return Array $requests
      */
     public function create()
     {
@@ -46,7 +46,7 @@ class RequestController extends Controller
     }
 
     /**
-     * Store Blog
+     * Store Requests
      * @param Request $request
      * @return View requests
      */
@@ -63,7 +63,7 @@ class RequestController extends Controller
         try {
 
             // Store Data
-            $blog = Blog::create([
+            $requests = Requests::create([
                 'name'    => $request->name,
                 'description'     => $request->description,
                 'status'        => $request->status,
@@ -71,7 +71,7 @@ class RequestController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('requests.index')->with('success','Blog Created Successfully.');
+            return redirect()->route('requests.index')->with('success','Requests Created Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
@@ -81,7 +81,7 @@ class RequestController extends Controller
     }
 
     /**
-     * Update Status Of Blog
+     * Update Status Of Requests
      * @param Integer $status
      * @return List Page With Success
      */
@@ -109,7 +109,7 @@ class RequestController extends Controller
 
             // Commit And Redirect on index with Success Message
             DB::commit();
-            return redirect()->route('requests.index')->with('success','Blog Status Updated Successfully!');
+            return redirect()->route('requests.index')->with('success','Requests Status Updated Successfully!');
         } catch (\Throwable $th) {
 
             // Rollback & Return Error Message
@@ -119,24 +119,24 @@ class RequestController extends Controller
     }
 
     /**
-     * Edit Blog
-     * @param Integer $blog
-     * @return Collection $blog
+     * Edit Requests
+     * @param Integer $requests
+     * @return Collection $requests
      */
-    public function edit(Blog $blog)
+    public function edit(Requests $requests)
     {
         $roles = Role::all();
         return view('requests.edit')->with([
-            'blog'  => $blog
+            'requests'  => $requests
         ]);
     }
 
     /**
-     * Update Blog
-     * @param Request $request, Blog $blog
+     * Update Requests
+     * @param Request $request, Requests $requests
      * @return View requests
      */
-    public function update(Request $request, Blog $blog)
+    public function update(Request $request, Requests $requests)
     {
         // Validations
         $request->validate([
@@ -149,7 +149,7 @@ class RequestController extends Controller
         try {
 
             // Store Data
-            $blog_updated = Blog::whereId($blog->id)->update([
+            $requests_updated = Requests::whereId($requests->id)->update([
                 'name'    => $request->name,
                 'description'     => $request->description,
                 'status'        => $request->status
@@ -157,7 +157,7 @@ class RequestController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('requests.index')->with('success','Blog Updated Successfully.');
+            return redirect()->route('requests.index')->with('success','Requests Updated Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
@@ -167,19 +167,19 @@ class RequestController extends Controller
     }
 
     /**
-     * Delete Blog
-     * @param Blog $blog
+     * Delete Requests
+     * @param Requests $requests
      * @return Index requests
      */
-    public function delete(Blog $blog)
+    public function delete(Requests $requests)
     {
         DB::beginTransaction();
         try {
-            // Delete Blog
-            Blog::whereId($blog->id)->delete();
+            // Delete Requests
+            Requests::whereId($requests->id)->delete();
 
             DB::commit();
-            return redirect()->route('requests.index')->with('success', 'Blog Deleted Successfully!.');
+            return redirect()->route('requests.index')->with('success', 'Requests Deleted Successfully!.');
 
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'hitpay' => [
+        'key' => env('HITPAY_API_KEY'),
+        'environment' => env('HITPAY_API_END')
+    ],
+
 ];

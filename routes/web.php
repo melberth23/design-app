@@ -22,6 +22,7 @@ Route::get('/platform', [App\Http\Controllers\PageController::class, 'index'])->
 Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])->name('ourworks');
 Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
 Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
+Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
 
 Auth::routes();
 
@@ -71,11 +72,11 @@ Route::middleware('auth')->prefix('admin/brands')->name('brand.')->group(functio
 
 // Requests 
 Route::middleware('auth')->prefix('admin/requests')->name('request.')->group(function(){
-    Route::get('/', [App\Http\Controllers\RequestController::class, 'index'])->name('index');
-    Route::get('/create', [App\Http\Controllers\RequestController::class, 'create'])->name('create');
-    Route::post('/store', [App\Http\Controllers\RequestController::class, 'store'])->name('store');
-    Route::get('/edit/{user}', [App\Http\Controllers\RequestController::class, 'edit'])->name('edit');
-    Route::put('/update/{user}', [App\Http\Controllers\RequestController::class, 'update'])->name('update');
-    Route::delete('/delete/{user}', [App\Http\Controllers\RequestController::class, 'delete'])->name('destroy');
-    Route::get('/update/status/{user_id}/{status}', [App\Http\Controllers\RequestController::class, 'updateStatus'])->name('status');
+    Route::get('/', [App\Http\Controllers\RequestsController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\RequestsController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\RequestsController::class, 'store'])->name('store');
+    Route::get('/edit/{user}', [App\Http\Controllers\RequestsController::class, 'edit'])->name('edit');
+    Route::put('/update/{user}', [App\Http\Controllers\RequestsController::class, 'update'])->name('update');
+    Route::delete('/delete/{user}', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
+    Route::get('/update/status/{user_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
 });

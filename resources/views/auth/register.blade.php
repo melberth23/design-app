@@ -27,6 +27,25 @@
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
+                        @if (session('error'))
+                          <span class="text-danger"> {{ session('error') }}</span>
+                        @endif
+
+                        <div class="row mb-3">
+                            <input type="hidden" name="plan" value="<?php echo !empty($_GET['plan'])?$_GET['plan']:''; ?>" />
+                            <label for="plan" class="col-md-4 col-form-label text-md-end">{{ __('Your Plan') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="plan" type="text" class="form-control @error('plan') is-invalid @enderror" value="<?php echo !empty($_GET['plan'])?ucfirst($_GET['plan']):'Please select plan.'; ?>" required autocomplete="plan" autofocus disabled>
+
+                                @error('plan')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="row mb-3">
                             <label for="company" class="col-md-4 col-form-label text-md-end">{{ __('Company Name') }}</label>
 
@@ -42,12 +61,26 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Full Name') }}</label>
+                            <label for="first_name" class="col-md-4 col-form-label text-md-end">{{ __('First Name') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                <input id="first_name" type="text" class="form-control @error('first_name') is-invalid @enderror" name="first_name" value="{{ old('first_name') }}" required autocomplete="first_name" autofocus>
 
-                                @error('name')
+                                @error('first_name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="last_name" class="col-md-4 col-form-label text-md-end">{{ __('Last Name') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="last_name" type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" value="{{ old('last_name') }}" required autocomplete="last_name" autofocus>
+
+                                @error('last_name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

@@ -23,7 +23,7 @@
 	            <div class="price-item text-center">
 	                <div class="price-top">
 	                    <h4>Basic</h4>
-	                    <h2 class="mb-0"><sup>$</sup>599</h2>
+	                    <h2 class="mb-0"><sup>$</sup>449</h2>
 	                    <span class="text-capitalize">per month</span>
 	                </div>
 	                <div class="price-content">
@@ -67,7 +67,7 @@
 	            <div class="price-item text-center popular">
 	                <div class="price-top">
 	                    <h4>Premium - <em><span>Most Popular</span></em></h4>
-	                    <h2 class="mb-0"><sup>$</sup>1,299</h2>
+	                    <h2 class="mb-0"><sup>$</sup>1,145</h2>
 	                    <span class="text-capitalize">per month</span>
 	                </div>
 	                <div class="price-content">
@@ -116,7 +116,7 @@
 	            <div class="price-item text-center">
 	                <div class="price-top">
 	                    <h4>Royal</h4>
-	                    <h2 class="mb-0"><sup>$</sup>2499</h2>
+	                    <h2 class="mb-0"><sup>$</sup>2,395</h2>
 	                    <span class="text-capitalize">per month</span>
 	                </div>
 	                <div class="price-content">

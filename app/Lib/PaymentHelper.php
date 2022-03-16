@@ -1,13 +1,116 @@
 <?php 
 namespace App\Lib;
 
-class PaymentHelper{
+class PaymentHelper {
 
-  public $key = '';
+    const version               = 'v1';
 
-  public function getConfig(){
-    return $this->key;
-  }
+    protected $curl;
+    protected $endpoint         = 'https://api.hit-pay.com/';
+    protected $endpointSandbox  = 'https://api.sandbox.hit-pay.com/';
+    protected $apiKey           = null;
+    protected $authToken        = null;
+    protected $isSandBox        = false;
 
-  public function 
+    /**
+    * @param string $apiKey
+    */
+    public function __construct($apiKey, $isSandBox = false) 
+    {
+        $this->apiKey       = (string) $apiKey;
+        $this->isSandBox    = (string) $isSandBox;
+    }
+
+    public function __destruct() 
+    {
+        if (!is_null($this->curl)) {
+            curl_close($this->curl);
+        }
+    }
+
+    /**
+    * @return array headers with Authentication tokens added 
+    */
+    private function build_curl_headers() 
+    {
+        $headers    = array("X-BUSINESS-API-KEY: $this->apiKey");
+        $headers[]  = "X-Requested-With: XMLHttpRequest";
+        $headers[]  = "content-type: application/x-www-form-urlencoded";
+
+        return $headers;        
+    }
+
+    /**
+    * @param string $path
+    * @return string adds the path to endpoint with.
+    */
+    private function build_api_call_url($path)
+    {
+        if (!$this->isSandBox and strpos($path, '/?') === false and strpos($path, '?') === false) {
+            return $this->endpoint . self::version . '/' . $path . '/';
+        } else if ($this->isSandBox and strpos($path, '/?') === false and strpos($path, '?') === false) {
+            return $this->endpointSandbox . self::version . '/' . $path . '/';
+        }
+
+        return $this->isSandBox? $this->endpointSandbox . '/' . $path: $this->endpoint . $path;
+    }
+
+    /**
+    * @param string $method ('GET', 'POST', 'DELETE', 'PATCH')
+    * @param string $path whichever API path you want to target.
+    * @param array $data contains the POST data to be sent to the API.
+    * @return array decoded json returned by API.
+    */
+    private function api_call($method, $path, array $data=null) 
+    {
+        $path           = (string) $path;
+        $method         = (string) $method;
+        $data           = (array) $data;
+        $headers        = $this->build_curl_headers();
+        $requestUrl     = $this->build_api_call_url($path);
+
+        $this->curl = curl_init();
+
+        curl_setopt_array($this->curl, array(
+          CURLOPT_URL => $requestUrl,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_SSL_VERIFYPEER => false,
+          CURLOPT_CUSTOMREQUEST => "POST",
+          CURLOPT_POSTFIELDS => http_build_query($data),
+          CURLOPT_HTTPHEADER => $headers,
+        ));
+
+        $response = curl_exec($this->curl);
+        $err = curl_error($this->curl);
+        curl_close($this->curl);
+
+        $headers        = curl_getinfo($this->curl);
+
+        $errorNumber   = curl_errno($this->curl);
+        $errorMessage  = curl_error($this->curl);
+        $responseObj   = json_decode($response, true);
+
+        if ($errorNumber != 0){
+            if($errorNumber == 60){
+                throw new \Exception("Something went wrong. cURL raised an error with number: $errorNumber and message: $errorMessage. " .
+                                    "Please check http://stackoverflow.com/a/21114601/846892 for a fix." . PHP_EOL);
+            }
+            else{
+                throw new \Exception("Something went wrong. cURL raised an error with number: $errorNumber and message: $errorMessage." . PHP_EOL);
+            }
+        }
+
+        return $responseObj;
+    }
+
+    /**
+    * @param array single PaymentRequest object.
+    * @return array single PaymentRequest object.
+    */
+    public function recurringRequestCreate(array $data) 
+    {
+        $response = $this->api_call('POST', 'recurring-billing', $data); 
+
+        return $response;
+    }
 }
