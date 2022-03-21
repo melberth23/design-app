@@ -29,7 +29,7 @@ class RequestsController extends Controller
      */
     public function index()
     {
-        $requests = Requests::with('roles')->paginate(10);
+        $requests = Requests::paginate(10);
         return view('requests.index', ['requests' => $requests]);
     }
 
