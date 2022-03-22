@@ -25,28 +25,26 @@ class BrandController extends Controller
     /**
      * List brands 
      * @param Nill
-     * @return Array $blog
+     * @return Array $brands
      */
     public function index()
     {
-        $brands = Blog::with('roles')->paginate(10);
+        $brands = Brand::paginate(10);
         return view('brands.index', ['brands' => $brands]);
     }
 
     /**
-     * Create Blog 
+     * Create Brand 
      * @param Nill
-     * @return Array $blog
+     * @return Array $brands
      */
     public function create()
     {
-        $roles = Role::all();
-       
-        return view('brands.add', ['roles' => $roles]);
+        return view('brands.add');
     }
 
     /**
-     * Store Blog
+     * Store Brand
      * @param Request $request
      * @return View brands
      */
@@ -63,7 +61,7 @@ class BrandController extends Controller
         try {
 
             // Store Data
-            $blog = Blog::create([
+            $blog = Brand::create([
                 'name'    => $request->name,
                 'description'     => $request->description,
                 'status'        => $request->status,
@@ -71,7 +69,7 @@ class BrandController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('brands.index')->with('success','Blog Created Successfully.');
+            return redirect()->route('brands.index')->with('success','Brand Created Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error

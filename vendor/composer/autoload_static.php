@@ -580,6 +580,7 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\PageController' => __DIR__ . '/../..' . '/app/Http/Controllers/PageController.php',
+        'App\\Http\\Controllers\\PaymentsController' => __DIR__ . '/../..' . '/app/Http/Controllers/PaymentsController.php',
         'App\\Http\\Controllers\\PermissionsController' => __DIR__ . '/../..' . '/app/Http/Controllers/PermissionsController.php',
         'App\\Http\\Controllers\\RequestsController' => __DIR__ . '/../..' . '/app/Http/Controllers/RequestsController.php',
         'App\\Http\\Controllers\\RolesController' => __DIR__ . '/../..' . '/app/Http/Controllers/RolesController.php',

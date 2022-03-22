@@ -24,7 +24,7 @@ Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])-
 Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
 Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
