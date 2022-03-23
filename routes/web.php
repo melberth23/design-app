@@ -24,7 +24,7 @@ Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])-
 Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
 Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
 
-Auth::routes(['verify' => true]);
+Auth::routes();
 
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
@@ -64,10 +64,10 @@ Route::middleware('auth')->prefix('admin/brands')->name('brand.')->group(functio
     Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
     Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
     Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
-    Route::get('/edit/{user}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
-    Route::put('/update/{user}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
-    Route::delete('/delete/{user}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
-    Route::get('/update/status/{user_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
+    Route::get('/edit/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
+    Route::put('/update/{brand}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
+    Route::delete('/delete/{brand}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
+    Route::get('/update/status/{brand_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
 });
 
 // Requests 

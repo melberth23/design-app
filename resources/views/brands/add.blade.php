@@ -20,7 +20,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Add New Brand</h6>
         </div>
-        <form method="POST" action="{{route('brand.store')}}">
+        <form method="POST" action="{{route('brand.store')}}" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
                 <div class="form-group row">
@@ -72,22 +72,22 @@
 
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
                         <label for="picture">Pictures</label>
-                        <input type="file" name="pictures" class="form-control-file" multiple >
+                        <input type="file" name="pictures[]" class="form-control-file" multiple >
                     </div>
 
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <label for="picture">Fonts</label>
-                        <input type="file" name="pictures" class="form-control-file" multiple >
+                        <label for="fonts">Fonts</label>
+                        <input type="file" name="fonts[]" class="form-control-file" multiple >
                     </div>
 
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <label for="picture">Colors</label>
-                        <input type="file" name="pictures" class="form-control-file" multiple >
+                        <label for="colors">Colors</label>
+                        <input type="text" name="colors" class="form-control-file" multiple >
                     </div>
 
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <label for="picture">Inspirations</label>
-                        <input type="file" name="pictures" class="form-control-file" multiple >
+                        <label for="inspirations">Inspirations</label>
+                        <input type="file" name="inspirations[]" class="form-control-file" multiple >
                     </div>
 
                     {{-- Status --}}

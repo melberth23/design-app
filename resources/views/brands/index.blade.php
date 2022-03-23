@@ -37,8 +37,8 @@
                         <tbody>
                             @foreach ($brands as $brand)
                                 <tr>
-                                    <td>{{ $brand->full_name }}</td>
-                                    <td>{{ $brand->email }}</td>
+                                    <td>{{ $brand->name }}</td>
+                                    <td>{{ $brand->target_audience }}</td>
                                     <td>
                                         @if ($brand->status == 0)
                                             <span class="badge badge-danger">Inactive</span>
@@ -48,17 +48,17 @@
                                     </td>
                                     <td style="display: flex">
                                         @if ($brand->status == 0)
-                                            <a href="{{ route('users.status', ['user_id' => $brand->id, 'status' => 1]) }}"
+                                            <a href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 1]) }}"
                                                 class="btn btn-success m-2">
                                                 <i class="fa fa-check"></i>
                                             </a>
                                         @elseif ($brand->status == 1)
-                                            <a href="{{ route('users.status', ['user_id' => $brand->id, 'status' => 0]) }}"
+                                            <a href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 0]) }}"
                                                 class="btn btn-danger m-2">
                                                 <i class="fa fa-ban"></i>
                                             </a>
                                         @endif
-                                        <a href="{{ route('users.edit', ['brand' => $brand->id]) }}"
+                                        <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}"
                                             class="btn btn-primary m-2">
                                             <i class="fa fa-pen"></i>
                                         </a>
@@ -71,7 +71,7 @@
                         </tbody>
                     </table>
 
-                    {{ $users->links() }}
+                    {{ $brands->links() }}
                 </div>
             </div>
         </div>

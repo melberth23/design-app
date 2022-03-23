@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\BrandAssets;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class BrandController extends Controller
 {
@@ -50,26 +53,96 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
+        $userid = $request->user()->id;
+
         // Validations
         $request->validate([
             'name'    => 'required',
+            'target_audience'    => 'required',
             'description'     => 'required',
             'status'       =>  'required|numeric|in:0,1',
+            'pictures.*' => 'mimes:jpg,png',
+            'fonts.*' => 'mimes:ttf',
+            'inspirations.*' => 'mimes:jpg,png,mp4,gif'
         ]);
 
         DB::beginTransaction();
         try {
+            Brand::where('user_id', $userid)->count();
 
             // Store Data
-            $blog = Brand::create([
+            $brand = Brand::create([
                 'name'    => $request->name,
+                'target_audience'    => $request->target_audience,
                 'description'     => $request->description,
+                'user_id'        => $userid,
                 'status'        => $request->status,
             ]);
 
+            // Check upload pictures
+            if($request->hasFile('pictures')) {
+                $allowedPicturesExtension = ['jpg','png'];
+                $pictures = $request->file('pictures');
+                foreach($pictures as $picture) {
+                    $filename = $picture->getClientOriginalName();
+                    $extension = $picture->getClientOriginalExtension();
+                    $check = in_array($extension, $allowedPicturesExtension);
+                    $picturepath = $filename .'-'. time() .'.'. $extension;
+
+                    if($check) {
+                        Storage::disk('local')->put($picturepath, $picture);
+                        $assets = BrandAssets::create([
+                            'filename' => $filename,
+                            'brand_id' => $brand->id,
+                            'type' => 'picture'
+                        ]);
+                    }
+                }
+            }
+
+            // Check upload fonts
+            if($request->hasFile('fonts')) {
+                $allowedFontsExtension = ['ttf'];
+                $fonts = $request->file('fonts');
+                foreach($fonts as $font) {
+                    $filename = $font->getClientOriginalName();
+                    $extension = $font->getClientOriginalExtension();
+                    $fontpath = $font->store('public/fonts');
+                    $check = in_array($extension, $allowedFontsExtension);
+
+                    if($check) {
+                        $assets = BrandAssets::create([
+                            'filename' => $filename,
+                            'brand_id' => $brand->id,
+                            'type' => 'font'
+                        ]);
+                    }
+                }
+            }
+
+            // Check upload inspirations
+            if($request->hasFile('inspirations')) {
+                $allowedInspirationsExtension = ['jpg','png','mp4','gif'];
+                $inspirations = $request->file('inspirations');
+                foreach($inspirations as $inspiration) {
+                    $filename = $inspiration->getClientOriginalName();
+                    $extension = $inspiration->getClientOriginalExtension();
+                    $inspirationpath = $inspiration->store('public/inspirations');
+                    $check = in_array($extension, $allowedInspirationsExtension);
+
+                    if($check) {
+                        $assets = BrandAssets::create([
+                            'filename' => $filename,
+                            'brand_id' => $brand->id,
+                            'type' => 'inspiration'
+                        ]);
+                    }
+                }
+            }
+
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('brands.index')->with('success','Brand Created Successfully.');
+            return redirect()->route('brand.index')->with('success','Brand Created Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error

@@ -62,9 +62,10 @@ class RegisterController extends Controller
                 'premium' => '95d369fd-9228-4f36-bd7f-d03c6805027a',
                 'royal' => '95d36a21-671d-48f9-909f-002d022c6b59',
             );
+            $selectedplan = $posts['plan'];
             $payment = new PaymentHelper($apikey, $isStg);
             $response = $payment->recurringRequestCreate(array(
-                'plan_id'    =>  $plan[$posts['plan']],
+                'plan_id'    =>  $plan[$selectedplan],
                 'customer_email'  =>  $posts['email'],
                 'customer_name'  =>  $posts['first_name'] .' '. $posts['last_name'],
                 'start_date'  =>  date("Y-m-d"),
@@ -90,7 +91,7 @@ class RegisterController extends Controller
                     'user_id' => $user->id,
                     'reference' => $response['id'],
                     'business_recurring_plans_id' => $response['business_recurring_plans_id'],
-                    'plan' => $response['name'],
+                    'plan' => $selectedplan,
                     'cycle' => $response['cycle'],
                     'currency' => $response['currency'],
                     'price' => $response['price'],

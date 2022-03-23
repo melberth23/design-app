@@ -13,14 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('brand_asset', function (Blueprint $table) {
+        Schema::create('brand_assets', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('asset')->nullable();
+            $table->string('filename')->nullable();
             $table->string('type')->nullable();
-            $table->integer('brand_id')->default(0);
+            $table->unsignedBigInteger('brand_id');
             $table->timestamps();
         });
+
+        Schema::table('brand_assets', function($table) {
+           $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
+       });
     }
 
     /**

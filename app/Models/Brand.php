@@ -13,7 +13,9 @@ class Brand extends Model
 
     protected $fillable = [
         'name',
+        'target_audience',
         'description',
+        'user_id',
         'status'
     ];
 }

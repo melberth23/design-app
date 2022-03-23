@@ -20,7 +20,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Add New Request</h6>
         </div>
-        <form method="POST" action="{{route('request.store')}}">
+        <form method="POST" action="{{route('request.store')}}" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
                 <div class="form-group row">

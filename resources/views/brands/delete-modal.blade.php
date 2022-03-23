@@ -15,7 +15,7 @@
                     onclick="event.preventDefault(); document.getElementById('brand-delete-form').submit();">
                     Delete
                 </a>
-                <form id="brand-delete-form" method="POST" action="{{ route('brands.destroy', ['brand' => $brand->id]) }}">
+                <form id="brand-delete-form" method="POST" action="{{ route('brand.destroy', ['brand' => $brand->id]) }}">
                     @csrf
                     @method('DELETE')
                 </form>
