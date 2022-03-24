@@ -13,16 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('brand_assets', function (Blueprint $table) {
+        Schema::create('request_assets', function (Blueprint $table) {
             $table->id();
             $table->string('filename')->nullable();
-            $table->string('type')->nullable();
-            $table->unsignedBigInteger('brand_id');
+            $table->unsignedBigInteger('request_id');
             $table->timestamps();
         });
 
-        Schema::table('brand_assets', function($table) {
-           $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
+        Schema::table('request_assets', function($table) {
+           $table->foreign('request_id')->references('id')->on('requests')->onDelete('cascade');
         });
     }
 
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('brand_assets');
+        Schema::dropIfExists('request_assets');
     }
 };

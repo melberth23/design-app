@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Requests;
+use App\Models\Payments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use App\Lib\SystemHelper;
 
 class RequestsController extends Controller
 {
@@ -29,7 +33,8 @@ class RequestsController extends Controller
      */
     public function index()
     {
-        $requests = Requests::paginate(10);
+        $userid = Auth::id();
+        $requests = Requests::where('user_id', $userid)->paginate(10);
         return view('requests.index', ['requests' => $requests]);
     }
 

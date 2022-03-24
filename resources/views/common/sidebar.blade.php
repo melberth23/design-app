@@ -41,7 +41,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#brandDropdown"
                 aria-expanded="true" aria-controls="brandDropdown">
-                <i class="fas fa-tags" aria-hidden="true"></i>
+                <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
                 <span>Brand Profiles</span>
             </a>
             <div id="brandDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
