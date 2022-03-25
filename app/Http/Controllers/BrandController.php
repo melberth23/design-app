@@ -104,12 +104,14 @@ class BrandController extends Controller
                         $filename = $picture->getClientOriginalName();
                         $extension = $picture->getClientOriginalExtension();
                         $check = in_array($extension, $allowedPicturesExtension);
-                        $picturepath = $filename .'-'. time() .'.'. $extension;
 
-                        if($check) {
-                            Storage::disk('local')->put($picturepath, $picture);
+                        if($check) { 
+                            $randomfilename = $helper->generateRandomString(15);
+                            $picturepath = $randomfilename .'.'. $extension;
+                            $picture->move(public_path('storage/pictures'), $picturepath);
+
                             $assets = BrandAssets::create([
-                                'filename' => $filename,
+                                'filename' => $picturepath,
                                 'brand_id' => $brand->id,
                                 'type' => 'picture'
                             ]);
@@ -124,12 +126,14 @@ class BrandController extends Controller
                     foreach($fonts as $font) {
                         $filename = $font->getClientOriginalName();
                         $extension = $font->getClientOriginalExtension();
-                        $fontpath = $font->store('public/fonts');
                         $check = in_array($extension, $allowedFontsExtension);
 
                         if($check) {
+                            $fontpath = $filename;
+                            $font->move(public_path('storage/fonts'), $fontpath);
+
                             $assets = BrandAssets::create([
-                                'filename' => $filename,
+                                'filename' => $fontpath,
                                 'brand_id' => $brand->id,
                                 'type' => 'font'
                             ]);
@@ -144,12 +148,15 @@ class BrandController extends Controller
                     foreach($inspirations as $inspiration) {
                         $filename = $inspiration->getClientOriginalName();
                         $extension = $inspiration->getClientOriginalExtension();
-                        $inspirationpath = $inspiration->store('public/inspirations');
                         $check = in_array($extension, $allowedInspirationsExtension);
 
                         if($check) {
+                            $randomfilename = $helper->generateRandomString(15);
+                            $inspirationpath = $randomfilename .'.'. $extension;
+                            $inspiration->move(public_path('storage/inspirations'), $inspirationpath);
+
                             $assets = BrandAssets::create([
-                                'filename' => $filename,
+                                'filename' => $inspirationpath,
                                 'brand_id' => $brand->id,
                                 'type' => 'inspiration'
                             ]);

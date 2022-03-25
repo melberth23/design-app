@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Requests;
 use App\Models\Payments;
+use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -45,9 +46,10 @@ class RequestsController extends Controller
      */
     public function create()
     {
-        $roles = Role::all();
-       
-        return view('requests.add', ['roles' => $roles]);
+        $userid = Auth::id();
+        $brands = Brand::where('user_id', $userid)->get();
+
+        return view('requests.add', ['brands' => $brands]);
     }
 
     /**

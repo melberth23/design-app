@@ -9,14 +9,11 @@ class BrandAssets extends Model
 {
     use HasFactory;
 
-    protected $table = 'brand_asset';
+    protected $table = 'brand_assets';
 
     protected $fillable = [
         'brand_id', 
         'filename',
+        'type'
     ];
-
-    public function brand() {
-        return $this->belongsTo('App\Brand');
-    }
 }

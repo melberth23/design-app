@@ -10,10 +10,13 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Payments;
+use App\Mail\DigitalPaymentMail;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 use App\Lib\PaymentHelper;
+use App\Lib\SystemHelper;
 use Redirect;
 use DB;
 
@@ -57,17 +60,15 @@ class RegisterController extends Controller
             // Get Payment Config
             $apikey = config('services.hitpay.key');
             $isStg = config('services.hitpay.environment');
-            $plan = array(
-                'basic' => '95d369cc-7fbd-4608-b53f-562605eab522',
-                'premium' => '95d369fd-9228-4f36-bd7f-d03c6805027a',
-                'royal' => '95d36a21-671d-48f9-909f-002d022c6b59',
-            );
+            $customerfullname = $posts['first_name'] .' '. $posts['last_name'];
             $selectedplan = $posts['plan'];
+            $helper = new SystemHelper();
+            $planInfo = $helper->getPlanInformation($selectedplan);
             $payment = new PaymentHelper($apikey, $isStg);
             $response = $payment->recurringRequestCreate(array(
-                'plan_id'    =>  $plan[$selectedplan],
+                'plan_id'    =>  $planInfo['id'],
                 'customer_email'  =>  $posts['email'],
-                'customer_name'  =>  $posts['first_name'] .' '. $posts['last_name'],
+                'customer_name'  =>  $customerfullname,
                 'start_date'  =>  date("Y-m-d"),
                 'redirect_url'  =>  url("payment-success"),
                 'reference'  =>  time()
@@ -99,6 +100,17 @@ class RegisterController extends Controller
                     'payment_methods' => $response['payment_methods'],
                     'payment_url' => $response['url'],
                 ]);
+
+                // Send Email
+                $details = array(
+                    'message' => 'Welcome '. $customerfullname .',<br> Please see details below:',
+                    'extra_msg' => '',
+                    'plan' => $planInfo['label'],
+                    'amount' => number_format($planInfo['amount']),
+                    'paymentlink' => 'Please pay to continue use your account <a href="'. $response['url'] .'">Pay Here</a> or disregard if already paid.',
+                    'thank_msg' => 'Thank you!'
+                );
+                Mail::to($request->user())->send(new DigitalPaymentMail($details));
 
                 return Redirect::away($response['url']);
             } else {
