@@ -23,4 +23,8 @@ class Payments extends Model
         'payment_methods',
         'payment_url'
     ];
+
+    public function scopeIsPaid($query) {
+        return $query->where('status', 'active');
+    }
 }

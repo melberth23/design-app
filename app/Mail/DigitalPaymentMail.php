@@ -30,7 +30,7 @@ class DigitalPaymentMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Your Payment Details!')
+        return $this->subject($this->details['subject'])
                     ->view('emails.payment');
     }
 }

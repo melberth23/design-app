@@ -21,6 +21,8 @@ return new class extends Migration
             $table->integer('format')->default(2)->comment('1=.MP4, 2=.AEP');
             $table->longText('description');
             $table->integer('user_id')->default(0);
+            $table->integer('brand_id')->default(0);
+            $table->integer('priority')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

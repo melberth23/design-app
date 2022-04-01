@@ -103,11 +103,12 @@ class RegisterController extends Controller
 
                 // Send Email
                 $details = array(
-                    'message' => 'Welcome '. $customerfullname .',<br> Please see details below:',
-                    'extra_msg' => '',
+                    'subject' => 'Account Confirmation Details!',
+                    'message' => 'Welcome '. $customerfullname .',',
+                    'extra_msg' => 'Please see details below:',
                     'plan' => $planInfo['label'],
                     'amount' => number_format($planInfo['amount']),
-                    'paymentlink' => 'Please pay to continue use your account <a href="'. $response['url'] .'">Pay Here</a> or disregard if already paid.',
+                    'paymentlink' => 'Please pay to continue use your account '. $response['url'] .' or disregard if already paid.',
                     'thank_msg' => 'Thank you!'
                 );
                 Mail::to($request->user())->send(new DigitalPaymentMail($details));

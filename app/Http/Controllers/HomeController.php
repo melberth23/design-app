@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Requests;
+use App\Models\Brand;
+use App\Models\Payments;
 use Illuminate\Http\Request;
 use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class HomeController extends Controller
 {
@@ -28,7 +33,40 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = Auth::user();
+        if($user->hasRole('User')) {
+            // Get all request current month
+            $currentmonthreq = Requests::where('user_id', $user->id)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)->count();
+            // Get number of completed requests
+            $completedreq = Requests::where('user_id', $user->id)->where('status', 0)->count();
+            // Get number of pending requests
+            $reqforreview = Requests::where('user_id', $user->id)->where('status', 1)->count();
+            // Get number of active requests
+            $activereq = Requests::where('user_id', $user->id)->where('status', 2)->count();
+
+            // Get payment link if not yet paid
+            $paymentinfo = Payments::where('user_id', $user->id)->first();
+
+            return view('home', ['payment_status' => $paymentinfo->status, 'payment_url' => $paymentinfo->payment_url, 'user_fullname' => $user->fullname, 'cur_month_req' => $currentmonthreq, 'completed_req' => $completedreq, 'req_for_review' => $reqforreview, 'active_req' => $activereq]);
+        } else {
+            // Get all request current month
+            $currentmonthreq = Requests::where('user_id', '!=', $user->id)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)->count();
+            // Get number of completed requests
+            $completedreq = Requests::where('user_id', '!=', $user->id)->where('status', 0)->count();
+            // Get number of pending requests
+            $reqforreview = Requests::where('user_id', '!=', $user->id)->where('status', 1)->count();
+            // Get number of active requests
+            $activereq = Requests::where('user_id', '!=', $user->id)->where('status', 2)->count();
+            // Get number of active brands
+            $activebrands = Brand::where('user_id', '!=', $user->id)->where('status', 1)->count();
+            // Get number of active users
+            $activeusers = User::where('id', '!=', $user->id)->where('role_id', 2)->where('status', 1)->count();
+            // Get number of pending users
+            $pendingusers = User::where('id', '!=', $user->id)->where('role_id', 2)->where('status', 0)->count();
+
+            return view('admin.home', ['active_brands' => $activebrands, 'active_users' => $activeusers, 'pending_users' => $pendingusers, 'user_fullname' => $user->fullname, 'cur_month_req' => $currentmonthreq, 'completed_req' => $completedreq, 'req_for_review' => $reqforreview, 'active_req' => $activereq]);
+        }
+
     }
 
     /**

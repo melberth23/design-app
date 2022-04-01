@@ -13,16 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('request_assets', function (Blueprint $table) {
+        Schema::create('request_types', function (Blueprint $table) {
             $table->id();
-            $table->string('filename')->nullable();
-            $table->string('type')->nullable();
-            $table->unsignedBigInteger('request_id');
+            $table->string('name')->nullable();
+            $table->longText('description')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
-        });
-
-        Schema::table('request_assets', function($table) {
-           $table->foreign('request_id')->references('id')->on('requests')->onDelete('cascade');
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('request_assets');
+        Schema::dropIfExists('request_types');
     }
 };

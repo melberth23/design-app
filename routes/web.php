@@ -35,6 +35,35 @@ Route::prefix('profile')->name('profile.')->middleware('auth')->group(function()
     Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
 });
 
+/* Normal User Dashboard */
+
+// Brands 
+Route::middleware('auth')->prefix('brands')->name('brand.')->group(function(){
+    Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
+    Route::get('/edit/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
+    Route::put('/update/{brand}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
+    Route::delete('/delete/{brand}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
+    Route::get('/update/status/{brand_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
+});
+
+// Requests 
+Route::middleware('auth')->prefix('requests')->name('request.')->group(function(){
+    Route::get('/', [App\Http\Controllers\RequestsController::class, 'index'])->name('index');
+    Route::get('/queue', [App\Http\Controllers\RequestsController::class, 'queue'])->name('queue');
+    Route::get('/delivered', [App\Http\Controllers\RequestsController::class, 'delivered'])->name('delivered');
+    Route::get('/create', [App\Http\Controllers\RequestsController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\RequestsController::class, 'store'])->name('store');
+    Route::get('/edit/{requests}', [App\Http\Controllers\RequestsController::class, 'edit'])->name('edit');
+    Route::get('/comment/{requests}', [App\Http\Controllers\RequestsController::class, 'comment'])->name('comment');
+    Route::put('/update/{requests}', [App\Http\Controllers\RequestsController::class, 'update'])->name('update');
+    Route::delete('/delete/{requests}', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
+    Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
+});
+
+/* Super Admin Dashboard */
+
 // Roles
 Route::resource('roles', App\Http\Controllers\RolesController::class);
 
@@ -59,24 +88,13 @@ Route::middleware('auth')->prefix('admin/users')->name('users.')->group(function
 
 });
 
-// Brands 
-Route::middleware('auth')->prefix('admin/brands')->name('brand.')->group(function(){
-    Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
-    Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
-    Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
-    Route::get('/edit/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
-    Route::put('/update/{brand}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
-    Route::delete('/delete/{brand}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
-    Route::get('/update/status/{brand_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
-});
-
-// Requests 
-Route::middleware('auth')->prefix('admin/requests')->name('request.')->group(function(){
-    Route::get('/', [App\Http\Controllers\RequestsController::class, 'index'])->name('index');
-    Route::get('/create', [App\Http\Controllers\RequestsController::class, 'create'])->name('create');
-    Route::post('/store', [App\Http\Controllers\RequestsController::class, 'store'])->name('store');
-    Route::get('/edit/{user}', [App\Http\Controllers\RequestsController::class, 'edit'])->name('edit');
-    Route::put('/update/{user}', [App\Http\Controllers\RequestsController::class, 'update'])->name('update');
-    Route::delete('/delete/{user}', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
-    Route::get('/update/status/{user_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
+// Request Types
+Route::middleware('auth')->prefix('admin/requesttypes')->name('requesttypes.')->group(function(){
+    Route::get('/', [App\Http\Controllers\Admin\RequestTypesController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\Admin\RequestTypesController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\Admin\RequestTypesController::class, 'store'])->name('store');
+    Route::get('/edit/{requesttype}', [App\Http\Controllers\Admin\RequestTypesController::class, 'edit'])->name('edit');
+    Route::put('/update/{requesttype}', [App\Http\Controllers\Admin\RequestTypesController::class, 'update'])->name('update');
+    Route::delete('/delete/{requesttype}', [App\Http\Controllers\Admin\RequestTypesController::class, 'delete'])->name('destroy');
+    Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\Admin\RequestTypesController::class, 'updateStatus'])->name('status');
 });

@@ -7,7 +7,7 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Requests</h1>
+            <h1 class="h3 mb-0 text-gray-800">Queue Requests</h1>
             <a href="{{ route('request.create') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus"></i> Add New
             </a>
@@ -38,9 +38,7 @@
                                 <tr>
                                     <td>{{ $request->title }}</td>
                                     <td>
-                                        @if ($request->status == 0)
-                                            <span class="badge badge-primary">Delivered</span>
-                                        @elseif ($request->status == 1)
+                                        @if ($request->status == 1)
                                             <span class="badge badge-warning">Pending</span>
                                         @elseif ($request->status == 2)
                                             <span class="badge badge-info">Active</span>
@@ -49,39 +47,33 @@
                                         @endif
                                     </td>
                                     <td style="display: flex">
-                                        @if ($request->status == 1)
-                                            <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 2]) }}"
-                                                class="btn btn-success m-2">
-                                                <i class="fa fa-check"></i>
-                                            </a>
-                                        @elseif ($request->status == 2)
-                                            <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 1]) }}"
-                                                class="btn btn-danger m-2">
-                                                <i class="fa fa-ban"></i>
-                                            </a>
+                                        @if ($request->status != 3)
+                                            @if ($request->status == 1)
+                                                <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 2]) }}"
+                                                    class="btn btn-success m-2">
+                                                    <i class="fa fa-check"></i>
+                                                </a>
+                                            @elseif ($request->status == 2)
+                                                <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 1]) }}"
+                                                    class="btn btn-danger m-2">
+                                                    <i class="fa fa-ban"></i>
+                                                </a>
+                                            @endif
+                                        @else
+                                            <!-- Locked -->
                                         @endif
-                                        @if ($request->status == 0 || $request->status == 3)
-                                            <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
-                                                class="btn btn-primary m-2">
-                                                <i class="fa fa-comments"></i>
-                                            </a>
-                                        @endif
-                                        @if ($request->status == 1 || $request->status == 2)
-                                            <a href="{{ route('request.edit', ['requests' => $request->id]) }}"
-                                                class="btn btn-primary m-2">
-                                                <i class="fa fa-pen"></i>
-                                            </a>
-                                            <a class="btn btn-danger m-2" href="#" data-toggle="modal" data-target="#deleteModal">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        @endif
+                                        <a href="{{ route('request.edit', ['requests' => $request->id]) }}"
+                                            class="btn btn-primary m-2">
+                                            <i class="fa fa-pen"></i>
+                                        </a>
+                                        <a class="btn btn-danger m-2" href="#" data-toggle="modal" data-target="#deleteModal">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-
-                    {{ $requests->links() }}
                 </div>
             </div>
         </div>

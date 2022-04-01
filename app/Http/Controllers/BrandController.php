@@ -14,9 +14,12 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Lib\SystemHelper;
+use File;
 
 class BrandController extends Controller
 {
+    public $helper;
+
     /**
      * Create a new controller instance.
      *
@@ -25,6 +28,8 @@ class BrandController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->helper = new SystemHelper();
     }
 
     /**
@@ -35,8 +40,17 @@ class BrandController extends Controller
     public function index()
     {
         $userid = Auth::id();
-        $brands = Brand::where('user_id', $userid)->paginate(10);
-        return view('brands.index', ['brands' => $brands]);
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            // Get lists of brands
+            $brands = Brand::where('user_id', $userid)->paginate(10);
+
+            return view('brands.index', ['brands' => $brands]);
+        } else {
+            return redirect()->route('dashboard');
+        }
     }
 
     /**
@@ -46,7 +60,15 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return view('brands.add');
+        $userid = Auth::id();
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            return view('brands.add');
+        } else {
+            return redirect()->route('dashboard');
+        }
     }
 
     /**
@@ -71,22 +93,8 @@ class BrandController extends Controller
 
         DB::beginTransaction();
         try {
-            $numberofbrands = Brand::where('user_id', $userid)->count();
-            $helper = new SystemHelper();
-            $payments = Payments::where('user_id', $userid)->first();
-            $planrule = $helper->getPlanRules($payments->plan);
-            $allowedbrand = $planrule['brand'];
-
-            $allowed = false;
-            if($allowedbrand > 0) {
-                if($allowedbrand > $numberofbrands) {
-                    $allowed = true;
-                }
-            } else {
-                $allowed = true;
-            }
-
-            if($allowed) {
+            $allowed = $this->helper->userActionRules($userid, 'brand');
+            if($allowed['allowed']) {
                 // Store Data
                 $brand = Brand::create([
                     'name'    => $request->name,
@@ -98,6 +106,12 @@ class BrandController extends Controller
 
                 // Check upload pictures
                 if($request->hasFile('pictures')) {
+                    $requestpicturespath = public_path('storage/pictures') .'/'. $userid;
+                    if(!File::isDirectory($requestpicturespath)){
+                        // Create Path
+                        File::makeDirectory($requestpicturespath, 0777, true, true);
+                    }
+
                     $allowedPicturesExtension = ['jpg','png'];
                     $pictures = $request->file('pictures');
                     foreach($pictures as $picture) {
@@ -106,9 +120,9 @@ class BrandController extends Controller
                         $check = in_array($extension, $allowedPicturesExtension);
 
                         if($check) { 
-                            $randomfilename = $helper->generateRandomString(15);
+                            $randomfilename = $this->helper->generateRandomString(15);
                             $picturepath = $randomfilename .'.'. $extension;
-                            $picture->move(public_path('storage/pictures'), $picturepath);
+                            $picture->move($requestpicturespath, $picturepath);
 
                             $assets = BrandAssets::create([
                                 'filename' => $picturepath,
@@ -121,6 +135,12 @@ class BrandController extends Controller
 
                 // Check upload fonts
                 if($request->hasFile('fonts')) {
+                    $requestfontspath = public_path('storage/fonts') .'/'. $userid;
+                    if(!File::isDirectory($requestfontspath)){
+                        // Create Path
+                        File::makeDirectory($requestfontspath, 0777, true, true);
+                    }
+
                     $allowedFontsExtension = ['ttf'];
                     $fonts = $request->file('fonts');
                     foreach($fonts as $font) {
@@ -130,7 +150,7 @@ class BrandController extends Controller
 
                         if($check) {
                             $fontpath = $filename;
-                            $font->move(public_path('storage/fonts'), $fontpath);
+                            $font->move($requestfontspath, $fontpath);
 
                             $assets = BrandAssets::create([
                                 'filename' => $fontpath,
@@ -143,6 +163,12 @@ class BrandController extends Controller
 
                 // Check upload inspirations
                 if($request->hasFile('inspirations')) {
+                    $requestinspirationspath = public_path('storage/inspirations') .'/'. $userid;
+                    if(!File::isDirectory($requestinspirationspath)){
+                        // Create Path
+                        File::makeDirectory($requestinspirationspath, 0777, true, true);
+                    }
+
                     $allowedInspirationsExtension = ['jpg','png','mp4','gif'];
                     $inspirations = $request->file('inspirations');
                     foreach($inspirations as $inspiration) {
@@ -151,9 +177,9 @@ class BrandController extends Controller
                         $check = in_array($extension, $allowedInspirationsExtension);
 
                         if($check) {
-                            $randomfilename = $helper->generateRandomString(15);
+                            $randomfilename = $this->helper->generateRandomString(15);
                             $inspirationpath = $randomfilename .'.'. $extension;
-                            $inspiration->move(public_path('storage/inspirations'), $inspirationpath);
+                            $inspiration->move($requestinspirationspath, $inspirationpath);
 
                             $assets = BrandAssets::create([
                                 'filename' => $inspirationpath,
@@ -169,7 +195,7 @@ class BrandController extends Controller
                 return redirect()->route('brand.index')->with('success','Brand Created Successfully.');
             } else {
                 DB::rollBack();
-                return redirect()->back()->withInput()->with('error', 'Your are not allowed to add more than '. $allowedbrand .' brand profile.');
+                return redirect()->back()->withInput()->with('error', 'Account limit: Your are not allowed to add more than '. $allowed['allowedbrand'] .' brand profile.');
             }
         } catch (\Throwable $th) {
             // Rollback and return with Error

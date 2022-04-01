@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Requests;
 use App\Models\Payments;
 use App\Models\Brand;
+use App\Models\RequestAssets;
+use App\Models\Admin\RequestTypes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -14,9 +16,11 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Lib\SystemHelper;
+use File;
 
 class RequestsController extends Controller
 {
+    public $helper;
     /**
      * Create a new controller instance.
      *
@@ -25,6 +29,8 @@ class RequestsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->helper = new SystemHelper();
     }
 
     /**
@@ -35,8 +41,53 @@ class RequestsController extends Controller
     public function index()
     {
         $userid = Auth::id();
-        $requests = Requests::where('user_id', $userid)->paginate(10);
-        return view('requests.index', ['requests' => $requests]);
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            $requests = Requests::where('user_id', $userid)->paginate(10);
+            return view('requests.index', ['requests' => $requests]);
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    /**
+     * Queue requests 
+     * @param Nill
+     * @return Array $requests
+     */
+    public function queue()
+    {
+        $userid = Auth::id();
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            $requests = Requests::where('user_id', $userid)->where('status', '!=', 0)->get();
+            return view('requests.queue', ['requests' => $requests]);
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    /**
+     * Delivered requests 
+     * @param Nill
+     * @return Array $requests
+     */
+    public function delivered()
+    {
+        $userid = Auth::id();
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            $requests = Requests::where('user_id', $userid)->where('status', 0)->paginate(10);
+            return view('requests.delivered', ['requests' => $requests]);
+        } else {
+            return redirect()->route('dashboard');
+        }
     }
 
     /**
@@ -47,9 +98,16 @@ class RequestsController extends Controller
     public function create()
     {
         $userid = Auth::id();
-        $brands = Brand::where('user_id', $userid)->get();
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            $designtypes = RequestTypes::get();
+            $brands = Brand::where('user_id', $userid)->get();
 
-        return view('requests.add', ['brands' => $brands]);
+            return view('requests.add', ['brands' => $brands, 'designtypes' => $designtypes]);
+        } else {
+            return redirect()->route('dashboard');
+        }
     }
 
     /**
@@ -59,26 +117,69 @@ class RequestsController extends Controller
      */
     public function store(Request $request)
     {
+        $userid = $request->user()->id;
+
         // Validations
         $request->validate([
-            'name'    => 'required',
+            'title'    => 'required',
+            'design_type'     => 'required',
+            'dimensions'     => 'required',
             'description'     => 'required',
-            'status'       =>  'required|numeric|in:0,1',
+            'brand_id'     => 'required',
+            'media.*' => 'required|mimes:jpg,png'
         ]);
 
         DB::beginTransaction();
         try {
 
+            $lastrow = Requests::where('user_id', $userid)->where('status', '!=', 0)->orderBy('priority', 'DESC')->first();
+            $prioritynum = ($lastrow->priority > 0) ? $lastrow->priority + 1 : 1;
+
             // Store Data
             $requests = Requests::create([
-                'name'    => $request->name,
+                'title'    => $request->title,
+                'design_type'    => $request->design_type,
+                'dimensions'     => $request->dimensions,
                 'description'     => $request->description,
-                'status'        => $request->status,
+                'format'        => $request->format,
+                'brand_id'        => $request->brand_id,
+                'user_id'        => $userid,
+                'priority'        => $prioritynum
             ]);
+
+            // Check upload medias
+            if($request->hasFile('media')) {
+
+                $requestmediapath = public_path('storage/media') .'/'. $userid;
+                if(!File::isDirectory($requestmediapath)){
+                    // Create Path
+                    File::makeDirectory($requestmediapath, 0777, true, true);
+                }
+
+                $allowedMediasExtension = ['jpg','png'];
+                $medias = $request->file('media');
+                foreach($medias as $med) {
+                    $filename = $med->getClientOriginalName();
+                    $extension = $med->getClientOriginalExtension();
+                    $check = in_array($extension, $allowedMediasExtension);
+
+                    if($check) { 
+                        $randomfilename = $this->helper->generateRandomString(15);
+                        $mediapath = $randomfilename .'.'. $extension;
+                        $med->move($requestmediapath, $mediapath);
+
+                        $assets = RequestAssets::create([
+                            'filename' => $mediapath,
+                            'request_id' => $requests->id,
+                            'type' => 'media'
+                        ]);
+                    }
+                }
+            }
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('requests.index')->with('success','Requests Created Successfully.');
+            return redirect()->route('request.index')->with('success','Requests Created Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
@@ -94,34 +195,50 @@ class RequestsController extends Controller
      */
     public function updateStatus($request_id, $status)
     {
-        // Validation
-        $validate = Validator::make([
-            'request_id'   => $request_id,
-            'status'    => $status
-        ], [
-            'request_id'   =>  'required|exists:requests,id',
-            'status'    =>  'required|in:0,1',
-        ]);
+        $userid = Auth::id();
+        $allowed = $this->helper->userActionRules($userid, 'request', $status);
+        if($allowed['allowed']) {
+            // Validation
+            $validate = Validator::make([
+                'request_id'   => $request_id,
+                'status'    => $status
+            ], [
+                'request_id'   =>  'required|exists:requests,id',
+                'status'    =>  'required|in:1,2',
+            ]);
 
-        // If Validations Fails
-        if($validate->fails()){
-            return redirect()->route('requests.index')->with('error', $validate->errors()->first());
-        }
+            // If Validations Fails
+            if($validate->fails()){
+                return redirect()->route('request.index')->with('error', $validate->errors()->first());
+            }
 
-        try {
-            DB::beginTransaction();
+            try {
+                DB::beginTransaction();
 
-            // Update Status
-            User::whereId($request_id)->update(['status' => $status]);
+                // get current status of the request
+                $requestrow = Requests::whereId($request_id)->first();
 
-            // Commit And Redirect on index with Success Message
-            DB::commit();
-            return redirect()->route('requests.index')->with('success','Requests Status Updated Successfully!');
-        } catch (\Throwable $th) {
+                $checkstatus = $this->helper->checkLockedStatus($requestrow->status);
+                if(!$checkstatus) {
+                    // Update Status
+                    Requests::whereId($request_id)->update(['status' => $status]);
 
-            // Rollback & Return Error Message
+                    // Commit And Redirect on index with Success Message
+                    DB::commit();
+                    return redirect()->route('request.index')->with('success','Requests Status Updated Successfully!');
+                } else {
+                    $statustext = $this->helper->statusLabel($requestrow->status);
+                    return redirect()->back()->with('error', $requestrow->title .' is in '. $statustext .' status and you are not allowed to change it.');
+                }
+            } catch (\Throwable $th) {
+
+                // Rollback & Return Error Message
+                DB::rollBack();
+                return redirect()->back()->with('error', $th->getMessage());
+            }
+        } else {
             DB::rollBack();
-            return redirect()->back()->with('error', $th->getMessage());
+            return redirect()->back()->with('error', 'Account limit: Your are not allowed to add more than '. $allowed['allowedrequest'] .' requests.');
         }
     }
 
@@ -132,9 +249,28 @@ class RequestsController extends Controller
      */
     public function edit(Requests $requests)
     {
-        $roles = Role::all();
+        $userid = Auth::id();
+
+        $designtypes = RequestTypes::get();
+        $brands = Brand::where('user_id', $userid)->get();
         return view('requests.edit')->with([
-            'requests'  => $requests
+            'requests'  => $requests,
+            'brands' => $brands,
+            'designtypes' => $designtypes
+        ]);
+    }
+
+    /**
+     * Edit Requests
+     * @param Integer $requests
+     * @return Collection $requests
+     */
+    public function comment(Requests $requests)
+    {
+        $userid = Auth::id();
+        $comments = array();
+        return view('requests.comment')->with([
+            'comments'  => $comments
         ]);
     }
 
@@ -164,7 +300,7 @@ class RequestsController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('requests.index')->with('success','Requests Updated Successfully.');
+            return redirect()->route('request.index')->with('success','Requests Updated Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
@@ -186,7 +322,7 @@ class RequestsController extends Controller
             Requests::whereId($requests->id)->delete();
 
             DB::commit();
-            return redirect()->route('requests.index')->with('success', 'Requests Deleted Successfully!.');
+            return redirect()->route('request.index')->with('success', 'Requests Deleted Successfully!.');
 
         } catch (\Throwable $th) {
             DB::rollBack();

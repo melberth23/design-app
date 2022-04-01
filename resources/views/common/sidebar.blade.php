@@ -32,6 +32,8 @@
             <div id="requestDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="{{ route('request.index') }}">All Requests</a>
+                    <a class="collapse-item" href="{{ route('request.queue') }}">Queue Requests</a>
+                    <a class="collapse-item" href="{{ route('request.delivered') }}">Delivered Requests</a>
                     <a class="collapse-item" href="{{ route('request.create') }}">Add Request</a>
                 </div>
             </div>
@@ -53,10 +55,30 @@
         </li>
     @endhasrole
     @hasrole('Admin')
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            General Settings
+        </div>
+
+        <!-- Nav Item - Request Types -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#requestTypesDropdown"
+                aria-expanded="true" aria-controls="requestTypesDropdown">
+                <i class="fas fa-user-alt"></i>
+                <span>Request Types</span>
+            </a>
+            <div id="requestTypesDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="{{ route('requesttypes.index') }}">List</a>
+                    <a class="collapse-item" href="{{ route('requesttypes.create') }}">Add New</a>
+                </div>
+            </div>
+        </li>
         
         <!-- Heading -->
         <div class="sidebar-heading">
-            Admin Section
+            User Management
         </div>
 
         <!-- Nav Item - Users -->
@@ -64,11 +86,10 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#usersDropdown"
                 aria-expanded="true" aria-controls="usersDropdown">
                 <i class="fas fa-user-alt"></i>
-                <span>User Management</span>
+                <span>Users</span>
             </a>
             <div id="usersDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">User Management:</h6>
                     <a class="collapse-item" href="{{ route('users.index') }}">List</a>
                     <a class="collapse-item" href="{{ route('users.create') }}">Add New</a>
                     <a class="collapse-item" href="{{ route('users.import') }}">Import Data</a>

@@ -17,7 +17,6 @@
     </div>
 
     <!-- Content Row -->
-    @if ($payment_status == 'active')
     <div class="row">
 
         <div class="col-xl-3 col-md-6 mb-4">
@@ -90,57 +89,58 @@
     </div>
 
     <div class="row">
-        <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card border-left-default shadow h-100 py-2">
+
+        <div class="col-xl-4 col-md-4 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">New Request</div>
-                            <div class="mt-2">
-                                <a href="{{ route('request.create') }}" class="btn btn-primary">Add Request</a>
-                            </div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Active Brands</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $active_brands }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card border-left-default shadow h-100 py-2">
+        <div class="col-xl-4 col-md-4 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Your brand profiles</div>
-                            <div class="mt-2">
-                                <a href="{{ route('brand.index') }}" class="btn btn-primary">View Brand Profiles</a>
-                            </div>
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Active Users</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $active_users }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-4 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Pending Users</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pending_users }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tasks fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    @else
-
-    <div class="row">
-        <div class="col-xl-12 col-md-12 mb-4">
-            <div class="card text-center border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">You account is not fully activated. Please pay to continue use your account.</div>
-                            <div class="mt-2">
-                                <a href="{{ $payment_url }}" class="btn btn-primary" target="_blank">Click to pay</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @endif
 
 </div>
 @endsection

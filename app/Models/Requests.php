@@ -12,8 +12,13 @@ class Requests extends Model
     protected $table = 'requests';
 
     protected $fillable = [
-        'name',
+        'title',
+        'design_type',
+        'dimensions',
+        'format',
         'description',
-        'status'
+        'brand_id',
+        'user_id',
+        'priority'
     ];
 }

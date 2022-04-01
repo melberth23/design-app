@@ -1,7 +1,11 @@
 <?php 
 namespace App\Lib;
 
+
 use DB;
+use App\Models\Payments;
+use App\Models\Requests;
+use App\Models\Brand;
 
 class SystemHelper {
 
@@ -42,11 +46,46 @@ class SystemHelper {
                 'amount' => 2395,
                 'request' => 2,
                 'backlog' => true,
-                'brand' => 0
+                'brand' => 9999
             )
         );
 
         return $plans[$plan];
+    }
+
+    /**
+    * @param int userid
+    * @return array allowed information
+    */
+    public function userActionRules($userid, $type='request', $status=1) {
+        $statusRules = array(2,3);
+        $numberofitems = array();
+        if($type == 'brand') {
+            $numberofitems = Brand::where('user_id', $userid)->get();
+        } elseif($type == 'request') {
+            if($status == 2) {
+                $numberofitems = Requests::whereIn('status', $statusRules)->where('user_id', $userid)->get();
+            }
+        }
+        $numberofitems = count($numberofitems);
+        $payments = Payments::where('user_id', $userid)->first();
+        $planrule = $this->getPlanRules($payments->plan);
+        $allowedrule = $planrule[$type];
+
+        $allowed = false;
+        if($allowedrule > 0) {
+            if($allowedrule > $numberofitems) {
+                $allowed = true;
+            }
+        } else {
+            $allowed = true;
+        }
+
+        return array(
+            'allowed' => $allowed,
+            'allowedrequest' => $planrule['request'],
+            'allowedbrand' => $planrule['brand']
+        );
     }
 
     /**
@@ -61,5 +100,45 @@ class SystemHelper {
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
+    }
+
+    /**
+    * @param int userid
+    * @return bool true | false
+    */
+    public function checkIfAccountPaid($userid) {
+        $isPaid = Payments::where('user_id', $userid)->IsPaid();
+        if($isPaid)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+    * @param int status
+    * @return string status label
+    */
+    public function checkLockedStatus($status) {
+        $statuses = array(
+            0 => 'Delivered',
+            3 => 'Progress'
+        );
+        return !empty($statuses[$status])?true:false;
+    }
+
+    /**
+    * @param int status
+    * @return string status label
+    */
+    public function statusLabel($status) {
+        $statuses = array(
+            0 => 'Delivered',
+            1 => 'Pending',
+            2 => 'Active',
+            3 => 'Progress'
+        );
+
+        return $statuses[$status];
     }
 }

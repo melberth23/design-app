@@ -45,8 +45,9 @@
                         <label for="designType"><span style="color:red;">*</span> Design Type</label>
                         <select id="designType" class="form-control form-control-user @error('design_type') is-invalid @enderror" name="design_type">
                             <option selected disabled>Select Type</option>
-                            <option value="1">Logo Design</option>
-                            <option value="2">Infographics</option>
+                            @foreach ($designtypes as $designtype)
+                                <option value="{{$designtype->id}}">{{$designtype->name}}</option>
+                            @endforeach
                         </select>
 
                         @error('design_type')
@@ -72,16 +73,12 @@
 
                     {{-- Format --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <label for="format"><span style="color:red;">*</span> Format</label>
-                        <select id="format" class="form-control form-control-user @error('format') is-invalid @enderror" name="format">
+                        <label for="format">Format</label>
+                        <select id="format" class="form-control form-control-user" name="format">
                             <option selected disabled>Select Format</option>
                             <option value="1">.MP4</option>
                             <option value="2">.AEP</option>
                         </select>
-
-                        @error('format')
-                            <span class="text-danger">{{$message}}</span>
-                        @enderror
                     </div>
 
                     {{-- Description --}}
@@ -94,34 +91,24 @@
                         @enderror
                     </div>
 
-                    <div class="col-sm-12 mb-3 mt-3 mb-sm-0">
+                    {{-- Media --}}
+                    <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
                         <label for="media">Media</label>
-                        <input type="file" name="media" class="form-control-file" multiple >
+                        <input type="file" name="media[]" class="form-control-file" multiple >
                     </div>
 
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <label for="priority">Set Priority</label>
-                        <input 
-                            type="text" 
-                            class="form-control form-control-user" 
-                            id="priority"
-                            name="priority" 
-                            value="{{ old('priority') }}">
-                    </div>
-
-                    {{-- Status --}}
-                    <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Status</label>
-                        <select class="form-control form-control-user @error('status') is-invalid @enderror" name="status">
-                            <option selected disabled>Select Status</option>
-                            <option value="1" selected>Active</option>
-                            <option value="0">Inactive</option>
+                        <span style="color:red;">*</span>Brand</label>
+                        <select class="form-control form-control-user @error('brand_id') is-invalid @enderror" name="brand_id">
+                            <option selected disabled>Select Brand</option>
+                            @foreach ($brands as $brand)
+                                <option value="{{$brand->id}}">{{$brand->name}}</option>
+                            @endforeach
                         </select>
-                        @error('status')
+                        @error('brand_id')
                             <span class="text-danger">{{$message}}</span>
                         @enderror
                     </div>
-
                 </div>
             </div>
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Lib\PaymentHelper;
 use App\Models\Payments;
 use App\Mail\DigitalPaymentMail;
@@ -30,14 +31,20 @@ class PaymentsController extends Controller
             $user = User::where('id', $rowpayment->user_id)->first();
             $customerfullname = $user->first_name .' '. $user->last_name;
 
+            // Update user status to active
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update(['status' => 1]);
+
             // Send confirmation email
             $details = array(
+                'subject' => 'Account fully setup!',
                 'message' => 'Greetings '. $customerfullname .' and welcome!',
                 'extra_msg' => 'Please refer your plan information below:',
                 'plan' => $planInfo['label'],
                 'amount' => number_format($planInfo['amount']),
                 'paymentlink' => '',
-                'thank_msg' => 'Thank you!'
+                'thank_msg' => 'Please login using your login information to proceed. Thank you!'
             );
             Mail::to($user->email)->send(new DigitalPaymentMail($details));
         }
