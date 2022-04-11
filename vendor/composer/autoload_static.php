@@ -603,6 +603,7 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'App\\Models\\Brand' => __DIR__ . '/../..' . '/app/Models/Brand.php',
         'App\\Models\\BrandAssets' => __DIR__ . '/../..' . '/app/Models/BrandAssets.php',
         'App\\Models\\Payments' => __DIR__ . '/../..' . '/app/Models/Payments.php',
+        'App\\Models\\RequestAssets' => __DIR__ . '/../..' . '/app/Models/RequestAssets.php',
         'App\\Models\\Requests' => __DIR__ . '/../..' . '/app/Models/Requests.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',

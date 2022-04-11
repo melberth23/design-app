@@ -44,7 +44,8 @@ class PaymentsController extends Controller
                 'plan' => $planInfo['label'],
                 'amount' => number_format($planInfo['amount']),
                 'paymentlink' => '',
-                'thank_msg' => 'Please login using your login information to proceed. Thank you!'
+                'thank_msg' => 'Please login using your login information to proceed. Thank you!',
+                'template' => 'payment'
             );
             Mail::to($user->email)->send(new DigitalPaymentMail($details));
         }

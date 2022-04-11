@@ -31,6 +31,6 @@ class DigitalPaymentMail extends Mailable
     public function build()
     {
         return $this->subject($this->details['subject'])
-                    ->view('emails.payment');
+                    ->view('emails.'. $this->details['template']);
     }
 }

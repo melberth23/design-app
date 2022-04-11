@@ -1,69 +1,56 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-white sidebar" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-university"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">Designsowl</div>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center border-bottom" href="{{ route('dashboard') }}">
+        <img src="{{ asset('images/logo-dark.svg') }}" class="">
     </a>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider my-0">
+    @hasrole('User')
+    <li class="nav-item">
+        <a class="btn btn-primary d-block m-3 shadow" href="{{ route('request.create') }}">
+            <i class="fas fa-plus"></i>
+            <span>New Request</span>
+        </a>
+    </li>
+    @endhasrole
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
-        <a class="nav-link" href="{{ route('dashboard') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+    <li class="nav-item {{ (request()->is('dashboard')) ? 'active' : '' }}">
+        <a class="nav-link text-dark" href="{{ route('dashboard') }}">
+            <img src="{{ asset('images/dashboardicon.svg') }}" class="menu-icons">
             <span>Dashboard</span></a>
     </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
     @hasrole('User')
-        <!-- Requests -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#requestDropdown"
-                aria-expanded="true" aria-controls="requestDropdown">
-                <i class="fas fa-tags" aria-hidden="true"></i>
-                <span>Requests</span>
+        <!-- Brand Profiles -->
+        <li class="nav-item {{ (request()->is('brands')) ? 'active' : '' }}">
+            <a class="nav-link text-dark" href="{{ route('brand.index') }}">
+                <img src="{{ asset('images/brand-icon.svg') }}" class="menu-icons">
+                <span>My brand profiles</span>
             </a>
-            <div id="requestDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="{{ route('request.index') }}">All Requests</a>
-                    <a class="collapse-item" href="{{ route('request.queue') }}">Queue Requests</a>
-                    <a class="collapse-item" href="{{ route('request.delivered') }}">Delivered Requests</a>
-                    <a class="collapse-item" href="{{ route('request.create') }}">Add Request</a>
-                </div>
-            </div>
         </li>
 
-        <!-- Brand Profiles -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#brandDropdown"
-                aria-expanded="true" aria-controls="brandDropdown">
-                <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
-                <span>Brand Profiles</span>
+        <!-- Requests -->
+        <li class="nav-item {{ (request()->is('requests')) ? 'active' : '' }} {{ (request()->is('requests/queue')) ? 'active' : '' }} {{ (request()->is('requests/delivered')) ? 'active' : '' }}">
+            <a class="nav-link text-dark {{ (request()->is('requests')) ? '' : 'collapsed' }} {{ (request()->is('requests/queue')) ? '' : 'collapsed' }} {{ (request()->is('requests/delivered')) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#requestDropdown"
+                aria-expanded="true" aria-controls="requestDropdown">
+                <img src="{{ asset('images/myrequest.svg') }}" class="menu-icons">
+                <span>My requests</span>
             </a>
-            <div id="brandDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div id="requestDropdown" class="{{ (request()->is('requests')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('requests/queue')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('requests/delivered')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="{{ route('brand.index') }}">All Brands</a>
-                    <a class="collapse-item" href="{{ route('brand.create') }}">Add Brand</a>
+                    <a class="collapse-item {{ (request()->is('requests')) ? 'active' : '' }}" href="{{ route('request.index') }}">All Requests</a>
+                    <a class="collapse-item {{ (request()->is('requests/queue')) ? 'active' : '' }}" href="{{ route('request.queue') }}">Queue Requests</a>
+                    <a class="collapse-item {{ (request()->is('requests/delivered')) ? 'active' : '' }}" href="{{ route('request.delivered') }}">Delivered Requests</a>
                 </div>
             </div>
         </li>
     @endhasrole
     @hasrole('Admin')
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            General Settings
-        </div>
-
         <!-- Nav Item - Request Types -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#requestTypesDropdown"
+            <a class="nav-link text-dark collapsed" href="#" data-toggle="collapse" data-target="#requestTypesDropdown"
                 aria-expanded="true" aria-controls="requestTypesDropdown">
                 <i class="fas fa-user-alt"></i>
                 <span>Request Types</span>
@@ -76,14 +63,9 @@
             </div>
         </li>
         
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            User Management
-        </div>
-
         <!-- Nav Item - Users -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#usersDropdown"
+            <a class="nav-link text-dark collapsed" href="#" data-toggle="collapse" data-target="#usersDropdown"
                 aria-expanded="true" aria-controls="usersDropdown">
                 <i class="fas fa-user-alt"></i>
                 <span>Users</span>
@@ -99,14 +81,14 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+            <a class="nav-link text-dark collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                 aria-expanded="true" aria-controls="collapsePages">
                 <i class="fas fa-fw fa-folder"></i>
                 <span>Masters</span>
             </a>
             <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Role & Permissions</h6>
+                    <h6 class="collapse-header text-dark">Role & Permissions</h6>
                     <a class="collapse-item" href="{{ route('roles.index') }}">Roles</a>
                     <a class="collapse-item" href="{{ route('permissions.index') }}">Permissions</a>
                 </div>
@@ -116,17 +98,5 @@
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
     @endhasrole
-
-    <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </a>
-    </li>
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
-
 
 </ul>

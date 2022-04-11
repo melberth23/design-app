@@ -23,13 +23,18 @@ Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])-
 Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
 Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
 Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
+Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
+Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');
 
 Auth::routes();
 
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+Route::get('/account/plan', [App\Http\Controllers\AccountController::class, 'plan'])->middleware(['auth'])->name('user.plan'); 
+Route::post('/account/add-plan', [App\Http\Controllers\AccountController::class, 'addplan'])->middleware(['auth'])->name('user.addplan'); 
+
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->middleware(['auth', 'is_verify_email'])->name('dashboard');
 
 // Profile Routes
-Route::prefix('profile')->name('profile.')->middleware('auth')->group(function(){
+Route::prefix('profile')->name('profile.')->middleware(['auth', 'is_verify_email'])->group(function(){
     Route::get('/', [HomeController::class, 'getProfile'])->name('detail');
     Route::post('/update', [HomeController::class, 'updateProfile'])->name('update');
     Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
@@ -38,8 +43,9 @@ Route::prefix('profile')->name('profile.')->middleware('auth')->group(function()
 /* Normal User Dashboard */
 
 // Brands 
-Route::middleware('auth')->prefix('brands')->name('brand.')->group(function(){
+Route::middleware(['auth', 'is_verify_email'])->prefix('brands')->name('brand.')->group(function(){
     Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
+    Route::get('/view/{brand}', [App\Http\Controllers\BrandController::class, 'view'])->name('view');
     Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
     Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
     Route::get('/edit/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
@@ -49,7 +55,7 @@ Route::middleware('auth')->prefix('brands')->name('brand.')->group(function(){
 });
 
 // Requests 
-Route::middleware('auth')->prefix('requests')->name('request.')->group(function(){
+Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('request.')->group(function(){
     Route::get('/', [App\Http\Controllers\RequestsController::class, 'index'])->name('index');
     Route::get('/queue', [App\Http\Controllers\RequestsController::class, 'queue'])->name('queue');
     Route::get('/delivered', [App\Http\Controllers\RequestsController::class, 'delivered'])->name('delivered');

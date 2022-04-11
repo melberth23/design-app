@@ -3031,8 +3031,8 @@ textarea.form-control-lg {
 
 .btn-primary {
   color: #fff;
-  background-color: #2937f0;
-  border-color: #2937f0;
+  background-color: #9672FB;
+  border-color: #9672FB;
 }
 .btn-primary:hover {
   color: #fff;
@@ -3270,8 +3270,8 @@ textarea.form-control-lg {
 }
 
 .btn-outline-primary {
-  color: #2937f0;
-  border-color: #2937f0;
+  color: #9672FB;
+  border-color: #9672FB;
 }
 .btn-outline-primary:hover {
   color: #fff;
@@ -11776,6 +11776,21 @@ footer a:hover, footer a:active, footer a:focus {
   color: #f00;
 }
 
+ul.pricing-details {
+    text-align: left;
+    list-style: none;
+    padding: 20px 0 0;
+    margin: 0;
+    min-height: 320px;
+}
+ul.pricing-details li {
+    position: relative;
+    margin-bottom: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 15px;
+}
+
 .popular {
   background-color: #00b5ec;
 }
@@ -11802,4 +11817,13 @@ footer a:hover, footer a:active, footer a:focus {
 .popular .price-content ul *,
 .popular .price-content ul .zmdi-close, .popular .price-content ul .zmdi-check {
   color: #fff !important;
+}
+
+/* Helpers */
+.no-padding {
+  padding: 0 !important;
+}
+.btn-block {
+  display: block;
+  width: 100%;
 }

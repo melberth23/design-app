@@ -14,6 +14,7 @@ class BrandAssets extends Model
     protected $fillable = [
         'brand_id', 
         'filename',
-        'type'
+        'type',
+        'file_type'
     ];
 }

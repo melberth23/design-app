@@ -47,6 +47,10 @@
                                         @endif
                                     </td>
                                     <td style="display: flex">
+                                        <a href="{{ route('brand.view', ['brand' => $brand->id]) }}"
+                                            class="btn btn-info m-2">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
                                         @if ($brand->status == 0)
                                             <a href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 1]) }}"
                                                 class="btn btn-success m-2">

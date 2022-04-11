@@ -42,6 +42,7 @@ return array(
     'App\\Models\\Brand' => $baseDir . '/app/Models/Brand.php',
     'App\\Models\\BrandAssets' => $baseDir . '/app/Models/BrandAssets.php',
     'App\\Models\\Payments' => $baseDir . '/app/Models/Payments.php',
+    'App\\Models\\RequestAssets' => $baseDir . '/app/Models/RequestAssets.php',
     'App\\Models\\Requests' => $baseDir . '/app/Models/Requests.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',

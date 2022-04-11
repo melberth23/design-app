@@ -15,6 +15,16 @@ class Brand extends Model
         'name',
         'target_audience',
         'description',
+        'industry',
+        'services_provider',
+        'website',
+        'other_inspirations',
+        'facebook',
+        'linkedin',
+        'instagram',
+        'twitter',
+        'youtube',
+        'tiktok',
         'user_id',
         'status'
     ];
