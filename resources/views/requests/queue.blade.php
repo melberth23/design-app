@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Users List')
+@section('title', 'Queue Requests List')
 
 @section('content')
     <div class="container-fluid">
@@ -47,28 +47,21 @@
                                         @endif
                                     </td>
                                     <td style="display: flex">
-                                        @if ($request->status != 3)
-                                            @if ($request->status == 1)
-                                                <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 2]) }}"
-                                                    class="btn btn-success m-2">
-                                                    <i class="fa fa-check"></i>
-                                                </a>
-                                            @elseif ($request->status == 2)
-                                                <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 1]) }}"
-                                                    class="btn btn-danger m-2">
-                                                    <i class="fa fa-ban"></i>
-                                                </a>
-                                            @endif
-                                        @else
-                                            <!-- Locked -->
+                                        @if ($request->status == 3)
+                                            <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
+                                                class="btn btn-primary m-2">
+                                                <i class="fa fa-comments"></i>
+                                            </a>
                                         @endif
-                                        <a href="{{ route('request.edit', ['requests' => $request->id]) }}"
-                                            class="btn btn-primary m-2">
-                                            <i class="fa fa-pen"></i>
-                                        </a>
-                                        <a class="btn btn-danger m-2" href="#" data-toggle="modal" data-target="#deleteModal">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
+                                        @if ($request->status == 2)
+                                            <a href="{{ route('request.edit', ['requests' => $request->id]) }}"
+                                                class="btn btn-primary m-2">
+                                                <i class="fa fa-pen"></i>
+                                            </a>
+                                            <a class="btn btn-danger m-2" href="#" data-toggle="modal" data-target="#deleteModal">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

@@ -17,6 +17,7 @@ class Requests extends Model
         'dimensions',
         'format',
         'description',
+        'dimensions_additional_info',
         'brand_id',
         'user_id',
         'priority'

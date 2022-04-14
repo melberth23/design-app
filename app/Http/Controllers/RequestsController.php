@@ -64,7 +64,7 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
-            $requests = Requests::where('user_id', $userid)->where('status', '!=', 0)->get();
+            $requests = Requests::where('user_id', $userid)->whereIn('status', array(2, 3))->get();
             return view('requests.queue', ['requests' => $requests]);
         } else {
             return redirect()->route('dashboard');
@@ -88,6 +88,29 @@ class RequestsController extends Controller
         } else {
             return redirect()->route('dashboard');
         }
+    }
+
+    /**
+     * View single request
+     * @param request
+     * @return Single request
+     */
+    public function view(Requests $requests)
+    {
+        $userid = Auth::id();
+
+        $designtype = RequestTypes::whereId($requests->design_type)->first();
+        $brand = Brand::whereId($requests->brand_id)->first();
+
+        // Get images
+        $medias = RequestAssets::where('request_id', $requests->id)->where('type', 'media')->get();
+
+        return view('requests.view')->with([
+            'requests'  => $requests,
+            'brand' => $brand,
+            'designtype' => $designtype,
+            'medias' => $medias
+        ]);
     }
 
     /**
@@ -132,9 +155,6 @@ class RequestsController extends Controller
         DB::beginTransaction();
         try {
 
-            $lastrow = Requests::where('user_id', $userid)->where('status', '!=', 0)->orderBy('priority', 'DESC')->first();
-            $prioritynum = ($lastrow->priority > 0) ? $lastrow->priority + 1 : 1;
-
             // Store Data
             $requests = Requests::create([
                 'title'    => $request->title,
@@ -142,9 +162,10 @@ class RequestsController extends Controller
                 'dimensions'     => $request->dimensions,
                 'description'     => $request->description,
                 'format'        => $request->format,
+                'dimensions_additional_info' => $request->dimensions_additional_info,
                 'brand_id'        => $request->brand_id,
                 'user_id'        => $userid,
-                'priority'        => $prioritynum
+                'priority'        => $request->priority
             ]);
 
             // Check upload medias
@@ -253,10 +274,15 @@ class RequestsController extends Controller
 
         $designtypes = RequestTypes::get();
         $brands = Brand::where('user_id', $userid)->get();
+
+        // Get images
+        $medias = RequestAssets::where('request_id', $requests->id)->where('type', 'media')->get();
+
         return view('requests.edit')->with([
             'requests'  => $requests,
             'brands' => $brands,
-            'designtypes' => $designtypes
+            'designtypes' => $designtypes,
+            'medias' => $medias
         ]);
     }
 
@@ -281,11 +307,16 @@ class RequestsController extends Controller
      */
     public function update(Request $request, Requests $requests)
     {
+        $userid = $request->user()->id;
+
         // Validations
         $request->validate([
-            'name'    => 'required',
+            'title'    => 'required',
+            'design_type'     => 'required',
+            'dimensions'     => 'required',
             'description'     => 'required',
-            'status'       =>  'required|numeric|in:0,1',
+            'brand_id'     => 'required',
+            'media.*' => 'mimes:jpg,png'
         ]);
 
         DB::beginTransaction();
@@ -293,10 +324,45 @@ class RequestsController extends Controller
 
             // Store Data
             $requests_updated = Requests::whereId($requests->id)->update([
-                'name'    => $request->name,
+                'title'    => $request->title,
+                'design_type'    => $request->design_type,
+                'dimensions'     => $request->dimensions,
                 'description'     => $request->description,
-                'status'        => $request->status
+                'format'        => $request->format,
+                'dimensions_additional_info' => $request->dimensions_additional_info,
+                'brand_id'        => $request->brand_id,
+                'priority'        => $request->priority
             ]);
+
+            // Check upload medias
+            if($request->hasFile('media')) {
+
+                $requestmediapath = public_path('storage/media') .'/'. $userid;
+                if(!File::isDirectory($requestmediapath)){
+                    // Create Path
+                    File::makeDirectory($requestmediapath, 0777, true, true);
+                }
+
+                $allowedMediasExtension = ['jpg','png'];
+                $medias = $request->file('media');
+                foreach($medias as $med) {
+                    $filename = $med->getClientOriginalName();
+                    $extension = $med->getClientOriginalExtension();
+                    $check = in_array($extension, $allowedMediasExtension);
+
+                    if($check) { 
+                        $randomfilename = $this->helper->generateRandomString(15);
+                        $mediapath = $randomfilename .'.'. $extension;
+                        $med->move($requestmediapath, $mediapath);
+
+                        $assets = RequestAssets::create([
+                            'filename' => $mediapath,
+                            'request_id' => $requests->id,
+                            'type' => 'media'
+                        ]);
+                    }
+                }
+            }
 
             // Commit And Redirected To Listing
             DB::commit();
@@ -323,6 +389,31 @@ class RequestsController extends Controller
 
             DB::commit();
             return redirect()->route('request.index')->with('success', 'Requests Deleted Successfully!.');
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    /**
+     * Delete Requests Asset
+     * @param Requests $requests
+     * @return Index requests
+     */
+    public function deleteAsset(Request $request)
+    {
+        $data = $request->all();
+
+        DB::beginTransaction();
+        try {
+            $asset = RequestAssets::whereId($data['asset'])->first();
+
+            // Delete Asset
+            RequestAssets::whereId($asset->id)->delete();
+
+            DB::commit();
+            return response()->json(['success' => 'Request Asset Deleted Successfully!.']);
 
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -141,4 +141,24 @@ class SystemHelper {
 
         return $statuses[$status];
     }
+
+    /**
+     * @param string file type
+     * @return array directories
+     */
+    public function media_directories($type) {
+        $directories = array(
+            'logo' => 'logos',
+            'logo_second' => 'logos',
+            'picture' => 'pictures',
+            'font' => 'fonts',
+            'font_second' => 'fonts',
+            'inspiration' => 'inspirations',
+            'template' => 'templates',
+            'guideline' => 'guidelines',
+            'media' => 'media',
+        );
+
+        return $directories[$type];
+    }
 }

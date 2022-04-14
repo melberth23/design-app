@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Users List')
+@section('title', 'Delivered Requests List')
 
 @section('content')
     <div class="container-fluid">
@@ -30,6 +30,7 @@
                             <tr>
                                 <th width="20%">Title</th>
                                 <th width="15%">Status</th>
+                                <th width="10%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,6 +39,12 @@
                                     <td>{{ $request->title }}</td>
                                     <td>
                                         <span class="badge badge-primary">Delivered</span>
+                                    </td>
+                                    <td style="display: flex">
+                                        <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
+                                            class="btn btn-primary m-2">
+                                            <i class="fa fa-comments"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach

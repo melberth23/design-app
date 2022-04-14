@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit User')
+@section('title', 'View Brand')
 
 @section('content')
 
@@ -18,10 +18,14 @@
                 More Actions
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#"><img src="{{ asset('images/downloiad.svg') }}" class="action-icons"> Download Brand Profile</a>
+                <!-- <a class="dropdown-item" href="#"><img src="{{ asset('images/downloiad.svg') }}" class="action-icons"> Download Brand Profile</a> -->
                 <a class="dropdown-item" href="#"><img src="{{ asset('images/create.svg') }}" class="action-icons"> Create Brand Request</a>
-                <a class="dropdown-item" href="#"><img src="{{ asset('images/edit.svg') }}" class="action-icons"> Edit Brand Profile</a>
-                <a class="dropdown-item" href="#"><img src="{{ asset('images/trash.svg') }}" class="action-icons"> Archive Brand Profile</a>
+                <a class="dropdown-item" href="{{ route('brand.edit', ['brand' => $brand->id]) }}"><img src="{{ asset('images/edit.svg') }}" class="action-icons"> Edit Brand Profile</a>
+                @if ($brand->status == 0)
+                    <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 1]) }}"><img src="{{ asset('images/brand-icon.svg') }}" class="action-icons"> Activate Brand Profile</a>
+                @elseif ($brand->status == 1)
+                    <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 0]) }}"><img src="{{ asset('images/trash.svg') }}" class="action-icons"> Archive Brand Profile</a>
+                @endif
               </div>
             </div>
             <div class="btn-group" role="group" aria-label="Actions">
@@ -32,7 +36,15 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header bg-primary py-5"></div>
+        <div class="card-header bg-primary py-2">
+            <div class="top-main-logo">
+                @if ($logos->count() > 0)
+                    <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $logos[0]->filename }}" class="main-logo" >
+                @else
+                    <h2>{{ substr($brand->name, 0, 1) }}.</h2>
+                @endif
+            </div>
+        </div>
         <div class="card-body">
             <p class="text-dark">{{ $brand->name }}</p>
         </div>
@@ -119,7 +131,14 @@
                         <div class="d-flex logos">
                             @if ($logos->count() > 0)
                                 @foreach ($logos as $logo)
-                                    <div class="mx-1 logo"><img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $logo->filename }}" class="logo-img" /></div>
+                                    <div id="media-{{ $logo->id }}" class="mx-1 logo media-container">
+                                        <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $logo->filename }}" class="logo-img" />
+                                        <div class="overlay">
+                                            <a href="{{ route('download', ['asset' => $logo->id]) }}" class="icon">
+                                              <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 @endforeach
                             @else
                                 <p><em>-No primary logo available</em></p>
@@ -131,7 +150,14 @@
                         <div class="d-flex logos">
                             @if ($secondary_logos->count() > 0)
                                 @foreach ($secondary_logos as $secondary_logo)
-                                    <div class="mx-1 logo"><img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $secondary_logo->filename }}" class="logo-img" /></div>
+                                    <div id="media-{{ $secondary_logo->id }}" class="mx-1 logo media-container">
+                                        <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $secondary_logo->filename }}" class="logo-img" />
+                                        <div class="overlay">
+                                            <a href="{{ route('download', ['asset' => $secondary_logo->id]) }}" class="icon">
+                                              <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 @endforeach
                             @else
                                 <p><em>-No secondary logo available</em></p>
@@ -189,9 +215,16 @@
                         <div class="d-flex fonts">
                             @if ($fonts->count() > 0)
                                 @foreach ($fonts as $font)
-                                    <div class="mx-1 font">
-                                        <img src="{{ asset('images/font-img-') }}{{ $font->file_type }}.png" class="font-img">
-                                        <label>{{ $font->filename }}</label>
+                                    <div id="media-{{ $font->id }}">
+                                        <div class="mx-1 font media-container media-documents">
+                                            <img src="{{ asset('images/font-img-') }}{{ $font->file_type }}.png" class="font-img">
+                                            <div class="overlay">
+                                                <a href="{{ route('download', ['asset' => $font->id]) }}" class="icon">
+                                                  <i class="fas fa-download"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <label class="mt-1">{{ $font->filename }}</label>
                                     </div>
                                 @endforeach
                             @else
@@ -204,9 +237,16 @@
                         <div class="d-flex fonts">
                             @if ($secondary_fonts->count() > 0)
                                 @foreach ($secondary_fonts as $secondary_font)
-                                    <div class="mx-1 font">
-                                        <img src="{{ asset('images/font-img-') }}{{ $font->file_type }}.png" class="font-img">
-                                        <label>{{ $font->filename }}</label>
+                                    <div id="media-{{ $secondary_font->id }}">
+                                        <div class="mx-1 font media-container media-documents">
+                                            <img src="{{ asset('images/font-img-') }}{{ $secondary_font->file_type }}.png" class="font-img">
+                                            <div class="overlay">
+                                                <a href="{{ route('download', ['asset' => $secondary_font->id]) }}" class="icon">
+                                                  <i class="fas fa-download"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <label class="mt-1">{{ $font->filename }}</label>
                                     </div>
                                 @endforeach
                             @else
@@ -230,8 +270,13 @@
                         <div class="d-flex pictures">
                             @if ($images->count() > 0)
                                 @foreach ($images as $image)
-                                    <div class="mx-1 picture">
+                                    <div id="media-{{ $image->id }}" class="mx-1 picture media-container">
                                         <img src="{{ url('storage/pictures') }}/{{ auth()->user()->id }}/{{ $image->filename }}" class="picture-img">
+                                        <div class="overlay">
+                                            <a href="{{ route('download', ['asset' => $image->id]) }}" class="icon">
+                                              <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 @endforeach
                             @else
@@ -254,8 +299,16 @@
                     <div class="d-flex guidelines">
                         @if ($guidelines->count() > 0)
                             @foreach ($guidelines as $guideline)
-                                <div class="mx-1 guideline">
-                                    <img src="{{ url('storage/guidelines') }}/{{ auth()->user()->id }}/{{ $guideline->filename }}" class="guideline-img">
+                                <div id="media-{{ $guideline->id }}">
+                                    <div class="mx-1 guideline media-container media-documents">
+                                        <img src="{{ asset('images/guidelines-img-pdf.png') }}" class="guideline-img">
+                                        <div class="overlay">
+                                            <a href="{{ route('download', ['asset' => $guideline->id]) }}" class="icon">
+                                              <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <label class="mt-1">{{ $guideline->filename }}</label>
                                 </div>
                             @endforeach
                         @else
@@ -277,9 +330,16 @@
                     <div class="d-flex templates">
                         @if ($templates->count() > 0)
                             @foreach ($templates as $template)
-                                <div class="mx-1 template">
-                                    <img src="{{ asset('images/font-img-') }}{{ $template->file_type }}.png" class="template-img">
-                                    <label>{{ $template->filename }}</label>
+                                <div id="media-{{ $template->id }}">
+                                    <div class="mx-1 template media-container media-documents">
+                                        <img src="{{ asset('images/template-img-') }}{{ $template->file_type }}.png" class="template-img">
+                                        <div class="overlay">
+                                            <a href="{{ route('download', ['asset' => $template->id]) }}" class="icon">
+                                              <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <label class="mt-1">{{ $template->filename }}</label>
                                 </div>
                             @endforeach
                         @else
@@ -301,13 +361,21 @@
                     <div class="d-flex inspirations">
                         @if ($inspirations->count() > 0)
                             @foreach ($inspirations as $inspiration)
-                                <div class="mx-1 inspiration">
+                                <div class="mx-1 inspiration media-container">
                                     <img src="{{ url('storage/inspirations') }}/{{ auth()->user()->id }}/{{ $inspiration->filename }}" class="inspiration-img">
+                                    <div class="overlay">
+                                        <a href="{{ route('download', ['asset' => $inspiration->id]) }}" class="icon">
+                                          <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             @endforeach
                         @else
                             <p><em>-No inspirations available</em></p>
                         @endif
+                    </div>
+                    <div class="mt-3 pt-3 border-top">
+                        <p>{{ $brand->other_inspirations }}</p>
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">

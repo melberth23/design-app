@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Users List')
+@section('title', 'Requests List')
 
 @section('content')
     <div class="container-fluid">
@@ -49,6 +49,16 @@
                                         @endif
                                     </td>
                                     <td style="display: flex">
+                                        <a href="{{ route('request.view', ['requests' => $request->id]) }}"
+                                            class="btn btn-info m-2">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        @if ($request->status == 0 || $request->status == 3)
+                                            <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
+                                                class="btn btn-primary m-2">
+                                                <i class="fa fa-comments"></i>
+                                            </a>
+                                        @endif
                                         @if ($request->status == 1)
                                             <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 2]) }}"
                                                 class="btn btn-success m-2">
@@ -58,12 +68,6 @@
                                             <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 1]) }}"
                                                 class="btn btn-danger m-2">
                                                 <i class="fa fa-ban"></i>
-                                            </a>
-                                        @endif
-                                        @if ($request->status == 0 || $request->status == 3)
-                                            <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
-                                                class="btn btn-primary m-2">
-                                                <i class="fa fa-comments"></i>
                                             </a>
                                         @endif
                                         @if ($request->status == 1 || $request->status == 2)

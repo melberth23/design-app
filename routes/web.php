@@ -16,17 +16,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
-Route::get('/solutions', [App\Http\Controllers\PageController::class, 'index'])->name('solutions');
-Route::get('/platform', [App\Http\Controllers\PageController::class, 'index'])->name('platform');
-Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])->name('ourworks');
-Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
-Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
-Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
-Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
-Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');
+// Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
+// Route::get('/solutions', [App\Http\Controllers\PageController::class, 'index'])->name('solutions');
+// Route::get('/platform', [App\Http\Controllers\PageController::class, 'index'])->name('platform');
+// Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])->name('ourworks');
+// Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
+// Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
+// Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
+// Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
+// Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');
+
+Route::get('/', function () {
+    return redirect()->route('dashboard');
+});
 
 Auth::routes();
+
+Route::get('/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadBrandFile'])->name('download');
+Route::get('/request/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadRequestFile'])->name('request.download');
 
 Route::get('/account/plan', [App\Http\Controllers\AccountController::class, 'plan'])->middleware(['auth'])->name('user.plan'); 
 Route::post('/account/add-plan', [App\Http\Controllers\AccountController::class, 'addplan'])->middleware(['auth'])->name('user.addplan'); 
@@ -51,12 +58,14 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('brands')->name('brand.')
     Route::get('/edit/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
     Route::put('/update/{brand}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
     Route::delete('/delete/{brand}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
+    Route::post('/delete-assets', [App\Http\Controllers\BrandController::class, 'deleteAsset'])->name('destroyassets');
     Route::get('/update/status/{brand_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
 });
 
 // Requests 
 Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('request.')->group(function(){
     Route::get('/', [App\Http\Controllers\RequestsController::class, 'index'])->name('index');
+    Route::get('/view/{requests}', [App\Http\Controllers\RequestsController::class, 'view'])->name('view');
     Route::get('/queue', [App\Http\Controllers\RequestsController::class, 'queue'])->name('queue');
     Route::get('/delivered', [App\Http\Controllers\RequestsController::class, 'delivered'])->name('delivered');
     Route::get('/create', [App\Http\Controllers\RequestsController::class, 'create'])->name('create');
@@ -65,6 +74,7 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::get('/comment/{requests}', [App\Http\Controllers\RequestsController::class, 'comment'])->name('comment');
     Route::put('/update/{requests}', [App\Http\Controllers\RequestsController::class, 'update'])->name('update');
     Route::delete('/delete/{requests}', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
+    Route::post('/delete-media', [App\Http\Controllers\RequestsController::class, 'deleteAsset'])->name('destroyassets');
     Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
 });
 
