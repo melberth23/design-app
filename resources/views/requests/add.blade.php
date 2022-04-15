@@ -92,8 +92,12 @@
                             <label for="format">Format</label>
                             <select id="format" class="form-control form-control-user" name="format">
                                 <option selected disabled>Select Format</option>
-                                <option value="1" {{ old('format') == 1 ? 'selected' : '' }}>.MP4</option>
-                                <option value="2" {{ old('format') == 2 ? 'selected' : '' }}>.AEP</option>
+                                @foreach ($types['files'] as $ftype => $ftypelbl)
+                                    <option value="{{ $ftype }}" {{ old('design_type') == $ftype ? 'selected' : '' }}>{{ $ftypelbl }}</option>
+                                @endforeach
+                                @foreach ($types['adobe'] as $atype => $atypelbl)
+                                    <option value="{{ $atype }}" {{ old('design_type') == $atype ? 'selected' : '' }}>{{ $atypelbl }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

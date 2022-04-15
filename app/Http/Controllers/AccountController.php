@@ -77,10 +77,10 @@ class AccountController extends Controller
         $code4 = $req['code4'];
         $token = $req['token'];
 
-        if(!empty($code1) && !empty($code2) && !empty($code3) && !empty($code4)) {
-            $code = $code1 . $code2 . $code3 . $code4;
+        $code = $code1 . $code2 . $code3 . $code4;
+        if(!empty($code)) {
             $verifyUser = UserVerify::where('code', $code)->where('token', $token)->first();
-            if(!is_null($verifyUser) ){
+            if(!empty($verifyUser) ){
                 $user = $verifyUser->user;
 
                 if(!$user->is_email_verified) {

@@ -46,6 +46,19 @@
             </div>
         </li>
     @endhasrole
+
+    @hasrole('Designer')
+
+        <!-- Brand Profiles -->
+        <li class="nav-item {{ (request()->is('designer.index')) ? 'active' : '' }}">
+            <a class="nav-link text-dark" href="{{ route('designer.index') }}">
+                <img src="{{ asset('images/brand-icon.svg') }}" class="menu-icons">
+                <span>All Requests</span>
+            </a>
+        </li>
+        
+    @endhasrole
+
     @hasrole('Admin')
 
         <!-- Nav Item - Request Types -->

@@ -126,8 +126,9 @@ class RequestsController extends Controller
         if($paymentinfo->status == 'active') {
             $designtypes = RequestTypes::get();
             $brands = Brand::where('user_id', $userid)->get();
+            $file_types = $this->helper->request_file_types();
 
-            return view('requests.add', ['brands' => $brands, 'designtypes' => $designtypes]);
+            return view('requests.add', ['brands' => $brands, 'designtypes' => $designtypes, 'types' => $file_types]);
         } else {
             return redirect()->route('dashboard');
         }

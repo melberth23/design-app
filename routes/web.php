@@ -22,9 +22,9 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])->name('ourworks');
 // Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
 // Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
-// Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
-// Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
-// Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');
+Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
+Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
+Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -76,6 +76,13 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::delete('/delete/{requests}', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
     Route::post('/delete-media', [App\Http\Controllers\RequestsController::class, 'deleteAsset'])->name('destroyassets');
     Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
+});
+
+/* Designer Dashboard */
+Route::middleware(['auth'])->prefix('designers')->name('designer.')->group(function(){
+    Route::get('/', [App\Http\Controllers\Designer\DesignersController::class, 'index'])->name('index');
+    Route::get('/designer-view/{requests}', [App\Http\Controllers\Designer\DesignersController::class, 'view'])->name('view');
+    Route::get('/designer-comment/{requests}', [App\Http\Controllers\Designer\DesignersController::class, 'comment'])->name('comment');
 });
 
 /* Super Admin Dashboard */

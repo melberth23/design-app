@@ -161,4 +161,27 @@ class SystemHelper {
 
         return $directories[$type];
     }
+
+    /**
+     * @return all file types 
+     */
+    public function request_file_types() {
+        $file_types = array(
+            'jpg' => '.jpg',
+            'png' => '.png',
+            'gif' => '.gif',
+            'pdf' => '.pdf',
+            'any' => '.any'
+        );
+        $adobe_types = array(
+            'psd' => 'psd',
+            'ai' => 'ai',
+            'indd' => 'indd'
+        );
+
+        return [
+            'files' => $file_types,
+            'adobe' => $adobe_types
+        ];
+    }
 }
