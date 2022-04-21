@@ -22,4 +22,9 @@ class Requests extends Model
         'user_id',
         'priority'
     ];
+
+    public function comments()
+    {
+        return $this->hasMany(Comments::class);
+    }
 }

@@ -31,17 +31,18 @@
         </li>
 
         <!-- Requests -->
-        <li class="nav-item {{ (request()->is('requests')) ? 'active' : '' }} {{ (request()->is('requests/queue')) ? 'active' : '' }} {{ (request()->is('requests/delivered')) ? 'active' : '' }}">
-            <a class="nav-link text-dark {{ (request()->is('requests')) ? '' : 'collapsed' }} {{ (request()->is('requests/queue')) ? '' : 'collapsed' }} {{ (request()->is('requests/delivered')) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#requestDropdown"
+        <li class="nav-item {{ (request()->is('requests')) ? 'active' : '' }} {{ (request()->is('requests/queue')) ? 'active' : '' }} {{ (request()->is('requests/review')) ? 'active' : '' }} {{ (request()->is('requests/delivered')) ? 'active' : '' }}">
+            <a class="nav-link text-dark {{ (request()->is('requests')) ? '' : 'collapsed' }} {{ (request()->is('requests/queue')) ? '' : 'collapsed' }} {{ (request()->is('requests/review')) ? '' : 'collapsed' }} {{ (request()->is('requests/delivered')) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#requestDropdown"
                 aria-expanded="true" aria-controls="requestDropdown">
                 <img src="{{ asset('images/myrequest.svg') }}" class="menu-icons">
                 <span>My requests</span>
             </a>
-            <div id="requestDropdown" class="{{ (request()->is('requests')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('requests/queue')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('requests/delivered')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div id="requestDropdown" class="{{ (request()->is('requests')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('requests/queue')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('requests/review')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('requests/delivered')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item {{ (request()->is('requests')) ? 'active' : '' }}" href="{{ route('request.index') }}">All Requests</a>
                     <a class="collapse-item {{ (request()->is('requests/queue')) ? 'active' : '' }}" href="{{ route('request.queue') }}">Queue Requests</a>
-                    <a class="collapse-item {{ (request()->is('requests/delivered')) ? 'active' : '' }}" href="{{ route('request.delivered') }}">Delivered Requests</a>
+                    <a class="collapse-item {{ (request()->is('requests/review')) ? 'active' : '' }}" href="{{ route('request.review') }}">Review Requests</a>
+                    <a class="collapse-item {{ (request()->is('requests/delivered')) ? 'active' : '' }}" href="{{ route('request.delivered') }}">Completed Requests</a>
                 </div>
             </div>
         </li>
@@ -49,11 +50,31 @@
 
     @hasrole('Designer')
 
-        <!-- Brand Profiles -->
-        <li class="nav-item {{ (request()->is('designer.index')) ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->is('designers')) ? 'active' : '' }}">
             <a class="nav-link text-dark" href="{{ route('designer.index') }}">
-                <img src="{{ asset('images/brand-icon.svg') }}" class="menu-icons">
+                <i class="fa fa-tags"></i>
                 <span>All Requests</span>
+            </a>
+        </li>
+
+        <li class="nav-item {{ (request()->is('designers/queue')) ? 'active' : '' }}">
+            <a class="nav-link text-dark" href="{{ route('designer.queue') }}">
+                <i class="fa fa-list"></i>
+                <span>Queue Requests</span>
+            </a>
+        </li>
+
+        <li class="nav-item {{ (request()->is('designers/review')) ? 'active' : '' }}">
+            <a class="nav-link text-dark" href="{{ route('designer.review') }}">
+                <i class="fa fa-check-square-o"></i>
+                <span>Review Requests</span>
+            </a>
+        </li>
+
+        <li class="nav-item {{ (request()->is('designers/completed')) ? 'active' : '' }}">
+            <a class="nav-link text-dark" href="{{ route('designer.completed') }}">
+                <i class="fa fa-cloud-upload"></i>
+                <span>Completed Requests</span>
             </a>
         </li>
         

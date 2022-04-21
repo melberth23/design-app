@@ -34,6 +34,7 @@ Auth::routes();
 
 Route::get('/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadBrandFile'])->name('download');
 Route::get('/request/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadRequestFile'])->name('request.download');
+Route::get('/comment/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadCommentFile'])->name('comment.download');
 
 Route::get('/account/plan', [App\Http\Controllers\AccountController::class, 'plan'])->middleware(['auth'])->name('user.plan'); 
 Route::post('/account/add-plan', [App\Http\Controllers\AccountController::class, 'addplan'])->middleware(['auth'])->name('user.addplan'); 
@@ -67,11 +68,13 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::get('/', [App\Http\Controllers\RequestsController::class, 'index'])->name('index');
     Route::get('/view/{requests}', [App\Http\Controllers\RequestsController::class, 'view'])->name('view');
     Route::get('/queue', [App\Http\Controllers\RequestsController::class, 'queue'])->name('queue');
+    Route::get('/review', [App\Http\Controllers\RequestsController::class, 'review'])->name('review');
     Route::get('/delivered', [App\Http\Controllers\RequestsController::class, 'delivered'])->name('delivered');
     Route::get('/create', [App\Http\Controllers\RequestsController::class, 'create'])->name('create');
     Route::post('/store', [App\Http\Controllers\RequestsController::class, 'store'])->name('store');
     Route::get('/edit/{requests}', [App\Http\Controllers\RequestsController::class, 'edit'])->name('edit');
     Route::get('/comment/{requests}', [App\Http\Controllers\RequestsController::class, 'comment'])->name('comment');
+    Route::post('/user-comment', [App\Http\Controllers\RequestsController::class, 'addComment'])->name('addcomment');
     Route::put('/update/{requests}', [App\Http\Controllers\RequestsController::class, 'update'])->name('update');
     Route::delete('/delete/{requests}', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
     Route::post('/delete-media', [App\Http\Controllers\RequestsController::class, 'deleteAsset'])->name('destroyassets');
@@ -81,8 +84,13 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
 /* Designer Dashboard */
 Route::middleware(['auth'])->prefix('designers')->name('designer.')->group(function(){
     Route::get('/', [App\Http\Controllers\Designer\DesignersController::class, 'index'])->name('index');
+    Route::get('/queue', [App\Http\Controllers\Designer\DesignersController::class, 'queue'])->name('queue');
+    Route::get('/review', [App\Http\Controllers\Designer\DesignersController::class, 'review'])->name('review');
+    Route::get('/completed', [App\Http\Controllers\Designer\DesignersController::class, 'delivered'])->name('completed');
     Route::get('/designer-view/{requests}', [App\Http\Controllers\Designer\DesignersController::class, 'view'])->name('view');
     Route::get('/designer-comment/{requests}', [App\Http\Controllers\Designer\DesignersController::class, 'comment'])->name('comment');
+    Route::get('/designer-update/status/{request_id}/{status}', [App\Http\Controllers\Designer\DesignersController::class, 'updateStatus'])->name('status');
+    Route::post('/add-comment', [App\Http\Controllers\Designer\DesignersController::class, 'addComment'])->name('addcomment');
 });
 
 /* Super Admin Dashboard */

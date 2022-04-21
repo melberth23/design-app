@@ -39,43 +39,50 @@
                                     <td>{{ $request->title }}</td>
                                     <td>
                                         @if ($request->status == 0)
-                                            <span class="badge badge-primary">Delivered</span>
+                                            <span class="badge badge-primary">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                         @elseif ($request->status == 1)
-                                            <span class="badge badge-warning">Pending</span>
+                                            <span class="badge badge-warning">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                         @elseif ($request->status == 2)
-                                            <span class="badge badge-info">Active</span>
+                                            <span class="badge badge-info">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                         @elseif ($request->status == 3)
-                                            <span class="badge badge-success">Progress</span>
+                                            <span class="badge badge-success">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @elseif ($request->status == 4)
+                                            <span class="badge badge-dark">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                         @endif
                                     </td>
                                     <td style="display: flex">
                                         <a href="{{ route('request.view', ['requests' => $request->id]) }}"
-                                            class="btn btn-info m-2">
+                                            class="btn btn-info m-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        @if ($request->status == 0 || $request->status == 3)
+                                        @if ($request->status != 1)
                                             <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
-                                                class="btn btn-primary m-2">
+                                                class="btn btn-primary m-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                                 <i class="fa fa-comments"></i>
                                             </a>
                                         @endif
                                         @if ($request->status == 1)
                                             <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 2]) }}"
-                                                class="btn btn-success m-2">
+                                                class="btn btn-success m-2" data-toggle="tooltip" data-placement="top" title="Submit Request">
                                                 <i class="fa fa-check"></i>
                                             </a>
                                         @elseif ($request->status == 2)
                                             <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 1]) }}"
-                                                class="btn btn-danger m-2">
+                                                class="btn btn-danger m-2" data-toggle="tooltip" data-placement="top" title="Move to Draft">
                                                 <i class="fa fa-ban"></i>
+                                            </a>
+                                        @elseif ($request->status == 4)
+                                            <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 0]) }}"
+                                                class="btn btn-dark m-2" data-toggle="tooltip" data-placement="top" title="Complete Request">
+                                                <i class="fa fa-cloud-upload"></i>
                                             </a>
                                         @endif
                                         @if ($request->status == 1 || $request->status == 2)
                                             <a href="{{ route('request.edit', ['requests' => $request->id]) }}"
-                                                class="btn btn-primary m-2">
+                                                class="btn btn-primary m-2" data-toggle="tooltip" data-placement="top" title="Edit Request">
                                                 <i class="fa fa-pen"></i>
                                             </a>
-                                            <a class="btn btn-danger m-2" href="#" data-toggle="modal" data-target="#deleteModal">
+                                            <a class="btn btn-danger m-2" href="#" data-toggle="modal" data-target="#deleteModal" >
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         @endif

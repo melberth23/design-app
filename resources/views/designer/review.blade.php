@@ -1,16 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Delivered Requests List')
+@section('title', 'For Review Requests List')
 
 @section('content')
     <div class="container-fluid">
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Completed Requests</h1>
-            <a href="{{ route('request.create') }}" class="btn btn-sm btn-primary">
-                <i class="fas fa-plus"></i> Add New
-            </a>
+            <h1 class="h3 mb-0 text-gray-800">For Review Requests</h1>
         </div>
 
         {{-- Alert Messages --}}
@@ -38,7 +35,7 @@
                                 <tr>
                                     <td>{{ $request->title }}</td>
                                     <td>
-                                        <span class="badge badge-primary">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        <span class="badge badge-dark">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                     </td>
                                     <td style="display: flex">
                                         <a href="{{ route('request.view', ['requests' => $request->id]) }}"

@@ -7,6 +7,8 @@ use App\Models\Payments;
 use App\Models\Brand;
 use App\Models\RequestAssets;
 use App\Models\Admin\RequestTypes;
+use App\Models\Comments;
+use App\Models\CommentsAssets;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -64,8 +66,27 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
-            $requests = Requests::where('user_id', $userid)->whereIn('status', array(2, 3))->get();
+            $requests = Requests::where('user_id', $userid)->whereIn('status', array(2, 3))->paginate(10);
             return view('requests.queue', ['requests' => $requests]);
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    /**
+     * Review requests 
+     * @param Nill
+     * @return Array $requests
+     */
+    public function review()
+    {
+        $userid = Auth::id();
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            $requests = Requests::where('user_id', $userid)->where('status', 4)->paginate(10);
+            return view('requests.review', ['requests' => $requests]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -226,7 +247,7 @@ class RequestsController extends Controller
                 'status'    => $status
             ], [
                 'request_id'   =>  'required|exists:requests,id',
-                'status'    =>  'required|in:1,2',
+                'status'    =>  'required|in:1,2,0',
             ]);
 
             // If Validations Fails
@@ -294,11 +315,71 @@ class RequestsController extends Controller
      */
     public function comment(Requests $requests)
     {
-        $userid = Auth::id();
-        $comments = array();
+        $comments = Comments::where('request_id', $requests->id)->get();
         return view('requests.comment')->with([
+            'requests'  => $requests,
             'comments'  => $comments
         ]);
+    }
+
+    public function addComment(Request $request) {
+        $userid = $request->user()->id;
+
+        // Validations
+        $request->validate([
+            'comment'    => 'required',
+            'media.*' => 'required|mimes:jpg,png'
+        ]);
+
+        DB::beginTransaction();
+        try {
+
+            // Store Data
+            $comment = Comments::create([
+                'comments'       => $request->comment,
+                'user_id'       => $userid,
+                'request_id'    => $request->id
+            ]);
+
+            // Check upload attachments
+            if($request->hasFile('attachments')) {
+
+                $commentspath = public_path('storage/comments') .'/'. $userid;
+                if(!File::isDirectory($commentspath)){
+                    // Create Path
+                    File::makeDirectory($commentspath, 0777, true, true);
+                }
+
+                $allowedMediasExtension = ['jpg','png'];
+                $commentfiles = $request->file('attachments');
+                foreach($commentfiles as $commentfile) {
+                    $filename = $commentfile->getClientOriginalName();
+                    $extension = $commentfile->getClientOriginalExtension();
+                    $check = in_array($extension, $allowedMediasExtension);
+
+                    if($check) { 
+                        $randomfilename = $this->helper->generateRandomString(15);
+                        $attachmentpath = $randomfilename .'.'. $extension;
+                        $commentfile->move($commentspath, $attachmentpath);
+
+                        $assets = CommentsAssets::create([
+                            'filename' => $attachmentpath,
+                            'comments_id' => $comment->id,
+                            'type' => 'comment'
+                        ]);
+                    }
+                }
+            }
+
+            // Commit And Redirected To Listing
+            DB::commit();
+            return redirect()->back()->with('success','Comment Submitted Successfully.');
+
+        } catch (\Throwable $th) {
+            // Rollback and return with Error
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
+        }
     }
 
     /**

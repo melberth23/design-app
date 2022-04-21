@@ -121,7 +121,7 @@ class SystemHelper {
     */
     public function checkLockedStatus($status) {
         $statuses = array(
-            0 => 'Delivered',
+            0 => 'Completed',
             3 => 'Progress'
         );
         return !empty($statuses[$status])?true:false;
@@ -133,10 +133,11 @@ class SystemHelper {
     */
     public function statusLabel($status) {
         $statuses = array(
-            0 => 'Delivered',
-            1 => 'Pending',
-            2 => 'Active',
-            3 => 'Progress'
+            0 => 'Completed',
+            1 => 'Draft',
+            2 => 'Submitted',
+            3 => 'Progress',
+            4 => 'For Review'
         );
 
         return $statuses[$status];
@@ -157,6 +158,7 @@ class SystemHelper {
             'template' => 'templates',
             'guideline' => 'guidelines',
             'media' => 'media',
+            'comment' => 'comments',
         );
 
         return $directories[$type];

@@ -8,9 +8,6 @@
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Completed Requests</h1>
-            <a href="{{ route('request.create') }}" class="btn btn-sm btn-primary">
-                <i class="fas fa-plus"></i> Add New
-            </a>
         </div>
 
         {{-- Alert Messages --}}

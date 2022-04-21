@@ -1,16 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Delivered Requests List')
+@section('title', 'Queue Requests List')
 
 @section('content')
     <div class="container-fluid">
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Completed Requests</h1>
-            <a href="{{ route('request.create') }}" class="btn btn-sm btn-primary">
-                <i class="fas fa-plus"></i> Add New
-            </a>
+            <h1 class="h3 mb-0 text-gray-800">Queue Requests</h1>
         </div>
 
         {{-- Alert Messages --}}
@@ -38,13 +35,29 @@
                                 <tr>
                                     <td>{{ $request->title }}</td>
                                     <td>
-                                        <span class="badge badge-primary">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @if ($request->status == 2)
+                                            <span class="badge badge-info">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @elseif ($request->status == 3)
+                                            <span class="badge badge-success">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @endif
                                     </td>
                                     <td style="display: flex">
-                                        <a href="{{ route('request.view', ['requests' => $request->id]) }}"
+                                        <a href="{{ route('designer.view', ['requests' => $request->id]) }}"
                                             class="btn btn-info m-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>
                                         </a>
+                                        @if ($request->status == 2)
+                                            <a href="{{ route('designer.status', ['request_id' => $request->id, 'status' => 3]) }}"
+                                                class="btn btn-dark m-2" data-toggle="tooltip" data-placement="top" title="Add to Progress">
+                                                <i class="fa fa-list"></i>
+                                            </a>
+                                        @endif
+                                        @if ($request->status == 3)
+                                            <a href="{{ route('designer.status', ['request_id' => $request->id, 'status' => 4]) }}"
+                                                class="btn btn-success m-2" data-toggle="tooltip" data-placement="top" title="Ready for review">
+                                                <i class="fa fa-check"></i>
+                                            </a>
+                                        @endif
                                         <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
                                             class="btn btn-primary m-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>
@@ -54,12 +67,11 @@
                             @endforeach
                         </tbody>
                     </table>
-
-                    {{ $requests->links() }}
                 </div>
             </div>
         </div>
 
+        @include('requests.delete-modal')  
         @else
 
             <div class="alert alert-danger" role="alert">

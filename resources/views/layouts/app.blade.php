@@ -51,6 +51,13 @@
     <!-- Bootstrap core JavaScript-->
     <script src="{{asset('js/app.js')}}"></script>
 
+    <script type="text/javascript">
+        jQuery(function($) {
+            $(function () {
+              $('[data-toggle="tooltip"]').tooltip()
+            })
+        });
+    </script>
 
     <!-- Custom scripts for all pages-->
     <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
