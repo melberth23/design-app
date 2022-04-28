@@ -91,6 +91,7 @@ Route::middleware(['auth'])->prefix('designers')->name('designer.')->group(funct
     Route::get('/designer-comment/{requests}', [App\Http\Controllers\Designer\DesignersController::class, 'comment'])->name('comment');
     Route::get('/designer-update/status/{request_id}/{status}', [App\Http\Controllers\Designer\DesignersController::class, 'updateStatus'])->name('status');
     Route::post('/add-comment', [App\Http\Controllers\Designer\DesignersController::class, 'addComment'])->name('addcomment');
+    Route::post('/add-file-review', [App\Http\Controllers\Designer\DesignersController::class, 'addFileReview'])->name('addfilereview');
 });
 
 /* Super Admin Dashboard */
@@ -128,4 +129,25 @@ Route::middleware('auth')->prefix('admin/requesttypes')->name('requesttypes.')->
     Route::put('/update/{requesttype}', [App\Http\Controllers\Admin\RequestTypesController::class, 'update'])->name('update');
     Route::delete('/delete/{requesttype}', [App\Http\Controllers\Admin\RequestTypesController::class, 'delete'])->name('destroy');
     Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\Admin\RequestTypesController::class, 'updateStatus'])->name('status');
+});
+
+// Admin Requests 
+Route::middleware('auth')->prefix('admin/requests')->name('adminrequest.')->group(function(){
+    Route::get('/', [App\Http\Controllers\Admin\RequestsAdminController::class, 'index'])->name('index');
+    Route::get('/view/{requests}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'view'])->name('view');
+    Route::get('/queue', [App\Http\Controllers\Admin\RequestsAdminController::class, 'queue'])->name('queue');
+    Route::get('/review', [App\Http\Controllers\Admin\RequestsAdminController::class, 'review'])->name('review');
+    Route::get('/delivered', [App\Http\Controllers\Admin\RequestsAdminController::class, 'delivered'])->name('delivered');
+    Route::get('/comment/{requests}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'comment'])->name('comment');
+    Route::post('/user-comment', [App\Http\Controllers\Admin\RequestsAdminController::class, 'addComment'])->name('addcomment');
+    Route::delete('/delete/{requests}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'delete'])->name('destroy');
+    Route::post('/delete-media', [App\Http\Controllers\Admin\RequestsAdminController::class, 'deleteAsset'])->name('destroyassets');
+    Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'updateStatus'])->name('status');
+});
+
+// Admin Payments 
+Route::middleware('auth')->prefix('admin/payments')->name('adminpayment.')->group(function(){
+    Route::get('/', [App\Http\Controllers\Admin\PaymentsController::class, 'index'])->name('index');
+    Route::get('/pending', [App\Http\Controllers\Admin\PaymentsController::class, 'pending'])->name('pending');
+    Route::get('/completed', [App\Http\Controllers\Admin\PaymentsController::class, 'completed'])->name('completed');
 });

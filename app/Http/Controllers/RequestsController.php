@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Requests;
 use App\Models\Payments;
 use App\Models\Brand;
@@ -9,7 +10,9 @@ use App\Models\RequestAssets;
 use App\Models\Admin\RequestTypes;
 use App\Models\Comments;
 use App\Models\CommentsAssets;
+use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
@@ -265,6 +268,22 @@ class RequestsController extends Controller
                 if(!$checkstatus) {
                     // Update Status
                     Requests::whereId($request_id)->update(['status' => $status]);
+
+                    if($status == 4) {
+                        // Get User Information
+                        $user = User::where('id', $requestrow->user_id)->first();
+                        $customerfullname = $user->first_name .' '. $user->last_name;
+
+                        // Send email
+                        $details = array(
+                            'subject' => 'Request status changed',
+                            'heading' => 'Hi '. $customerfullname,
+                            'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel($status),
+                            'sub_message' => 'Please login using your login information to check. Thank you!',
+                            'template' => 'status'
+                        );
+                        Mail::to($user->email)->send(new DigitalMail($details));
+                    }
 
                     // Commit And Redirect on index with Success Message
                     DB::commit();

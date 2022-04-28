@@ -12,8 +12,8 @@ class Payments extends Model
     protected $table = 'payments';
 
     protected $fillable = [
-        'user_id',
         'reference',
+        'user_id',
         'business_recurring_plans_id',
         'plan',
         'cycle',
@@ -26,5 +26,10 @@ class Payments extends Model
 
     public function scopeIsPaid($query) {
         return $query->where('status', 'active');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

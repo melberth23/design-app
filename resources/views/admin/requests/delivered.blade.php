@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Requests List')
+@section('title', 'Delivered Requests List')
 
 @section('content')
     <div class="container-fluid">
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Requests</h1>
+            <h1 class="h3 mb-0 text-gray-800">Completed Requests</h1>
         </div>
 
         {{-- Alert Messages --}}
@@ -35,36 +35,17 @@
                                 <tr>
                                     <td>{{ $request->title }}</td>
                                     <td>
-                                        @if ($request->status == 0)
-                                            <span class="badge badge-primary">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
-                                        @elseif ($request->status == 2)
-                                            <span class="badge badge-info">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
-                                        @elseif ($request->status == 3)
-                                            <span class="badge badge-success">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
-                                        @elseif ($request->status == 4)
-                                            <span class="badge badge-dark">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
-                                        @endif
+                                        <span class="badge badge-primary">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                     </td>
                                     <td style="display: flex">
-                                        <a href="{{ route('designer.view', ['requests' => $request->id]) }}"
+                                        <a href="{{ route('adminrequest.view', ['requests' => $request->id]) }}"
                                             class="btn btn-info m-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('designer.comment', ['requests' => $request->id]) }}"
+                                        <a href="{{ route('adminrequest.comment', ['requests' => $request->id]) }}"
                                             class="btn btn-primary m-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>
                                         </a>
-                                        @if ($request->status == 2)
-                                            <a href="{{ route('designer.status', ['request_id' => $request->id, 'status' => 3]) }}"
-                                                class="btn btn-dark m-2" data-toggle="tooltip" data-placement="top" title="Add to Progress">
-                                                <i class="fa fa-list"></i>
-                                            </a>
-                                        @endif
-                                        @if ($request->status == 3)
-                                            <a class="btn btn-success m-2" href="#" data-ref="{{ $request->id }}" data-toggle="modal" data-target="#reviewModal" >
-                                                <i class="fa fa-check"></i>
-                                            </a>
-                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -76,7 +57,6 @@
             </div>
         </div>
 
-        @include('designer.review-modal')  
         @else
 
             <div class="alert alert-danger" role="alert">
@@ -89,5 +69,5 @@
 @endsection
 
 @section('scripts')
-
+    
 @endsection

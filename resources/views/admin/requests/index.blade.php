@@ -37,6 +37,8 @@
                                     <td>
                                         @if ($request->status == 0)
                                             <span class="badge badge-primary">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @elseif ($request->status == 1)
+                                            <span class="badge badge-warning">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                         @elseif ($request->status == 2)
                                             <span class="badge badge-info">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                         @elseif ($request->status == 3)
@@ -46,23 +48,30 @@
                                         @endif
                                     </td>
                                     <td style="display: flex">
-                                        <a href="{{ route('designer.view', ['requests' => $request->id]) }}"
+                                        <a href="{{ route('adminrequest.view', ['requests' => $request->id]) }}"
                                             class="btn btn-info m-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('designer.comment', ['requests' => $request->id]) }}"
-                                            class="btn btn-primary m-2" data-toggle="tooltip" data-placement="top" title="Messages">
-                                            <i class="fa fa-comments"></i>
-                                        </a>
-                                        @if ($request->status == 2)
-                                            <a href="{{ route('designer.status', ['request_id' => $request->id, 'status' => 3]) }}"
-                                                class="btn btn-dark m-2" data-toggle="tooltip" data-placement="top" title="Add to Progress">
-                                                <i class="fa fa-list"></i>
+                                        @if ($request->status != 1)
+                                            <a href="{{ route('adminrequest.comment', ['requests' => $request->id]) }}"
+                                                class="btn btn-primary m-2" data-toggle="tooltip" data-placement="top" title="Messages">
+                                                <i class="fa fa-comments"></i>
                                             </a>
                                         @endif
-                                        @if ($request->status == 3)
-                                            <a class="btn btn-success m-2" href="#" data-ref="{{ $request->id }}" data-toggle="modal" data-target="#reviewModal" >
+                                        @if ($request->status == 1)
+                                            <a href="{{ route('adminrequest.status', ['request_id' => $request->id, 'status' => 2]) }}"
+                                                class="btn btn-success m-2" data-toggle="tooltip" data-placement="top" title="Submit Request">
                                                 <i class="fa fa-check"></i>
+                                            </a>
+                                        @elseif ($request->status == 2)
+                                            <a href="{{ route('adminrequest.status', ['request_id' => $request->id, 'status' => 1]) }}"
+                                                class="btn btn-danger m-2" data-toggle="tooltip" data-placement="top" title="Move to Draft">
+                                                <i class="fa fa-ban"></i>
+                                            </a>
+                                        @endif
+                                        @if ($request->status == 1 || $request->status == 2)
+                                            <a class="btn btn-danger m-2" href="#" data-toggle="modal" data-target="#deleteModal" >
+                                                <i class="fas fa-trash"></i>
                                             </a>
                                         @endif
                                     </td>
@@ -76,7 +85,7 @@
             </div>
         </div>
 
-        @include('designer.review-modal')  
+        @include('requests.delete-modal')  
         @else
 
             <div class="alert alert-danger" role="alert">
@@ -89,5 +98,5 @@
 @endsection
 
 @section('scripts')
-
+    
 @endsection

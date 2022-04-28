@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Designer;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Requests;
 use App\Models\Payments;
 use App\Models\Brand;
@@ -10,7 +11,9 @@ use App\Models\RequestAssets;
 use App\Models\Comments;
 use App\Models\CommentsAssets;
 use App\Models\Admin\RequestTypes;
+use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
@@ -196,6 +199,8 @@ class DesignersController extends Controller
         try {
             DB::beginTransaction();
 
+            $request = Requests::whereId($request_id)->first();
+
             $data = ['status' => $status];
             if($status == 3) {
                 $data['designer_id'] = $userid;
@@ -203,6 +208,20 @@ class DesignersController extends Controller
 
             // Update Status
             Requests::whereId($request_id)->update($data);
+
+            // Get User Information
+            $user = User::where('id', $request->user_id)->first();
+            $customerfullname = $user->first_name .' '. $user->last_name;
+
+            // Send email
+            $details = array(
+                'subject' => 'Request status changed',
+                'heading' => 'Hi '. $customerfullname,
+                'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel($status),
+                'sub_message' => 'Please login using your login information to check. Thank you!',
+                'template' => 'status'
+            );
+            Mail::to($user->email)->send(new DigitalMail($details));
 
             // Commit And Redirect on index with Success Message
             DB::commit();
@@ -212,6 +231,121 @@ class DesignersController extends Controller
             // Rollback & Return Error Message
             DB::rollBack();
             return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    /**
+     * Update Status to review
+     * @param Integer $status
+     * @return List Page With Success
+     */
+    public function addFileReview(Request $request) {
+        $userid = $request->user()->id;
+
+        // Validations
+        $request->validate([
+            'media.*' => 'required|mimes:jpg,png',
+            'documents.*' => 'required|mimes:psd,ai,doc,docx,pdf'
+        ]);
+
+        DB::beginTransaction();
+        try {
+
+            $request_data = Requests::whereId($request->id)->first();
+
+            // Store Data
+            $comment = Comments::create([
+                'comments'       => $request->user()->first_name .' add files for review.',
+                'user_id'       => $userid,
+                'request_id'    => $request_data->id
+            ]);
+
+            // Check upload media
+            if($request->hasFile('media')) {
+
+                $mediapath = public_path('storage/comments') .'/'. $userid;
+                if(!File::isDirectory($mediapath)){
+                    // Create Path
+                    File::makeDirectory($mediapath, 0777, true, true);
+                }
+
+                $allowedMediasExtension = ['jpg','png'];
+                $mediafiles = $request->file('media');
+                foreach($mediafiles as $mediafile) {
+                    $filename = $mediafile->getClientOriginalName();
+                    $extension = $mediafile->getClientOriginalExtension();
+                    $check = in_array($extension, $allowedMediasExtension);
+
+                    if($check) { 
+                        $randomfilename = $this->helper->generateRandomString(15);
+                        $attachmentpath = $randomfilename .'.'. $extension;
+                        $mediafile->move($mediapath, $attachmentpath);
+
+                        $assets = CommentsAssets::create([
+                            'filename' => $attachmentpath,
+                            'comments_id' => $comment->id,
+                            'type' => 'review'
+                        ]);
+                    }
+                }
+            }
+
+            // Check upload documents
+            if($request->hasFile('documents')) {
+
+                $documentspath = public_path('storage/comments') .'/'. $userid;
+                if(!File::isDirectory($documentspath)){
+                    // Create Path
+                    File::makeDirectory($documentspath, 0777, true, true);
+                }
+
+                $allowedMediasExtension = ['psd', 'ai', 'doc', 'docx', 'pdf'];
+                $documentsfiles = $request->file('documents');
+                foreach($documentsfiles as $documentsfile) {
+                    $filename = $documentsfile->getClientOriginalName();
+                    $extension = $documentsfile->getClientOriginalExtension();
+                    $check = in_array($extension, $allowedMediasExtension);
+
+                    if($check) { 
+                        $randomfilename = $this->helper->generateRandomString(15);
+                        $attachmentpath = $randomfilename .'.'. $extension;
+                        $documentsfile->move($documentspath, $attachmentpath);
+
+                        $assets = CommentsAssets::create([
+                            'filename' => $attachmentpath,
+                            'comments_id' => $comment->id,
+                            'type' => 'review'
+                        ]);
+                    }
+                }
+            }
+
+            // Update Status
+            $data = ['status' => 4];
+            Requests::whereId($request_data->id)->update($data);
+
+            // Get User Information
+            $user = User::where('id', $request_data->user_id)->first();
+            $customerfullname = $user->first_name .' '. $user->last_name;
+
+            // Send email
+            $details = array(
+                'subject' => 'Request status changed',
+                'heading' => 'Hi '. $customerfullname,
+                'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel(4),
+                'sub_message' => 'Please login using your login information to check. Thank you!',
+                'template' => 'status'
+            );
+            Mail::to($user->email)->send(new DigitalMail($details));
+
+            // Commit And Redirected To Listing
+            DB::commit();
+            return redirect()->back()->with('success','Request moved to review.');
+
+        } catch (\Throwable $th) {
+            // Rollback and return with Error
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
     }
 }

@@ -11,7 +11,7 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Payments;
 use App\Models\UserVerify;
-use App\Mail\DigitalPaymentMail;
+use App\Mail\DigitalMail;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -88,7 +88,7 @@ class RegisterController extends Controller
                 'code' => $code,
                 'template' => 'emailverification',
             );
-            Mail::to($user)->send(new DigitalPaymentMail($details));
+            Mail::to($user)->send(new DigitalMail($details));
 
             return redirect()->route('user.verify', array('token' => $token))->with('success', "Please check your email to verify and enter code");
         }

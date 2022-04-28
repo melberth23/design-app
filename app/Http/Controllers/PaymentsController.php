@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Lib\PaymentHelper;
 use App\Models\Payments;
-use App\Mail\DigitalPaymentMail;
+use App\Mail\DigitalMail;
 use App\Lib\SystemHelper;
 use App\Models\User;
 use Redirect;
@@ -47,7 +47,7 @@ class PaymentsController extends Controller
                 'thank_msg' => 'Please login using your login information to proceed. Thank you!',
                 'template' => 'payment'
             );
-            Mail::to($user->email)->send(new DigitalPaymentMail($details));
+            Mail::to($user->email)->send(new DigitalMail($details));
         }
 
         return redirect()->route('dashboard');

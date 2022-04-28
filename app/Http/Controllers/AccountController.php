@@ -10,7 +10,7 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Payments;
 use App\Models\UserVerify;
-use App\Mail\DigitalPaymentMail;
+use App\Mail\DigitalMail;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -154,7 +154,7 @@ class AccountController extends Controller
                     'template' => 'payment'
                 );
 
-                Mail::to($user)->send(new DigitalPaymentMail($details));
+                Mail::to($user)->send(new DigitalMail($details));
 
                 return Redirect::away($response['url']);
             } else {

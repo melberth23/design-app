@@ -148,6 +148,9 @@ class SystemHelper {
      * @return array directories
      */
     public function media_directories($type) {
+
+        $type = ($type=='review')?'comment':$type;
+
         $directories = array(
             'logo' => 'logos',
             'logo_second' => 'logos',

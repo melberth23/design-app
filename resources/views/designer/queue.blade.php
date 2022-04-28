@@ -53,8 +53,7 @@
                                             </a>
                                         @endif
                                         @if ($request->status == 3)
-                                            <a href="{{ route('designer.status', ['request_id' => $request->id, 'status' => 4]) }}"
-                                                class="btn btn-success m-2" data-toggle="tooltip" data-placement="top" title="Ready for review">
+                                            <a class="btn btn-success m-2" href="#" data-toggle="modal" data-target="#reviewModal" >
                                                 <i class="fa fa-check"></i>
                                             </a>
                                         @endif
@@ -71,7 +70,7 @@
             </div>
         </div>
 
-        @include('requests.delete-modal')  
+        @include('designer.review-modal')  
         @else
 
             <div class="alert alert-danger" role="alert">

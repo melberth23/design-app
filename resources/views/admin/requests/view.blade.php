@@ -11,19 +11,17 @@
    
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="request-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between"><a href="{{route('request.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $requests->title }}</span></h1>
+        <h1 class="request-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between"><a href="{{route('adminrequest.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $requests->title }}</span></h1>
         <div class="actions d-sm-flex align-items-center justify-content-between">
             <div class="dropdown m-1">
               <button class="btn btn-outline-light text-dark border dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 More Actions
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="{{ route('brand.view', ['brand' => $requests->brand_id]) }}"><i class="fa fa-eye"></i> View Brand Profile</a>
-                <a class="dropdown-item" href="{{ route('request.edit', ['requests' => $requests->id]) }}"><i class="fa fa-pen"></i> Edit Request</a>
                 @if ($requests->status == 1)
-                    <a class="dropdown-item" href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 2]) }}"><i class="fa fa-check"></i> Activate Request</a>
+                    <a class="dropdown-item" href="{{ route('adminrequest.status', ['request_id' => $requests->id, 'status' => 2]) }}"><i class="fa fa-check"></i> Activate Request</a>
                 @elseif ($requests->status == 2)
-                    <a class="dropdown-item" href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 1]) }}"><i class="fa fa-ban"></i> Pending Request</a>
+                    <a class="dropdown-item" href="{{ route('adminrequest.status', ['request_id' => $requests->id, 'status' => 1]) }}"><i class="fa fa-ban"></i> Pending Request</a>
                 @endif
               </div>
             </div>
@@ -131,7 +129,7 @@
                             @if ($medias->count() > 0)
                                 @foreach ($medias as $media)
                                     <div id="media-{{ $media->id }}" class="mx-1 media media-container">
-                                        <img src="{{ url('storage/media') }}/{{ auth()->user()->id }}/{{ $media->filename }}" class="picture-img">
+                                        <img src="{{ url('storage/media') }}/{{ $requests->user_id }}/{{ $media->filename }}" class="picture-img">
                                         <div class="overlay">
                                             <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="icon">
                                               <i class="fas fa-download"></i>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Mail\DigitalMail;
+use App\Lib\SystemHelper;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
 use Illuminate\Http\Request;
@@ -12,9 +14,12 @@ use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    public $helper;
+    
     /**
      * Create a new controller instance.
      *
@@ -27,6 +32,8 @@ class UserController extends Controller
         $this->middleware('permission:user-create', ['only' => ['create','store', 'updateStatus']]);
         $this->middleware('permission:user-edit', ['only' => ['edit','update']]);
         $this->middleware('permission:user-delete', ['only' => ['delete']]);
+
+        $this->helper = new SystemHelper();
     }
 
 
@@ -74,6 +81,9 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
 
+            $randomstring = $this->helper->generateRandomString(12);
+            $password = Hash::make($randomstring);
+
             // Store Data
             $user = User::create([
                 'first_name'    => $request->first_name,
@@ -82,8 +92,20 @@ class UserController extends Controller
                 'mobile_number' => $request->mobile_number,
                 'role_id'       => $request->role_id,
                 'status'        => $request->status,
-                'password'      => Hash::make($request->first_name.'@'.$request->mobile_number)
+                'password'      => $password
             ]);
+
+            $message = 'You\'re account is created please refer credentials below.';
+
+            // Send email
+            $details = array(
+                'subject' => 'Welcome aboard!',
+                'heading' => 'Hi '. $user->first_name,
+                'message' => $message,
+                'sub_message' => 'Please login using your email and this password '. $randomstring .'. Thank you!',
+                'template' => 'welcome'
+            );
+            Mail::to($user->email)->send(new DigitalMail($details));
 
             // Delete Any Existing Role
             DB::table('model_has_roles')->where('model_id',$user->id)->delete();
