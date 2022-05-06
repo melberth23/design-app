@@ -16,4 +16,9 @@ class RequestTypes extends Model
         'description',
         'status'
     ];
+
+    public function requests()
+    {
+        return $this->hasMany(Requests::class);
+    }
 }

@@ -1,0 +1,150 @@
+h1.page-heading {
+  font-size: 24px;
+  font-weight: 600;
+}
+#wrapper #content-wrapper #content .container-fluid {
+  height: fit-content;
+  min-height: 780px;
+}
+
+.min-height-400 {
+  min-height: 400px;
+}
+.min-height-500 {
+  min-height: 500px;
+}
+.min-height-600 {
+  min-height: 600px;
+}
+
+/* Custom Grid */
+@media only screen and (min-width: 200px) {
+  .span_1_of_5 {
+    width: 100%; 
+    flex: none;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .span_1_of_5 {
+    width: 50%; 
+    flex: none;
+  }
+}
+@media only screen and (min-width: 1100px) {
+  .span_1_of_5 {
+    width: 18.72%;
+    flex: auto;
+  }
+}
+
+@media only screen and (max-width: 420px) {
+  .menu-btn-link {
+    font-size: 12px;
+  }
+  .sidebar .sidebar-brand {
+    border:  none !important;
+  }
+
+  footer.sticky-footer {
+    position: relative;
+  }
+}
+
+#sidebarToggleTop {
+  text-decoration: none !important;
+}
+#sidebarToggleTop .fa {
+  display: none;
+}
+#sidebarToggleTop.close-sidebar .fa-bars {
+  display: block;
+}
+#sidebarToggleTop.open-sidebar .fa-times {
+  display: block;
+}
+
+.table {
+  border-radius: 9px;
+  border: 1px solid #e3e6f0;
+}
+.table thead th {
+  vertical-align: bottom;
+  border-bottom: 1px solid #e3e6f0;
+  font-weight: 400;
+  font-size: 12px;
+}
+.table tbody td {
+  font-weight: 300;
+  font-size: 16px;
+}
+.table tfoot td {
+  vertical-align: bottom;
+  border-top: 1px solid #e3e6f0;
+  font-weight: 400;
+  font-size: 12px;
+}
+.table th, .table td {
+  border-top: 0px;
+  vertical-align: middle;
+}
+
+.dashboard-welcome-label {
+  color: #28213A;
+  font-size: 24px;
+  font-weight: 600;
+}
+.dashboard-card-number {
+  color: #28213A;
+  font-size: 40px;
+  font-weight: 600;
+}
+.dashboard-card-label {
+  color: #28213A;
+  font-size: 15px;
+}
+
+.filter-date {
+  display: none;
+}
+
+.no-record h2 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+.no-record h5 {
+  font-size: 14px;
+  margin: 0;
+}
+
+#brand-tabs .nav-item a {
+  font-size: 15px;
+  color: #8D889A;
+}
+#brand-tabs .nav-item a.active {
+  font-weight: 600;
+}
+.brand-name a {
+    font-size: 18px;
+    font-weight: 600;
+    color: #28213A;
+    text-decoration: none;
+}
+.extra-information p {
+  color: #28213A;
+  font-size: 15px;
+}
+.extra-information ul {
+  list-style: none;
+  padding: 0;
+}
+.extra-information ul li {
+  font-size: 14px;
+  color: #6D687B;
+  list-style: disc;
+  margin: 0 15px;
+}
+.extra-information ul li:first-child {
+    list-style: none;
+    margin-left: 0;
+}

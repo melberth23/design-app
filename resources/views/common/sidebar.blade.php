@@ -1,13 +1,13 @@
-<ul class="navbar-nav bg-white sidebar" id="accordionSidebar">
+<ul class="d-none d-md-flex navbar-nav bg-white sidebar" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center border-bottom" href="{{ route('dashboard') }}">
+    <a class="sidebar-brand d-flex align-items-center border-bottom" href="{{ route('dashboard') }}">
         <img src="{{ asset('images/logo-dark.svg') }}" class="">
     </a>
 
     @hasrole('User')
     <li class="nav-item">
-        <a class="btn btn-primary d-block m-3 shadow" href="{{ route('request.create') }}">
+        <a class="btn btn-primary d-block m-3 shadow menu-btn-link" href="{{ route('request.create') }}">
             <i class="fas fa-plus"></i>
             <span>New Request</span>
         </a>
@@ -45,6 +45,13 @@
                     <a class="collapse-item {{ (request()->is('requests/delivered')) ? 'active' : '' }}" href="{{ route('request.delivered') }}">Completed Requests</a>
                 </div>
             </div>
+        </li>
+
+        <li class="nav-item {{ (request()->is('requests/draft')) ? 'active' : '' }}">
+            <a class="nav-link text-dark" href="{{ route('request.draft') }}">
+                <img src="{{ asset('images/draft.svg') }}" class="menu-icons">
+                <span>Saved drafts</span>
+            </a>
         </li>
     @endhasrole
 

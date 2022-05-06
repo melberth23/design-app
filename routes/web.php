@@ -36,6 +36,8 @@ Route::get('/download/{asset}', [App\Http\Controllers\DownloadFileController::cl
 Route::get('/request/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadRequestFile'])->name('request.download');
 Route::get('/comment/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadCommentFile'])->name('comment.download');
 
+Route::get('/search', [App\Http\Controllers\RequestsController::class, 'searchRequests'])->name('search');
+
 Route::get('/account/plan', [App\Http\Controllers\AccountController::class, 'plan'])->middleware(['auth'])->name('user.plan'); 
 Route::post('/account/add-plan', [App\Http\Controllers\AccountController::class, 'addplan'])->middleware(['auth'])->name('user.addplan'); 
 
@@ -53,6 +55,8 @@ Route::prefix('profile')->name('profile.')->middleware(['auth', 'is_verify_email
 // Brands 
 Route::middleware(['auth', 'is_verify_email'])->prefix('brands')->name('brand.')->group(function(){
     Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
+    Route::get('/drafts', [App\Http\Controllers\BrandController::class, 'drafts'])->name('drafts');
+    Route::get('/archived', [App\Http\Controllers\BrandController::class, 'archived'])->name('archived');
     Route::get('/view/{brand}', [App\Http\Controllers\BrandController::class, 'view'])->name('view');
     Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
     Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
@@ -70,6 +74,7 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::get('/queue', [App\Http\Controllers\RequestsController::class, 'queue'])->name('queue');
     Route::get('/review', [App\Http\Controllers\RequestsController::class, 'review'])->name('review');
     Route::get('/delivered', [App\Http\Controllers\RequestsController::class, 'delivered'])->name('delivered');
+    Route::get('/draft', [App\Http\Controllers\RequestsController::class, 'draft'])->name('draft');
     Route::get('/create', [App\Http\Controllers\RequestsController::class, 'create'])->name('create');
     Route::post('/store', [App\Http\Controllers\RequestsController::class, 'store'])->name('store');
     Route::get('/edit/{requests}', [App\Http\Controllers\RequestsController::class, 'edit'])->name('edit');

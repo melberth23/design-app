@@ -6,6 +6,7 @@ use DB;
 use App\Models\Payments;
 use App\Models\Requests;
 use App\Models\Brand;
+use App\Models\BrandAssets;
 
 class SystemHelper {
 
@@ -188,5 +189,29 @@ class SystemHelper {
             'files' => $file_types,
             'adobe' => $adobe_types
         ];
+    }
+
+    public function get_brand_logo($brand) {
+        $logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo')->first();
+
+        $string = '<h2>'. substr($brand->name, 0, 1) .'.</h2>';
+        if ($logos->count() > 0) {
+            $string = '<img src="'. url('storage/logos') .'/'. auth()->user()->id .'/'. $logos->filename .'" class="main-logo" >';
+        }
+
+        return $string;
+    }
+
+    public function get_brand_assets($brand, $type) {
+        $assets = BrandAssets::where('brand_id', $brand->id)->where('type', $type)->get();
+
+        $string = '';
+        if($type == 'color' && $assets->count() > 0) {
+            foreach($assets as $asset) {
+                $string .= '<div class="mx-1 color" style="background-color: '. $asset->filename .';border-radius: 50px; width: 40px; height: 40px;"></div>';
+            }
+        }
+
+        return $string;
     }
 }

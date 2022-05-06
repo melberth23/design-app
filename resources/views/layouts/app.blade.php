@@ -51,9 +51,12 @@
     <!-- Bootstrap core JavaScript-->
     <script src="{{asset('js/app.js')}}"></script>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+
     <script type="text/javascript">
         jQuery(function($) {
             $(function () {
+                $('.datepicker').datepicker({ dateFormat: 'mm-dd-yy' });
                 $('[data-toggle="tooltip"]').tooltip();
             });
         });
@@ -76,7 +79,7 @@
     @endhasrole
 
     <!-- Custom scripts for all pages-->
-    <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
+    <script src="{{asset('admin/js/sb-admin-2.js')}}"></script>
 
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 

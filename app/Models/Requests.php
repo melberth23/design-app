@@ -32,4 +32,9 @@ class Requests extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function designtype()
+    {
+        return $this->belongsTo(Admin\RequestTypes::class);
+    }
 }

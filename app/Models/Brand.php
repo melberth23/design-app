@@ -28,4 +28,8 @@ class Brand extends Model
         'user_id',
         'status'
     ];
+
+    public function assets(){
+        $this->hasMany(BrandAssets::class, 'brand_id');
+    }
 }

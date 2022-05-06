@@ -54,50 +54,97 @@ class BrandController extends Controller
     }
 
     /**
+     * Drafts List brands 
+     * @param Nill
+     * @return Array $brands
+     */
+    public function drafts()
+    {
+        $userid = Auth::id();
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            // Get lists of brands
+            $brands = Brand::where('user_id', $userid)->where('status', 0)->paginate(10);
+
+            return view('brands.index', ['brands' => $brands]);
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    /**
+     * Archived List brands 
+     * @param Nill
+     * @return Array $brands
+     */
+    public function archived()
+    {
+        $userid = Auth::id();
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            // Get lists of brands
+            $brands = Brand::where('user_id', $userid)->where('status', 2)->paginate(10);
+
+            return view('brands.index', ['brands' => $brands]);
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    /**
      * View single brand
      * @param brand
      * @return Single brand
      */
     public function view(Brand $brand)
     {
-        /* Get all assets by type */
-        // Get Logo
-        $logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo')->get();
-        $secondary_logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo_second')->get();
+        $userid = Auth::id();
+        if($brand->user_id == $userid) {
+            /* Get all assets by type */
+            // Get Logo
+            $logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo')->get();
+            $secondary_logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo_second')->get();
 
-        // Get Colors
-        $colors = BrandAssets::where('brand_id', $brand->id)->where('type', 'color')->get();
-        $secondary_colors = BrandAssets::where('brand_id', $brand->id)->where('type', 'color_second')->get();
+            // Get Colors
+            $colors = BrandAssets::where('brand_id', $brand->id)->where('type', 'color')->get();
+            $secondary_colors = BrandAssets::where('brand_id', $brand->id)->where('type', 'color_second')->get();
 
-        // Get Fonts
-        $fonts = BrandAssets::where('brand_id', $brand->id)->where('type', 'font')->get();
-        $secondary_fonts = BrandAssets::where('brand_id', $brand->id)->where('type', 'font_second')->get();
+            // Get Fonts
+            $fonts = BrandAssets::where('brand_id', $brand->id)->where('type', 'font')->get();
+            $secondary_fonts = BrandAssets::where('brand_id', $brand->id)->where('type', 'font_second')->get();
 
-        // Get images
-        $images = BrandAssets::where('brand_id', $brand->id)->where('type', 'picture')->get();
+            // Get images
+            $images = BrandAssets::where('brand_id', $brand->id)->where('type', 'picture')->get();
 
-        // Get Guidelines
-        $guidelines = BrandAssets::where('brand_id', $brand->id)->where('type', 'guideline')->get();
+            // Get Guidelines
+            $guidelines = BrandAssets::where('brand_id', $brand->id)->where('type', 'guideline')->get();
 
-        // Get Templates
-        $templates = BrandAssets::where('brand_id', $brand->id)->where('type', 'template')->get();
+            // Get Templates
+            $templates = BrandAssets::where('brand_id', $brand->id)->where('type', 'template')->get();
 
-        // Get Inspirations
-        $inspirations = BrandAssets::where('brand_id', $brand->id)->where('type', 'inspiration')->get();
+            // Get Inspirations
+            $inspirations = BrandAssets::where('brand_id', $brand->id)->where('type', 'inspiration')->get();
 
-        return view('brands.view')->with([
-            'brand'  => $brand,
-            'logos' => $logos,
-            'secondary_logos' => $secondary_logos,
-            'colors' => $colors,
-            'secondary_colors' => $secondary_colors,
-            'fonts' => $fonts,
-            'secondary_fonts' => $secondary_fonts,
-            'images' => $images,
-            'guidelines' => $guidelines,
-            'templates' => $templates,
-            'inspirations' => $inspirations
-        ]);
+            return view('brands.view')->with([
+                'brand'  => $brand,
+                'logos' => $logos,
+                'secondary_logos' => $secondary_logos,
+                'colors' => $colors,
+                'secondary_colors' => $secondary_colors,
+                'fonts' => $fonts,
+                'secondary_fonts' => $secondary_fonts,
+                'images' => $images,
+                'guidelines' => $guidelines,
+                'templates' => $templates,
+                'inspirations' => $inspirations
+            ]);
+        } else {
+            return redirect()->route('dashboard');
+        }
     }
 
     /**
@@ -460,7 +507,7 @@ class BrandController extends Controller
             'status'    => $status
         ], [
             'brand_id'   =>  'required|exists:brands,id',
-            'status'    =>  'required|in:0,1',
+            'status'    =>  'required|in:0,1,2',
         ]);
 
         // If Validations Fails

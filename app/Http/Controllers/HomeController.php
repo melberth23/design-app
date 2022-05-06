@@ -31,23 +31,87 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        if($user->hasRole('User')) {
-            // Get all request current month
-            $currentmonthreq = Requests::where('user_id', $user->id)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)->count();
-            // Get number of completed requests
-            $completedreq = Requests::where('user_id', $user->id)->where('status', 0)->count();
-            // Get number of pending requests
-            $reqforreview = Requests::where('user_id', $user->id)->where('status', 1)->count();
-            // Get number of active requests
-            $activereq = Requests::where('user_id', $user->id)->where('status', 2)->count();
 
+        $filter = $request->filter;
+        $from = $request->from;
+        $to = $request->to;
+
+        if($user->hasRole('User')) {
+            $overall = Requests::where('user_id', $user->id);
+            $completed = Requests::where('user_id', $user->id)->where('status', 0);
+            $inprogress = Requests::where('user_id', $user->id)->where('status', 3);
+            $forreview = Requests::where('user_id', $user->id)->where('status', 4);
+            $queue = Requests::where('user_id', $user->id)->whereIn('status', [2, 3]);
+        } else {
+            $overall = Requests::where('user_id', '!=', $user->id);
+            $completed = Requests::where('user_id', '!=', $user->id)->where('status', 0);
+            $inprogress = Requests::where('user_id', '!=', $user->id)->where('status', 3);
+            $forreview = Requests::where('user_id', '!=', $user->id)->where('status', 4);
+            $queue = Requests::where('user_id', '!=', $user->id)->whereIn('status', [2, 3]);
+        }
+
+        if($filter == 'today') {
+            $today = Carbon::now();
+            $overall->where('created_at', $today);
+            $completed->where('created_at', $today);
+            $inprogress->where('created_at', $today);
+            $forreview->where('created_at', $today);
+            $queue->where('created_at', $today);
+        }
+        if($filter == 'yesterday') {
+            $yesterday = Carbon::yesterday();
+            $overall->where('created_at', $yesterday);
+            $completed->where('created_at', $yesterday);
+            $inprogress->where('created_at', $yesterday);
+            $forreview->where('created_at', $yesterday);
+            $queue->where('created_at', $yesterday);
+        }
+        if($filter == 'last7') {
+            $last7 = Carbon::now()->subDays(7);
+            $overall->where('created_at', '>=', $last7);
+            $completed->where('created_at', '>=', $last7);
+            $inprogress->where('created_at', '>=', $last7);
+            $forreview->where('created_at', '>=', $last7);
+            $queue->where('created_at', '>=', $last7);
+        }
+        if($filter == 'thismonth') {
+            $overall->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
+            $completed->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
+            $inprogress->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
+            $forreview->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
+            $queue->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
+        }
+        if($filter == 'custom') {
+            $fromd = date('Y-m-d', strtotime($from));
+            $from = date('m/d/Y', strtotime($from));
+            $tod = date('Y-m-d', strtotime($to));
+            $to = date('m/d/Y', strtotime($to));
+
+            $overall->whereBetween('created_at', [$fromd, $tod]);
+            $completed->whereBetween('created_at', [$fromd, $tod]);
+            $inprogress->whereBetween('created_at', [$fromd, $tod]);
+            $forreview->whereBetween('created_at', [$fromd, $tod]);
+            $queue->whereBetween('created_at', [$fromd, $tod]);
+        }
+
+        $total_requests = $overall->count();
+        $completedreq = $completed->count();
+        $inprogressreq = $inprogress->count();
+        $reqforreview = $forreview->count();
+        $reqqueue = $queue->count();
+
+
+        if($user->hasRole('User')) {
             // Get payment link if not yet paid
             $paymentinfo = Payments::where('user_id', $user->id)->first();
 
-            return view('home', ['payment_status' => $paymentinfo->status, 'payment_url' => $paymentinfo->payment_url, 'user_fullname' => $user->fullname, 'cur_month_req' => $currentmonthreq, 'completed_req' => $completedreq, 'req_for_review' => $reqforreview, 'active_req' => $activereq]);
+            // Get all in progress requests
+            $allinprogressreq = Requests::where('user_id', $user->id)->where('status', 3)->get();
+
+            return view('home', ['payment_status' => $paymentinfo->status, 'payment_url' => $paymentinfo->payment_url, 'user_fullname' => $user->fullname, 'total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'allinprogressreq' => $allinprogressreq, 'filter' => $filter, 'from' => $from, 'to' => $to]);
         } else {
             // Get all request current month
             $currentmonthreq = Requests::where('user_id', '!=', $user->id)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)->count();

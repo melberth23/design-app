@@ -115,6 +115,25 @@ class RequestsController extends Controller
     }
 
     /**
+     * Draft requests 
+     * @param Nill
+     * @return Array $requests
+     */
+    public function draft()
+    {
+        $userid = Auth::id();
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            $requests = Requests::where('user_id', $userid)->where('status', 1)->paginate(10);
+            return view('requests.draft', ['requests' => $requests]);
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    /**
      * View single request
      * @param request
      * @return Single request
@@ -519,6 +538,43 @@ class RequestsController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function searchRequests(Request $request) {
+        $permitted = false;
+        if(auth()->user()->hasRole('User')) {
+            $userid = Auth::id();
+            // Get payment link if not yet paid
+            $paymentinfo = Payments::where('user_id', $userid)->first();
+            if($paymentinfo->status == 'active') {
+                $permitted = true;
+            }
+        } else {
+            $permitted = true;
+        }
+
+        if($permitted) {
+            $keyword = $request->keyword;
+
+            $statuses = [0,1,2,3,4];
+            if(auth()->user()->hasRole('Designer')) {
+                $statuses = [0,2,3,4];
+            }
+
+            $requests = Requests::whereIn('status', $statuses);
+            if(auth()->user()->hasRole('User')) {
+                $requests->where('user_id', $userid);
+            }
+            if( !empty($keyword) ) {
+                $requests->where('title', 'like', '%'. $keyword .'%');
+            }
+
+            $data = $requests->paginate(10);
+
+            return view('requests.search', ['requests' => $data, 'keyword' => $keyword]);
+        } else {
+            return redirect()->route('dashboard');
         }
     }
 }

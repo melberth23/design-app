@@ -3,88 +3,94 @@
 @section('title', 'Blogs List')
 
 @section('content')
-    <div class="container-fluid">
-
-        <!-- Page Heading -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Brands</h1>
-            <a href="{{ route('brand.create') }}" class="btn btn-sm btn-primary">
-                <i class="fas fa-plus"></i> Add New
-            </a>
-        </div>
+    <div class="container">
 
         {{-- Alert Messages --}}
         @include('common.alert')
 
         @if ($brands->count() > 0)
 
-        <!-- Brands -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">All Brands</h6>
+            <!-- Page Heading -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800 page-heading">My brand profile</h1>
+                <a href="{{ route('brand.create') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus"></i> New
+                </a>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th width="20%">Brand Name</th>
-                                <th width="25%">Target audience</th>
-                                <th width="15%">Status</th>
-                                <th width="10%">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($brands as $brand)
-                                <tr>
-                                    <td>{{ $brand->name }}</td>
-                                    <td>{{ $brand->target_audience }}</td>
-                                    <td>
-                                        @if ($brand->status == 0)
-                                            <span class="badge badge-danger">Inactive</span>
-                                        @elseif ($brand->status == 1)
-                                            <span class="badge badge-success">Active</span>
-                                        @endif
-                                    </td>
-                                    <td style="display: flex">
-                                        <a href="{{ route('brand.view', ['brand' => $brand->id]) }}"
-                                            class="btn btn-info m-2">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                        @if ($brand->status == 0)
-                                            <a href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 1]) }}"
-                                                class="btn btn-success m-2">
-                                                <i class="fa fa-check"></i>
-                                            </a>
-                                        @elseif ($brand->status == 1)
-                                            <a href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 0]) }}"
-                                                class="btn btn-danger m-2">
-                                                <i class="fa fa-ban"></i>
-                                            </a>
-                                        @endif
-                                        <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}"
-                                            class="btn btn-primary m-2">
-                                            <i class="fa fa-pen"></i>
-                                        </a>
-                                        <a class="btn btn-danger m-2" href="#" data-toggle="modal" data-target="#deleteModal">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
 
-                    {{ $brands->links() }}
+            <div class="card mb-4">
+                <div class="card-body py-0 px-1">
+                    <ul class="nav nav-tabs" id="brand-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link py-3 {{ (request()->is('brands')) ? 'active' : '' }}" id="allbrand-tab" href="{{ route('brand.index') }}">All brand</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-3 {{ (request()->is('brands/drafts')) ? 'active' : '' }}" id="drafts-tab" href="{{ route('brand.drafts') }}">Drafts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-3 {{ (request()->is('brands/archived')) ? 'active' : '' }}" id="archived-tab" href="{{ route('brand.archived') }}">Archived</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
+
+            <!-- Brands -->
+            @foreach ($brands as $brand)
+                <div class="card mb-4 p-4">
+                    <div class="row d-flex">
+                        <div class="col-md-2 d-flex justify-content-center">
+                            <div class="top-main-logo">
+                                <?php 
+                                    echo (new \App\Lib\SystemHelper)->get_brand_logo($brand);
+                                ?>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="brand-name">
+                                <a href="{{ route('brand.view', ['brand' => $brand->id]) }}">{{ $brand->name }}</a>
+                            </div>
+                            <div class="extra-information">
+                                <ul class="d-flex justify-content-start">
+                                    <li>{{ $brand->industry }}</li>
+                                    <li>{{ $brand->website }}</li>
+                                </ul>
+                                <p>{{ Str::limit($brand->description, 200, $end='.......') }}</p>
+                                <div class="d-flex colors">
+                                    <?php 
+                                        echo (new \App\Lib\SystemHelper)->get_brand_assets($brand, 'color');
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+
+            {{ $brands->links() }}
 
         @include('brands.delete-modal')  
         @else
 
-            <div class="alert alert-danger" role="alert">
-                No brands found! 
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <div class="min-height-600 d-flex align-items-center justify-content-center">
+                        <div class="no-record py-4 text-center">
+                            <img src="{{ asset('images/designer_flatline.svg') }}">
+                            <div class="pt-4">
+                                <h2>You have not created any brand profiles yet.</h2>
+                            </div>
+                            <div class="pt-4">
+                                <h5>Create your first brand profile now.</h5>
+                            </div>
+                            <div class="pt-4">
+                                <a href="{{ route('brand.create') }}" class="btn btn-primary">Create Brand Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         @endif 

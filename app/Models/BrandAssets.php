@@ -17,4 +17,9 @@ class BrandAssets extends Model
         'type',
         'file_type'
     ];
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
 }
