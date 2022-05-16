@@ -142,25 +142,20 @@ class DesignersController extends Controller
                     File::makeDirectory($commentspath, 0777, true, true);
                 }
 
-                $allowedMediasExtension = ['jpg','png'];
                 $commentfiles = $request->file('attachments');
                 foreach($commentfiles as $commentfile) {
                     $filename = $commentfile->getClientOriginalName();
                     $extension = $commentfile->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedMediasExtension);
+                    $randomfilename = $this->helper->generateRandomString(15);
+                    $attachmentpath = $randomfilename .'.'. $extension;
+                    $commentfile->move($commentspath, $attachmentpath);
 
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $attachmentpath = $randomfilename .'.'. $extension;
-                        $commentfile->move($commentspath, $attachmentpath);
-
-                        $assets = CommentsAssets::create([
-                            'filename' => $attachmentpath,
-                            'comments_id' => $comment->id,
-                            'type' => 'comment'
-                        ]);
-                    }
-                }
+                    $assets = CommentsAssets::create([
+                        'filename' => $attachmentpath,
+                        'comments_id' => $comment->id,
+                        'type' => 'comment',
+                        'file_type' => $extension
+                    ]);
             }
 
             // Commit And Redirected To Listing
@@ -257,7 +252,8 @@ class DesignersController extends Controller
             $comment = Comments::create([
                 'comments'       => $request->user()->first_name .' add files for review.',
                 'user_id'       => $userid,
-                'request_id'    => $request_data->id
+                'request_id'    => $request_data->id,
+                'comment_type'  => 'review'
             ]);
 
             // Check upload media
@@ -269,54 +265,20 @@ class DesignersController extends Controller
                     File::makeDirectory($mediapath, 0777, true, true);
                 }
 
-                $allowedMediasExtension = ['jpg','png'];
                 $mediafiles = $request->file('media');
                 foreach($mediafiles as $mediafile) {
                     $filename = $mediafile->getClientOriginalName();
                     $extension = $mediafile->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedMediasExtension);
+                    $randomfilename = $this->helper->generateRandomString(15);
+                    $attachmentpath = $randomfilename .'.'. $extension;
+                    $mediafile->move($mediapath, $attachmentpath);
 
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $attachmentpath = $randomfilename .'.'. $extension;
-                        $mediafile->move($mediapath, $attachmentpath);
-
-                        $assets = CommentsAssets::create([
-                            'filename' => $attachmentpath,
-                            'comments_id' => $comment->id,
-                            'type' => 'review'
-                        ]);
-                    }
-                }
-            }
-
-            // Check upload documents
-            if($request->hasFile('documents')) {
-
-                $documentspath = public_path('storage/comments') .'/'. $userid;
-                if(!File::isDirectory($documentspath)){
-                    // Create Path
-                    File::makeDirectory($documentspath, 0777, true, true);
-                }
-
-                $allowedMediasExtension = ['psd', 'ai', 'doc', 'docx', 'pdf'];
-                $documentsfiles = $request->file('documents');
-                foreach($documentsfiles as $documentsfile) {
-                    $filename = $documentsfile->getClientOriginalName();
-                    $extension = $documentsfile->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedMediasExtension);
-
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $attachmentpath = $randomfilename .'.'. $extension;
-                        $documentsfile->move($documentspath, $attachmentpath);
-
-                        $assets = CommentsAssets::create([
-                            'filename' => $attachmentpath,
-                            'comments_id' => $comment->id,
-                            'type' => 'review'
-                        ]);
-                    }
+                    $assets = CommentsAssets::create([
+                        'filename' => $attachmentpath,
+                        'comments_id' => $comment->id,
+                        'type' => 'review',
+                        'file_type' => $extension
+                    ]);
                 }
             }
 

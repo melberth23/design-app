@@ -1,0 +1,10 @@
+<svg id="newsletter" xmlns="http://www.w3.org/2000/svg" width="29.762" height="29.751" viewBox="0 0 29.762 29.751">
+  <g id="Group_29" data-name="Group 29" transform="translate(4.692 6.277)">
+    <rect id="Rectangle_28" data-name="Rectangle 28" width="8.535" height="1.876" rx="0.756" fill="#9672fb"/>
+    <rect id="Rectangle_29" data-name="Rectangle 29" width="13.611" height="1.876" rx="0.756" transform="translate(0 3.468)" fill="#9672fb"/>
+    <rect id="Rectangle_30" data-name="Rectangle 30" width="13.611" height="1.876" rx="0.756" transform="translate(0 6.936)" fill="#9672fb"/>
+    <rect id="Rectangle_31" data-name="Rectangle 31" width="13.611" height="1.876" rx="0.756" transform="translate(0 10.687)" fill="#9672fb"/>
+    <rect id="Rectangle_32" data-name="Rectangle 32" width="13.611" height="1.876" rx="0.756" transform="translate(0 14.439)" fill="#9672fb"/>
+  </g>
+  <path id="Path_60" data-name="Path 60" d="M284.761,94.913h-5.926V80.792h0v-.017a.937.937,0,0,0-.938-.938h-21a.938.938,0,0,0-.938.938v.017h0v22.414a3.267,3.267,0,0,0,0,.754v0a.918.918,0,0,0,.038.249,2.854,2.854,0,0,0,.611,1.339c.006.006.007.015.014.021l.024.024a2.559,2.559,0,0,0,.259.259l2.695,2.695h0a2.522,2.522,0,0,0,1.685.983.924.924,0,0,0,.281.047,1.056,1.056,0,0,0,.243,0h18.375a1.776,1.776,0,0,0,1.26-.49l.043-.04a.881.881,0,0,0,.2-.133l3.347-3.347a.833.833,0,0,0,.051-.077l.068-.068a1.828,1.828,0,0,0,.512-1.246.972.972,0,0,0,.032-.233v-8.1A.938.938,0,0,0,284.761,94.913Zm-.956,1.894v6.513a2.829,2.829,0,0,1-.621,1.451l-2.821,2.821a.753.753,0,0,0-.071.107,1.027,1.027,0,0,0-.108-.011h-1.349V96.807Zm-22.378,10.9-3.591-3.591a.971.971,0,0,0,.015-.149V81.731h19.09v25.957H261.566A.866.866,0,0,0,261.427,107.7Z" transform="translate(-255.936 -79.837)" fill="#433f4d"/>
+</svg>

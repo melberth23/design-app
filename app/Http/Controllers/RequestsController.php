@@ -51,7 +51,12 @@ class RequestsController extends Controller
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
             $requests = Requests::where('user_id', $userid)->paginate(10);
-            return view('requests.index', ['requests' => $requests]);
+            $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
+            $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
+            $review = Requests::where('user_id', $userid)->where('status', 4)->count();
+            $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
+
+            return view('requests.index', ['requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -69,8 +74,37 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
-            $requests = Requests::where('user_id', $userid)->whereIn('status', array(2, 3))->paginate(10);
-            return view('requests.queue', ['requests' => $requests]);
+            $all = Requests::where('user_id', $userid)->count();
+            $requests = Requests::where('user_id', $userid)->where('status', 2)->paginate(10);
+            $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
+            $review = Requests::where('user_id', $userid)->where('status', 4)->count();
+            $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
+
+            return view('requests.queue', ['all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    /**
+     * Progress requests 
+     * @param Nill
+     * @return Array $requests
+     */
+    public function progress()
+    {
+        $userid = Auth::id();
+
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
+            $all = Requests::where('user_id', $userid)->count();
+            $requests = Requests::where('user_id', $userid)->where('status', 3)->paginate(10);
+            $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
+            $review = Requests::where('user_id', $userid)->where('status', 4)->count();
+            $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
+
+            return view('requests.progress', ['all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -88,8 +122,13 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
+            $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 4)->paginate(10);
-            return view('requests.review', ['requests' => $requests]);
+            $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
+            $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
+            $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
+
+            return view('requests.review', ['all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -107,8 +146,13 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
+            $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 0)->paginate(10);
-            return view('requests.delivered', ['requests' => $requests]);
+            $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
+            $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
+            $review = Requests::where('user_id', $userid)->where('status', 4)->count();
+
+            return view('requests.delivered', ['all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -148,8 +192,14 @@ class RequestsController extends Controller
         // Get images
         $medias = RequestAssets::where('request_id', $requests->id)->where('type', 'media')->get();
 
+        // get next and previous
+        $previous = Requests::where('user_id', $userid)->where('id', '<', $requests->id)->max('id');
+        $next = Requests::where('user_id', $userid)->where('id', '>', $requests->id)->min('id');
+
         return view('requests.view')->with([
             'requests'  => $requests,
+            'previous' => $previous,
+            'next' => $next,
             'brand' => $brand,
             'designtype' => $designtype,
             'medias' => $medias
@@ -168,10 +218,29 @@ class RequestsController extends Controller
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
             $designtypes = RequestTypes::get();
+
+            return view('requests.add', ['designtypes' => $designtypes]);
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    /**
+     * Create Requests 
+     * @param Nill
+     * @return Array $requests
+     */
+    public function request_type($type)
+    {
+        $userid = Auth::id();
+        // Get payment link if not yet paid
+        $paymentinfo = Payments::where('user_id', $userid)->first();
+        if($paymentinfo->status == 'active') {
             $brands = Brand::where('user_id', $userid)->get();
             $file_types = $this->helper->request_file_types();
+            $designtype = RequestTypes::whereId($type)->first();
 
-            return view('requests.add', ['brands' => $brands, 'designtypes' => $designtypes, 'types' => $file_types]);
+            return view('requests.requesttype', ['brands' => $brands, 'designtype' => $designtype, 'types' => $file_types]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -183,7 +252,12 @@ class RequestsController extends Controller
      * @return View requests
      */
     public function store(Request $request)
-    {
+    {   
+        $status = 2;
+        if(!empty($request->save_draft)) {
+            $status = 1;
+        }
+
         $userid = $request->user()->id;
 
         // Validations
@@ -202,14 +276,19 @@ class RequestsController extends Controller
             // Store Data
             $requests = Requests::create([
                 'title'    => $request->title,
-                'design_type'    => $request->design_type,
-                'dimensions'     => $request->dimensions,
-                'description'     => $request->description,
-                'format'        => $request->format,
-                'dimensions_additional_info' => $request->dimensions_additional_info,
-                'brand_id'        => $request->brand_id,
-                'user_id'        => $userid,
-                'priority'        => $request->priority
+                'design_type'   => $request->design_type,
+                'dimensions'    => $request->dimensions,
+                'custom_dimension'  => $request->custom_dimension,
+                'description'   => $request->description,
+                'format'        => implode(',', $request->file_type),
+                'adobe_format'  => implode(',', $request->adobe_type),
+                'include_text'  => $request->include_text,
+                'included_text_description'  => $request->included_text_description,
+                'reference_link'  => $request->reference_link,
+                'dimensions_additional_info'    => $request->dimensions_additional_info,
+                'brand_id'      => $request->brand_id,
+                'user_id'       => $userid,
+                'status'        => $status
             ]);
 
             // Check upload medias
@@ -353,10 +432,52 @@ class RequestsController extends Controller
      */
     public function comment(Requests $requests)
     {
+        $userid = Auth::id();
+
+        // get next and previous
+        $previous = Requests::where('user_id', $userid)->where('id', '<', $requests->id)->max('id');
+        $next = Requests::where('user_id', $userid)->where('id', '>', $requests->id)->min('id');
+
         $comments = Comments::where('request_id', $requests->id)->get();
         return view('requests.comment')->with([
             'requests'  => $requests,
+            'previous' => $previous,
+            'next' => $next,
             'comments'  => $comments
+        ]);
+    }
+
+    /**
+     * Edit Requests
+     * @param Integer $requests
+     * @return Collection $requests
+     */
+    public function files(Requests $requests)
+    {
+        $userid = Auth::id();
+
+        // get next and previous
+        $previous = Requests::where('user_id', $userid)->where('id', '<', $requests->id)->max('id');
+        $next = Requests::where('user_id', $userid)->where('id', '>', $requests->id)->min('id');
+
+        $media_ext = array('jpg', 'png', 'svg', 'jpeg', 'gif');
+        $adobe_ext = array('psd', 'ai', 'indd', 'pdf');
+        $review = Comments::where('request_id', $requests->id)->where('comment_type', 'review')->first();
+
+        $reviewid = 0;
+        if($review) {
+            $reviewid = $review->id;
+        }
+
+        $media = CommentsAssets::where('comments_id', $reviewid)->whereIn('file_type', $media_ext)->get();
+        $dobe = CommentsAssets::where('comments_id', $reviewid)->whereIn('file_type', $adobe_ext)->get();
+
+        return view('requests.files')->with([
+            'requests'  => $requests,
+            'previous' => $previous,
+            'next' => $next,
+            'medias'  => $media,
+            'adobes'  => $dobe
         ]);
     }
 
@@ -388,24 +509,20 @@ class RequestsController extends Controller
                     File::makeDirectory($commentspath, 0777, true, true);
                 }
 
-                $allowedMediasExtension = ['jpg','png'];
                 $commentfiles = $request->file('attachments');
                 foreach($commentfiles as $commentfile) {
                     $filename = $commentfile->getClientOriginalName();
                     $extension = $commentfile->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedMediasExtension);
+                    $randomfilename = $this->helper->generateRandomString(15);
+                    $attachmentpath = $randomfilename .'.'. $extension;
+                    $commentfile->move($commentspath, $attachmentpath);
 
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $attachmentpath = $randomfilename .'.'. $extension;
-                        $commentfile->move($commentspath, $attachmentpath);
-
-                        $assets = CommentsAssets::create([
-                            'filename' => $attachmentpath,
-                            'comments_id' => $comment->id,
-                            'type' => 'comment'
-                        ]);
-                    }
+                    $assets = CommentsAssets::create([
+                        'filename' => $attachmentpath,
+                        'comments_id' => $comment->id,
+                        'type' => 'comment',
+                        'file_type' => $extension
+                    ]);
                 }
             }
 
@@ -445,13 +562,17 @@ class RequestsController extends Controller
             // Store Data
             $requests_updated = Requests::whereId($requests->id)->update([
                 'title'    => $request->title,
-                'design_type'    => $request->design_type,
-                'dimensions'     => $request->dimensions,
-                'description'     => $request->description,
-                'format'        => $request->format,
-                'dimensions_additional_info' => $request->dimensions_additional_info,
-                'brand_id'        => $request->brand_id,
-                'priority'        => $request->priority
+                'design_type'   => $request->design_type,
+                'dimensions'    => $request->dimensions,
+                'custom_dimension'  => $request->custom_dimension,
+                'description'   => $request->description,
+                'format'        => implode(',', $request->file_type),
+                'adobe_format'  => implode(',', $request->adobe_type),
+                'include_text'  => $request->include_text,
+                'included_text_description'  => $request->included_text_description,
+                'reference_link'  => $request->reference_link,
+                'dimensions_additional_info'    => $request->dimensions_additional_info,
+                'brand_id'      => $request->brand_id,
             ]);
 
             // Check upload medias
@@ -500,12 +621,15 @@ class RequestsController extends Controller
      * @param Requests $requests
      * @return Index requests
      */
-    public function delete(Requests $requests)
+    public function delete(Request $request)
     {
+
+        $data = $request->all();
+
         DB::beginTransaction();
         try {
             // Delete Requests
-            Requests::whereId($requests->id)->delete();
+            Requests::whereId($data['id'])->delete();
 
             DB::commit();
             return redirect()->route('request.index')->with('success', 'Requests Deleted Successfully!.');

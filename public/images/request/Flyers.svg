@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25.96" height="30.093" viewBox="0 0 25.96 30.093">
+  <g id="flyers" transform="translate(0 0)">
+    <g id="Group_14" data-name="Group 14" transform="translate(4.547 7.533)">
+      <rect id="Rectangle_16" data-name="Rectangle 16" width="10.576" height="1.637" rx="0.757" fill="#9672fb"/>
+      <rect id="Rectangle_17" data-name="Rectangle 17" width="16.865" height="1.637" rx="0.757" transform="translate(0 7.393)" fill="#9672fb"/>
+      <rect id="Rectangle_18" data-name="Rectangle 18" width="16.865" height="1.637" rx="0.757" transform="translate(0 15.332)" fill="#9672fb"/>
+    </g>
+    <path id="Path_40" data-name="Path 40" d="M281.7,250.294a2.052,2.052,0,0,0-.557-1.216l-.556-.556-.952-.951-.747-.749-.087-.087-.465-.465h0l-.115-.115c-.018-.018-.043-.025-.063-.042a2.167,2.167,0,0,0-1.181-.52.776.776,0,0,0-.159-.016H256.581a.819.819,0,0,0-.819.819v28.456a.819.819,0,0,0,.819.819H280.9a.819.819,0,0,0,.819-.819V250.476A.836.836,0,0,0,281.7,250.294Zm-4.723-3.08.017,0a.668.668,0,0,0,.069.1l2.921,2.922a.706.706,0,0,0,.107.07h-3.114Zm-1.638.016v3.894a.819.819,0,0,0,.819.819h3.925v22.074H257.4V247.231Z" transform="translate(-255.762 -245.578)" fill="#3a3a3a"/>
+  </g>
+</svg>

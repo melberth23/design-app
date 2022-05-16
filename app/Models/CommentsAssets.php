@@ -19,6 +19,6 @@ class CommentsAssets extends Model
 
     public function comments()
     {
-        return $this->belongsToMany(Comments::class, 'comments');
+        return $this->belongsTo(Comments::class);
     }
 }

@@ -37,7 +37,7 @@ class BrandController extends Controller
      * @param Nill
      * @return Array $brands
      */
-    public function index()
+    public function index($type=false, $sort=false)
     {
         $userid = Auth::id();
 
@@ -45,7 +45,14 @@ class BrandController extends Controller
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
             // Get lists of brands
-            $brands = Brand::where('user_id', $userid)->paginate(10);
+            $brands = Brand::where('user_id', $userid);
+            if(!empty($type) && $type == 'date') {
+                $brands->orderByRaw('created_at '. $sort);
+            }
+            if(!empty($type) && $type == 'name') {
+                $brands->orderBy('name', $sort);
+            }
+            $brands = $brands->paginate(10);
 
             return view('brands.index', ['brands' => $brands]);
         } else {
@@ -58,7 +65,7 @@ class BrandController extends Controller
      * @param Nill
      * @return Array $brands
      */
-    public function drafts()
+    public function drafts($type=false, $sort=false)
     {
         $userid = Auth::id();
 
@@ -66,9 +73,10 @@ class BrandController extends Controller
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
             // Get lists of brands
-            $brands = Brand::where('user_id', $userid)->where('status', 0)->paginate(10);
+            $brands = Brand::where('user_id', $userid)->where('status', 0);
+            $brands = $brands->paginate(10);
 
-            return view('brands.index', ['brands' => $brands]);
+            return view('brands.drafts', ['brands' => $brands]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -79,7 +87,7 @@ class BrandController extends Controller
      * @param Nill
      * @return Array $brands
      */
-    public function archived()
+    public function archived($type=false, $sort=false)
     {
         $userid = Auth::id();
 
@@ -87,9 +95,10 @@ class BrandController extends Controller
         $paymentinfo = Payments::where('user_id', $userid)->first();
         if($paymentinfo->status == 'active') {
             // Get lists of brands
-            $brands = Brand::where('user_id', $userid)->where('status', 2)->paginate(10);
+            $brands = Brand::where('user_id', $userid)->where('status', 2);
+            $brands = $brands->paginate(10);
 
-            return view('brands.index', ['brands' => $brands]);
+            return view('brands.archived', ['brands' => $brands]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -129,8 +138,14 @@ class BrandController extends Controller
             // Get Inspirations
             $inspirations = BrandAssets::where('brand_id', $brand->id)->where('type', 'inspiration')->get();
 
+            // get next and previous
+            $previous = Brand::where('user_id', $userid)->where('id', '<', $brand->id)->max('id');
+            $next = Brand::where('user_id', $userid)->where('id', '>', $brand->id)->min('id');
+
             return view('brands.view')->with([
                 'brand'  => $brand,
+                'previous'  => $previous,
+                'next'  => $next,
                 'logos' => $logos,
                 'secondary_logos' => $secondary_logos,
                 'colors' => $colors,
@@ -222,7 +237,7 @@ class BrandController extends Controller
                         File::makeDirectory($requestlogospath, 0777, true, true);
                     }
 
-                    $allowedLogosExtension = ['jpg','png'];
+                    $allowedLogosExtension = ['jpg','png','svg'];
                     $logos = $request->file('logos');
                     foreach($logos as $logo) {
                         $filename = $logo->getClientOriginalName();
@@ -252,7 +267,7 @@ class BrandController extends Controller
                         File::makeDirectory($requestlogosSecondpath, 0777, true, true);
                     }
 
-                    $allowedLogosSecondExtension = ['jpg','png'];
+                    $allowedLogosSecondExtension = ['jpg','png','svg'];
                     $logos_second = $request->file('logos_second');
                     foreach($logos_second as $logo_second) {
                         $filename = $logo_second->getClientOriginalName();
@@ -428,7 +443,7 @@ class BrandController extends Controller
                         File::makeDirectory($requesttemplatespath, 0777, true, true);
                     }
 
-                    $allowedTemplatesExtension = ['psd', 'ai', 'doc', 'docx', 'pdf'];
+                    $allowedTemplatesExtension = ['psd', 'ai', 'doc', 'docx', 'pdf', 'png', 'jpg'];
                     $templates = $request->file('templates');
                     foreach($templates as $template) {
                         $filename = $template->getClientOriginalName();
@@ -458,7 +473,7 @@ class BrandController extends Controller
                         File::makeDirectory($requestguidelinespath, 0777, true, true);
                     }
 
-                    $allowedGuidelinesExtension = ['psd', 'ai', 'doc', 'pdf'];
+                    $allowedGuidelinesExtension = ['psd', 'ai', 'doc', 'pdf', 'png', 'jpg', 'ppt'];
                     $guidelines = $request->file('guidelines');
                     foreach($guidelines as $guideline) {
                         $filename = $guideline->getClientOriginalName();
@@ -537,7 +552,7 @@ class BrandController extends Controller
      * @param Integer $brand
      * @return Collection $brand
      */
-    public function edit(Brand $brand)
+    public function edit($section='all', Brand $brand)
     {
         /* Get all assets by type */
         // Get Logo
@@ -565,6 +580,7 @@ class BrandController extends Controller
         $inspirations = BrandAssets::where('brand_id', $brand->id)->where('type', 'inspiration')->get();
 
         return view('brands.edit')->with([
+            'section'  => $section,
             'brand'  => $brand,
             'logos' => $logos,
             'secondary_logos' => $secondary_logos,
@@ -717,7 +733,9 @@ class BrandController extends Controller
             }
 
             // Check upload colors
-            if(!empty($request->colors)) {
+            if(!empty($request->colors) && !empty($request->colors[0])) {
+                BrandAssets::where('brand_id', $brand->id)->where('type', 'color')->delete();
+
                 foreach($request->colors as $color) {
                     if(!empty($color)) {
                         $assets = BrandAssets::create([
@@ -731,7 +749,9 @@ class BrandController extends Controller
             }
 
             // Check upload secondary colors
-            if(!empty($request->colors_second)) {
+            if(!empty($request->colors_second) && !empty($request->colors_second[0])) {
+                BrandAssets::where('brand_id', $brand->id)->where('type', 'color_second')->delete();
+
                 foreach($request->colors_second as $color_second) {
                     if(!empty($color_second)) {
                         $assets = BrandAssets::create([

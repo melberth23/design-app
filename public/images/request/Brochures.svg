@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32.64" height="29.581" viewBox="0 0 32.64 29.581">
+  <g id="brochures" transform="translate(0)">
+    <g id="Group_23" data-name="Group 23" transform="translate(4.584 6.796)">
+      <rect id="Rectangle_22" data-name="Rectangle 22" width="2.071" height="8.383" rx="0.761" transform="translate(15.902 17.157) rotate(-104.954)" fill="#9672fb"/>
+      <rect id="Rectangle_23" data-name="Rectangle 23" width="2.071" height="8.383" rx="0.761" transform="matrix(-0.258, -0.966, 0.966, -0.258, 15.902, 13.054)" fill="#9672fb"/>
+      <rect id="Rectangle_24" data-name="Rectangle 24" width="2.071" height="8.383" rx="0.761" transform="translate(0 2.001) rotate(-75.046)" fill="#9672fb"/>
+      <rect id="Rectangle_25" data-name="Rectangle 25" width="2.071" height="8.383" rx="0.761" transform="translate(15.902 8.951) rotate(-104.954)" fill="#9672fb"/>
+    </g>
+    <path id="Path_51" data-name="Path 51" d="M640.747,81.992a1.036,1.036,0,0,0-1.036-1.035h0a1.074,1.074,0,0,0-.133.014,1.03,1.03,0,0,0-.426.022l-14.725,3.933L609.7,80.992a1.027,1.027,0,0,0-.426-.022,1.051,1.051,0,0,0-.133-.014h0a1.036,1.036,0,0,0-1.035,1.035v23.224a1.723,1.723,0,0,0,.922,1.307l14.909,3.982a17.549,17.549,0,0,0,.978,0l14.91-3.982a1.733,1.733,0,0,0,.922-1.307Zm-30.569,1.272,13.206,3.528v21.422l-13.206-3.528Zm15.277,3.531,13.221-3.531v21.422l-13.221,3.532Z" transform="translate(-608.107 -80.957)" fill="#433f4d"/>
+  </g>
+</svg>

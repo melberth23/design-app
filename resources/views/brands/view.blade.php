@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="container">
 
     {{-- Alert Messages --}}
     @include('common.alert')
@@ -20,23 +20,33 @@
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <!-- <a class="dropdown-item" href="#"><img src="{{ asset('images/downloiad.svg') }}" class="action-icons"> Download Brand Profile</a> -->
                 <a class="dropdown-item" href="#"><img src="{{ asset('images/create.svg') }}" class="action-icons"> Create Brand Request</a>
-                <a class="dropdown-item" href="{{ route('brand.edit', ['brand' => $brand->id]) }}"><img src="{{ asset('images/edit.svg') }}" class="action-icons"> Edit Brand Profile</a>
+                <a class="dropdown-item" href="{{ route('brand.edit', ['section' => 'all', 'brand' => $brand->id]) }}"><img src="{{ asset('images/edit.svg') }}" class="action-icons"> Edit Brand Profile</a>
                 @if ($brand->status == 0)
                     <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 1]) }}"><img src="{{ asset('images/brand-icon.svg') }}" class="action-icons"> Activate Brand Profile</a>
                 @elseif ($brand->status == 1)
-                    <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 0]) }}"><img src="{{ asset('images/trash.svg') }}" class="action-icons"> Archive Brand Profile</a>
+                    <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 2]) }}"><img src="{{ asset('images/trash.svg') }}" class="action-icons"> Archive Brand Profile</a>
+                @elseif ($brand->status == 2)
+                    <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 0]) }}"><img src="{{ asset('images/brand-icon.svg') }}" class="action-icons"> Restore Brand Profile</a>
                 @endif
               </div>
             </div>
             <div class="btn-group" role="group" aria-label="Actions">
-              <button type="button" class="btn btn-outline-light text-dark border"><i class="fas fa-angle-left fa-sm"></i></button>
-              <button type="button" class="btn btn-outline-light text-dark border"><i class="fas fa-angle-right fa-sm"></i></button>
+                @if ($previous)
+                    <a href="{{ route('brand.view', ['brand' => $previous]) }}" class="btn btn-outline-light text-dark border"><i class="fas fa-angle-left fa-sm"></i></a>
+                @else
+                    <a href="javascript:void(0);" class="btn btn-outline-light text-dark border disabled"><i class="fas fa-angle-left fa-sm"></i></a>
+                @endif
+                @if ($next)
+                    <a href="{{ route('brand.view', ['brand' => $next]) }}" class="btn btn-outline-light text-dark border"><i class="fas fa-angle-right fa-sm"></i></a>
+                @else
+                    <a href="javascript:void(0);" class="btn btn-outline-light text-dark border disabled"><i class="fas fa-angle-right fa-sm"></i></a>
+                @endif
             </div>
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header bg-primary py-2">
+    <div class="card mb-4 single-view">
+        <div class="card-header bg-primary py-4">
             <div class="top-main-logo">
                 @if ($logos->count() > 0)
                     <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $logos[0]->filename }}" class="main-logo" >
@@ -45,27 +55,33 @@
                 @endif
             </div>
         </div>
-        <div class="card-body">
-            <p class="text-dark">{{ $brand->name }}</p>
+        <div class="card-body pt-5">
+            <p class="title-brand text-dark mb-1">{{ $brand->name }}</p>
+            <div class="extra-information">
+                <ul class="d-flex justify-content-start">
+                    <li>{{ $brand->industry }}</li>
+                    <li>{{ $brand->website }}</li>
+                </ul>
+            </div>
         </div>
         <div class="card-footer py-0 bg-light-custom">
             <ul class="nav nav-tabs" id="brand-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active text-dark" id="information-tab" data-toggle="tab" href="#information" role="tab" aria-controls="information" aria-selected="true">Brand Information</a>
+                    <a class="nav-link active py-3 text-dark" id="information-tab" data-toggle="tab" href="#information" role="tab" aria-controls="information" aria-selected="true">Brand Information</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" id="assets-tab" data-toggle="tab" href="#assets" role="tab" aria-controls="assets" aria-selected="false">Assets</a>
+                    <a class="nav-link py-3 text-dark" id="assets-tab" data-toggle="tab" href="#assets" role="tab" aria-controls="assets" aria-selected="false">Assets</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" id="guidelines-tab" data-toggle="tab" href="#guidelines" role="tab" aria-controls="guidelines" aria-selected="false">Brand Guidelines</a>
+                    <a class="nav-link py-3 text-dark" id="guidelines-tab" data-toggle="tab" href="#guidelines" role="tab" aria-controls="guidelines" aria-selected="false">Brand Guidelines</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" id="templates-tab" data-toggle="tab" href="#templates" role="tab" aria-controls="templates" aria-selected="false">Templates</a>
+                    <a class="nav-link py-3 text-dark" id="templates-tab" data-toggle="tab" href="#templates" role="tab" aria-controls="templates" aria-selected="false">Templates</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" id="inspirations-tab" data-toggle="tab" href="#inspirations" role="tab" aria-controls="inspirations" aria-selected="false">Brand Inspiration</a>
+                    <a class="nav-link py-3 text-dark" id="inspirations-tab" data-toggle="tab" href="#inspirations" role="tab" aria-controls="inspirations" aria-selected="false">Brand Inspiration</a>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" id="social-tab" data-toggle="tab" href="#social" role="tab" aria-controls="social" aria-selected="false">Social Profile</a>
+                    <a class="nav-link py-3 text-dark" id="social-tab" data-toggle="tab" href="#social" role="tab" aria-controls="social" aria-selected="false">Social Profile</a>
                 </li>
             </ul>
         </div>
@@ -74,56 +90,56 @@
     <div class="tab-content" id="brand-tab-contents">
         <div class="tab-pane fade show active" id="information" role="tabpanel" aria-labelledby="information-tab">
             <div class="card mb-4">
-                <div class="card-header bg-light-custom">
-                    <h3 class="text-dark">Brand Information</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Brand Information</h3>
                 </div>
                 <div class="card-body py-0">
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Brand name</div>
+                            <div class="col-md-3 single-label">Brand name</div>
                             <div class="col-md-9">{{ $brand->name }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Brand description</div>
+                            <div class="col-md-3 single-label">Brand description</div>
                             <div class="col-md-9">{{ $brand->description }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Industry</div>
+                            <div class="col-md-3 single-label">Industry</div>
                             <div class="col-md-9">{{ $brand->industry }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Target audience</div>
+                            <div class="col-md-3 single-label">Target audience</div>
                             <div class="col-md-9">{{ $brand->target_audience }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Services Provider</div>
+                            <div class="col-md-3 single-label">Services Provider</div>
                             <div class="col-md-9">{{ $brand->services_provider }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3">
                         <div class="row">
-                            <div class="col-md-3">Website</div>
+                            <div class="col-md-3 single-label">Website</div>
                             <div class="col-md-9">{{ $brand->website }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'information', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
         </div>
         <div class="tab-pane fade" id="assets" role="tabpanel" aria-labelledby="assets-tab">
             <div class="card mb-4">
-                <div class="card-header bg-light-custom">
-                    <h3 class="text-dark">Logo</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Logo</h3>
                 </div>
                 <div class="card-body py-0">
                     <div class="py-4 border-bottom">
@@ -166,13 +182,13 @@
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'logo', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
 
             <div class="card mb-4">
-                <div class="card-header bg-light-custom">
-                    <h3 class="text-dark">Colors</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Colors</h3>
                 </div>
                 <div class="card-body py-0">
                     <div class="py-4 border-bottom">
@@ -201,13 +217,13 @@
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'colors', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
 
             <div class="card mb-4">
-                <div class="card-header bg-light-custom">
-                    <h3 class="text-dark">Fonts</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Fonts</h3>
                 </div>
                 <div class="card-body py-0">
                     <div class="py-4 border-bottom">
@@ -256,13 +272,13 @@
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'fonts', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
 
             <div class="card mb-4">
-                <div class="card-header bg-light-custom">
-                    <h3 class="text-dark">Images</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Images</h3>
                 </div>
                 <div class="card-body py-0">
                     <div class="py-4">
@@ -286,14 +302,15 @@
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'images', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
         </div>
+
         <div class="tab-pane fade" id="guidelines" role="tabpanel" aria-labelledby="guidelines-tab">
             <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="text-dark">Brand Guidelines</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Brand Guidelines</h3>
                 </div>
                 <div class="card-body">
                     <div class="d-flex guidelines">
@@ -317,14 +334,14 @@
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'guidelines', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
         </div>
         <div class="tab-pane fade" id="templates" role="tabpanel" aria-labelledby="templates-tab">
             <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="text-dark">Templates</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Templates</h3>
                 </div>
                 <div class="card-body">
                     <div class="d-flex templates">
@@ -348,14 +365,14 @@
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'templates', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
         </div>
         <div class="tab-pane fade" id="inspirations" role="tabpanel" aria-labelledby="inspirations-tab">
             <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="text-dark">Brand Inspiration</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Brand Inspiration</h3>
                 </div>
                 <div class="card-body">
                     <div class="d-flex inspirations">
@@ -379,55 +396,55 @@
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'inspirations', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
         </div>
         <div class="tab-pane fade" id="social" role="tabpanel" aria-labelledby="social-tab">
             <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="text-dark">Social Profile</h3>
+                <div class="card-header bg-light-custom py-4">
+                    <h3 class="text-dark mb-0">Social Profile</h3>
                 </div>
                 <div class="card-body">
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Facebook</div>
+                            <div class="col-md-3 single-label">Facebook</div>
                             <div class="col-md-9">{{ $brand->facebook }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Linkedin</div>
+                            <div class="col-md-3 single-label">Linkedin</div>
                             <div class="col-md-9">{{ $brand->linkedin }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Instagram</div>
+                            <div class="col-md-3 single-label">Instagram</div>
                             <div class="col-md-9">{{ $brand->instagram }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Twitter</div>
+                            <div class="col-md-3 single-label">Twitter</div>
                             <div class="col-md-9">{{ $brand->twitter }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3">Youtube</div>
+                            <div class="col-md-3 single-label">Youtube</div>
                             <div class="col-md-9">{{ $brand->youtube }}</div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3">
                         <div class="row">
-                            <div class="col-md-3">Tiktok</div>
+                            <div class="col-md-3 single-label">Tiktok</div>
                             <div class="col-md-9">{{ $brand->tiktok }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer bg-light-custom">
-                    <a href="{{ route('brand.edit', ['brand' => $brand->id]) }}">Edit</a>
+                    <a href="{{ route('brand.edit', ['section' => 'social', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
             </div>
         </div>

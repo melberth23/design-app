@@ -11272,8 +11272,6 @@ form.user .btn-user {
 footer.sticky-footer {
   padding: 2rem 0;
   flex-shrink: 0;
-  bottom: 0;
-  position: absolute;
   width: 100%;
 }
 
@@ -11310,6 +11308,8 @@ body.sidebar-toggled footer.sticky-footer {
 .top-main-logo img.main-logo {
   width: 100%;
   border-radius: 50%;
+  height: 100%;
+  object-fit: cover;
 }
 .top-main-logo h2 {
   padding: 0 16px;
@@ -11365,7 +11365,7 @@ h5.card-label {
 .media-container {
   position: relative;
   width: 100%;
-  max-width: 200px;
+  max-width: 150px;
 }
 .media-container.media-documents {
   max-width: 120px;
@@ -11374,13 +11374,13 @@ h5.card-label {
   padding: 30px;
   background: #F1F1F1 0% 0% no-repeat padding-box;
 }
-.fonts label, .templates label, .guidelines label {
+.pictures label, .fonts label, .templates label, .guidelines label {
   font-size: 12px;
   text-align: center;
 }
 .media-container img.logo-img, .media-container img.picture-img, .media-container img.inspiration-img {
   width: 100%;
-  max-width: 200px;
+  max-width: 150px;
   height: 150px;
   object-fit: cover;
 }

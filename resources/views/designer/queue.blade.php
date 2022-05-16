@@ -53,7 +53,7 @@
                                             </a>
                                         @endif
                                         @if ($request->status == 3)
-                                            <a class="btn btn-success m-2" href="#" data-toggle="modal" data-target="#reviewModal" >
+                                            <a class="btn btn-success m-2" href="#" data-ref="{{ $request->id }}" data-toggle="modal" data-target="#reviewModal" >
                                                 <i class="fa fa-check"></i>
                                             </a>
                                         @endif

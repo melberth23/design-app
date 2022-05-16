@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'For Review Requests List')
+@section('title', 'Requests List')
 
 @section('content')
     <div class="container-fluid">
@@ -29,10 +29,10 @@
                         <a class="nav-link py-3 {{ (request()->is('requests/queue')) ? 'active' : '' }}" id="queue-tab" href="{{ route('request.queue') }}">Queue {{ $queue }}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('requests/progress')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('requests/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('request.progress') }}">Progress {{ $progress }}</a>
+                        <a class="nav-link py-3 {{ (request()->is('requests/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('request.progress') }}">Progress {{ $requests->count()}}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('requests/review')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('requests/review')) ? 'active' : '' }}" id="review-tab" href="{{ route('request.review') }}">Review {{ $requests->count() }}</a>
+                        <a class="nav-link py-3 {{ (request()->is('requests/review')) ? 'active' : '' }}" id="review-tab" href="{{ route('request.review') }}">Review {{ $review }}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('requests/delivered')) ? 'border-bottom' : '' }}">
                         <a class="nav-link py-3 {{ (request()->is('requests/delivered')) ? 'active' : '' }}" id="delivered-tab" href="{{ route('request.delivered') }}">Completed {{ $completed }}</a>
@@ -71,10 +71,6 @@
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>
                                         </a>
-                                        <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 0]) }}"
-                                            class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Complete Request">
-                                            <i class="fa fa-cloud-upload"></i>
-                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -90,6 +86,7 @@
             </div>
         </div>
 
+        @include('requests.delete-modal')  
         @else
 
             <div class="card shadow mb-4">

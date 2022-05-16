@@ -15,12 +15,17 @@ class Requests extends Model
         'title',
         'design_type',
         'dimensions',
+        'custom_dimension',
         'format',
+        'adobe_format',
         'description',
         'dimensions_additional_info',
         'brand_id',
         'user_id',
-        'priority'
+        'include_text',
+        'included_text_description',
+        'reference_link',
+        'status'
     ];
 
     public function comments()
@@ -35,6 +40,11 @@ class Requests extends Model
 
     public function designtype()
     {
-        return $this->belongsTo(Admin\RequestTypes::class);
+        return $this->belongsTo(Admin\RequestTypes::class, 'design_type', 'id');
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 }

@@ -71,12 +71,27 @@
                     var ref = button.data('ref');
                     var modal = $(this);
                     modal.find('.modal-body #request_ref_id').val(ref);
-                })
+                });
 
             });
         });
     </script>
     @endhasrole
+
+    <script type="text/javascript">
+        jQuery(function($) {
+            $(function () {
+                
+                $('#deleteRequestModal').on('shown.bs.modal', function (event) {
+                    var button = $(event.relatedTarget);
+                    var ref = button.data('ref');
+                    var modal = $(this);
+                    modal.find('.modal-footer #request_id').val(ref);
+                });
+
+            });
+        });
+    </script>
 
     <!-- Custom scripts for all pages-->
     <script src="{{asset('admin/js/sb-admin-2.js')}}"></script>

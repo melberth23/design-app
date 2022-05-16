@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'View Request')
+@section('title', 'Messages')
 
 @section('content')
 
@@ -57,11 +57,6 @@
                         <i class="fa fa-cloud-upload"></i> Complete Request
                     </a>
                 @endif
-                @if ($requests->status == 0)
-                    <div class="px-2">
-                        <span><i class="fa fa-info-circle" aria-hidden="true"></i> No actions available if your request is already completed.</span>
-                    </div>
-                @endif
               </div>
             </div>
             <div class="btn-group m-1" role="group" aria-label="Actions">
@@ -98,114 +93,79 @@
     <div id="brand-tab-contents">
         <div class="card mb-4">
             <div class="card-header bg-light-custom py-4">
-                <h3 class="text-dark mb-0">Request details</h3>
+                <h3 class="text-dark mb-0">Files</h3>
             </div>
-            <div class="card-body py-0">
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Request Created</div>
-                        <div class="col-md-9">{{ $requests->created_at->format('d F, Y') }}</div>
+            <div class="card-body p4">
+                <h5 class="card-label text-dark">Media Files</h5>
+
+                @if ($medias->count() > 0)
+
+                    <div class="d-flex pictures">
+                        @foreach ($medias as $media)
+                            <div id="media-{{ $media->id }}">
+                                <div class="mx-1 media media-container">
+                                    <img src="{{ url('storage/comments') }}/{{ $media->comments->user_id }}/{{ $media->filename }}" class="picture-img">
+                                    <div class="overlay">
+                                        <a href="{{ route('comment.download', ['asset' => $media->id]) }}" class="icon">
+                                          <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <label class="mt-1">{{ $media->filename }}</label>
+                                <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $media->id]) }}">
+                                    <img src="{{ asset('images/download.svg') }}" class="action-icon">
+                                </a>
+                            </div>
+                        @endforeach
                     </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Delivery Date</div>
-                        <div class="col-md-9">{{ $requests->created_at->format('d F, Y') }}</div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Project Category</div>
-                        <div class="col-md-9">
-                            @if(!empty($requests->designtype->name))
-                                {{ $requests->designtype->name }}
-                            @else
-                                <!-- Empty -->
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Project Name</div>
-                        <div class="col-md-9">{{ $requests->title }}</div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Project Brief</div>
-                        <div class="col-md-9">{{ $requests->description }}</div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Text to include on the design</div>
-                        <div class="col-md-9">{{ $requests->included_text_description }}</div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Design Dimension</div>
-                        <div class="col-md-9">{{ ($requests->dimensions == 'custom') ? $requests->custom_dimension : $requests->dimensions }}</div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Brand Profile</div>
-                        <div class="col-md-9"><a class="text-decoration-none" href="{{ route('brand.view', ['brand' => $requests->brand_id]) }}">{{ $requests->brand->name }}</a></div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label"><span class="text-dark font-weight-bold">Assets</span></div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Design assets</div>
-                        <div class="col-md-9">
-                            <div class="d-flex pictures">
-                                @if ($medias->count() > 0)
-                                    @foreach ($medias as $media)
-                                        <div id="media-{{ $media->id }}" class="mx-1 media media-container">
-                                            <img src="{{ url('storage/media') }}/{{ auth()->user()->id }}/{{ $media->filename }}" class="picture-img">
-                                            <div class="overlay">
-                                                <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="icon">
-                                                  <i class="fas fa-download"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <p><em>-No images available</em></p>
-                                @endif
+
+                @else
+
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="no-record py-4 text-center text-dark">
+                            <div class="pt-4">
+                                <h2>No media files</h2>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Reference Links</div>
-                        <div class="col-md-9">{{ $requests->reference_link }}</div>
+
+                @endif
+            </div>
+            <div class="card-footer bg-light-custom p4">
+                <h5 class="card-label text-dark">Adobe Files</h5>
+
+                @if ($adobes->count() > 0)
+
+                    <div class="d-flex templates">
+                        @foreach ($adobes as $adobe)
+                            <div id="media-{{ $adobe->id }}">
+                                <div class="mx-1 template media-container media-documents">
+                                    <img src="{{ asset('images/template-img-') }}{{ $adobe->file_type }}.png" class="template-img">
+                                    <div class="overlay">
+                                        <a href="{{ route('comment.download', ['asset' => $adobe->id]) }}" class="icon">
+                                          <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <label class="mt-1">{{ $adobe->filename }}</label>
+                                <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $adobe->id]) }}">
+                                    <img src="{{ asset('images/download.svg') }}" class="action-icon">
+                                </a>
+                            </div>
+                        @endforeach
                     </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label"><span class="text-dark font-weight-bold">File Types</span></div>
+
+                @else
+
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="no-record py-4 text-center text-dark">
+                            <div class="pt-4">
+                                <h2>No adobe files</h2>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Files Needed</div>
-                        <div class="col-md-9">{{ $requests->format }}</div>
-                    </div>
-                </div>
-                <div class="tab-text-label text-dark py-3">
-                    <div class="row">
-                        <div class="col-md-3 single-label">Adobe Files</div>
-                        <div class="col-md-9">{{ $requests->adobe_format }}</div>
-                    </div>
-                </div>
+
+                @endif
             </div>
         </div>
     </div>

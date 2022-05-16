@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="29.66" height="30.067" viewBox="0 0 29.66 30.067">
+  <g id="billboard" transform="translate(0 0)">
+    <g id="Group_44" data-name="Group 44" transform="translate(5.504 9.644)">
+      <g id="Group_43" data-name="Group 43">
+        <rect id="Rectangle_40" data-name="Rectangle 40" width="18.651" height="1.871" rx="0.757" transform="translate(0 4.293)" fill="#9672fb"/>
+        <rect id="Rectangle_41" data-name="Rectangle 41" width="18.651" height="1.871" rx="0.757" fill="#9672fb"/>
+      </g>
+    </g>
+    <path id="Path_77" data-name="Path 77" d="M461.631,418.308a.947.947,0,0,0-.669-.277h-3.1v-1.163H458a.944.944,0,1,0,0-1.888h-2.16a.944.944,0,0,0,0,1.888h.136v1.163h-7.956v-1.163h.136a.944.944,0,1,0,0-1.888H446a.944.944,0,1,0,0,1.888h.135v1.163h-8.218v-1.163h.136a.944.944,0,0,0,0-1.888h-2.16a.944.944,0,0,0,0,1.888h.136v1.163h-2.834a.944.944,0,0,0-.944.944h0v17.458h0a.944.944,0,0,0,.944.944h10.224v2.8a.944.944,0,0,0,.944.944h1.772V444.1a.945.945,0,1,0,1.89,0v-2.981h1.772a.944.944,0,0,0,.944-.944v-2.8h10.224a.945.945,0,0,0,.945-.944V418.977A.947.947,0,0,0,461.631,418.308Zm-27.5,17.182V419.921h25.882V435.49Zm14.714,3.742H445.3V437.38h3.544Z" transform="translate(-432.247 -414.98)" fill="#433f4d"/>
+  </g>
+</svg>

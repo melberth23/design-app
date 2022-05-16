@@ -55,12 +55,15 @@ Route::prefix('profile')->name('profile.')->middleware(['auth', 'is_verify_email
 // Brands 
 Route::middleware(['auth', 'is_verify_email'])->prefix('brands')->name('brand.')->group(function(){
     Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
+    Route::get('/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'index'])->name('index.sort');
     Route::get('/drafts', [App\Http\Controllers\BrandController::class, 'drafts'])->name('drafts');
+    Route::get('/drafts/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'drafts'])->name('drafts.sort');
     Route::get('/archived', [App\Http\Controllers\BrandController::class, 'archived'])->name('archived');
+    Route::get('/archived/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'archived'])->name('archived.sort');
     Route::get('/view/{brand}', [App\Http\Controllers\BrandController::class, 'view'])->name('view');
     Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
     Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
-    Route::get('/edit/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
+    Route::get('/edit/{section}/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
     Route::put('/update/{brand}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
     Route::delete('/delete/{brand}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
     Route::post('/delete-assets', [App\Http\Controllers\BrandController::class, 'deleteAsset'])->name('destroyassets');
@@ -72,16 +75,19 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::get('/', [App\Http\Controllers\RequestsController::class, 'index'])->name('index');
     Route::get('/view/{requests}', [App\Http\Controllers\RequestsController::class, 'view'])->name('view');
     Route::get('/queue', [App\Http\Controllers\RequestsController::class, 'queue'])->name('queue');
+    Route::get('/progress', [App\Http\Controllers\RequestsController::class, 'progress'])->name('progress');
     Route::get('/review', [App\Http\Controllers\RequestsController::class, 'review'])->name('review');
     Route::get('/delivered', [App\Http\Controllers\RequestsController::class, 'delivered'])->name('delivered');
     Route::get('/draft', [App\Http\Controllers\RequestsController::class, 'draft'])->name('draft');
     Route::get('/create', [App\Http\Controllers\RequestsController::class, 'create'])->name('create');
+    Route::get('/request-type/{type}', [App\Http\Controllers\RequestsController::class, 'request_type'])->name('requesttype');
     Route::post('/store', [App\Http\Controllers\RequestsController::class, 'store'])->name('store');
     Route::get('/edit/{requests}', [App\Http\Controllers\RequestsController::class, 'edit'])->name('edit');
     Route::get('/comment/{requests}', [App\Http\Controllers\RequestsController::class, 'comment'])->name('comment');
+    Route::get('/files/{requests}', [App\Http\Controllers\RequestsController::class, 'files'])->name('files');
     Route::post('/user-comment', [App\Http\Controllers\RequestsController::class, 'addComment'])->name('addcomment');
     Route::put('/update/{requests}', [App\Http\Controllers\RequestsController::class, 'update'])->name('update');
-    Route::delete('/delete/{requests}', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
+    Route::post('/delete', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
     Route::post('/delete-media', [App\Http\Controllers\RequestsController::class, 'deleteAsset'])->name('destroyassets');
     Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
 });
