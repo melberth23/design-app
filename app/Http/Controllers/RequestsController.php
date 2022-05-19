@@ -273,6 +273,9 @@ class RequestsController extends Controller
         DB::beginTransaction();
         try {
 
+            $file_type = !empty($request->file_type)?implode(',', $request->file_type):'';
+            $adobe_type = !empty($request->adobe_type)?implode(',', $request->adobe_type):'';
+
             // Store Data
             $requests = Requests::create([
                 'title'    => $request->title,
@@ -280,8 +283,8 @@ class RequestsController extends Controller
                 'dimensions'    => $request->dimensions,
                 'custom_dimension'  => $request->custom_dimension,
                 'description'   => $request->description,
-                'format'        => implode(',', $request->file_type),
-                'adobe_format'  => implode(',', $request->adobe_type),
+                'format'        => $file_type,
+                'adobe_format'  => $adobe_type,
                 'include_text'  => $request->include_text,
                 'included_text_description'  => $request->included_text_description,
                 'reference_link'  => $request->reference_link,

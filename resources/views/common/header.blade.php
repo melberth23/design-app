@@ -35,18 +35,19 @@
                         src="{{asset('admin/img/undraw_profile.svg')}}">
                 </a>
                 <!-- Dropdown - User Information -->
-                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in py-0"
                     aria-labelledby="userDropdown">
-                    <span class="dropdown-item mr-2 text-gray-600">{{ Auth::user()->fullname }}</span>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ route('profile.detail') }}">
-                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Profile
+                    <span class="dropdown-item mr-2 py-3 bg-primary border-bottom text-light rounded-top">
+                        <span class="d-block">{{ Auth::user()->fullname }}</span>
+                        <span class="img-limit text-light">{{ Auth::user()->email }}</span>
+                    </span>
+                    <a class="dropdown-item py-2" href="{{ route('profile.detail') }}">
+                        <i class="fas fa-cog fa-fw mr-2 text-dark" aria-hidden="true"></i>
+                        Settings
                     </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Logout
+                    <a class="dropdown-item py-2" href="#" data-toggle="modal" data-target="#logoutModal">
+                        <i class="fas fa-arrow-circle-right fa-fw mr-2 text-dark" aria-hidden="true"></i>
+                        Log out
                     </a>
                 </div>
             </li>

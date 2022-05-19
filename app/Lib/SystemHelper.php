@@ -195,7 +195,7 @@ class SystemHelper {
         $logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo')->first();
 
         $string = '<h2>'. substr($brand->name, 0, 1) .'.</h2>';
-        if ($logos->count() > 0) {
+        if (!empty($logos) && $logos->count() > 0) {
             $string = '<img src="'. url('storage/logos') .'/'.$brand->user_id .'/'. $logos->filename .'" class="main-logo" >';
         }
 

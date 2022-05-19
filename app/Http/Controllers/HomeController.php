@@ -144,6 +144,16 @@ class HomeController extends Controller
     }
 
     /**
+     * User Security Profile
+     * @param Nill
+     * @return View Profile
+     */
+    public function securityProfile()
+    {
+        return view('profile');
+    }
+
+    /**
      * Update Profile
      * @param $profileData
      * @return Boolean With Success Message
@@ -206,6 +216,30 @@ class HomeController extends Controller
             
         } catch (\Throwable $th) {
             DB::rollBack();
+            return back()->with('error', $th->getMessage());
+        }
+    }
+
+    /**
+     * Delete Account
+     * @param Email address
+     * @return Bolean with success message
+     */
+    public function deleteAccount(Request $request)
+    {
+        $request->validate([
+            'email' => ['required']
+        ]);
+
+        try {
+            #Match User
+            if($request->email == auth()->user()->email) {
+                #Return To Profile page with success
+                return back()->with('success', 'Password Changed Successfully.');
+            } else {
+                return back()->with('error', 'The Email you');
+            }   
+        } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
     }

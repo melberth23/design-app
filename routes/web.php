@@ -46,7 +46,9 @@ Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])-
 // Profile Routes
 Route::prefix('profile')->name('profile.')->middleware(['auth', 'is_verify_email'])->group(function(){
     Route::get('/', [HomeController::class, 'getProfile'])->name('detail');
+    Route::get('/security', [HomeController::class, 'securityProfile'])->name('security');
     Route::post('/update', [HomeController::class, 'updateProfile'])->name('update');
+    Route::post('/delete', [HomeController::class, 'deleteAccount'])->name('delete');
     Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
 });
 
