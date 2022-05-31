@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
-
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Payments;
 use App\Models\UserVerify;
+use App\Models\Invoices;
 use App\Mail\DigitalMail;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +20,7 @@ use App\Lib\PaymentHelper;
 use App\Lib\SystemHelper;
 use Redirect;
 use DB;
+use PDF;
 
 
 class AccountController extends Controller
@@ -129,7 +130,8 @@ class AccountController extends Controller
             ));
 
             if(!empty($response['status']) && $response['status'] == 'scheduled') {
-                $this->createPayment([
+
+                Payments::create([
                     'user_id' => $user->id,
                     'reference' => $response['id'],
                     'business_recurring_plans_id' => $response['business_recurring_plans_id'],
@@ -138,7 +140,7 @@ class AccountController extends Controller
                     'currency' => $response['currency'],
                     'price' => $response['price'],
                     'status' => $response['status'],
-                    'payment_methods' => $response['payment_methods'],
+                    'payment_methods' => json_encode($response['payment_methods']),
                     'payment_url' => $response['url'],
                 ]);
 
@@ -170,19 +172,37 @@ class AccountController extends Controller
         }
     }
 
-    public function createPayment(array $data) {
-        return Payments::create([
-            'user_id' => $data['user_id'],
-            'reference' => $data['reference'],
-            'business_recurring_plans_id' => $data['business_recurring_plans_id'],
-            'plan' => $data['plan'],
-            'cycle' => $data['cycle'],
-            'currency' => $data['currency'],
-            'price' => $data['price'],
-            'status' => $data['status'],
-            'payment_methods' => json_encode($data['payment_methods']),
-            'payment_url' => $data['payment_url'],
-        ]);
+    public function generateInvoicePDF(Invoices $invoice)
+    {        
+        $pdf = PDF::loadView('account.invoice', ['invoice' => $invoice, 'user' => auth()->user(), 'logo' => asset('images/logo-dark.svg')]);
+        return $pdf->download('invoice_'. date('Y-m-d') .'.pdf');
     }
 
+    public function viewInvoicePDF(Invoices $invoice)
+    {        
+        $pdf = PDF::loadView('account.invoice', ['invoice' => $invoice, 'user' => auth()->user(), 'logo' => asset('images/logo-dark.svg')]);
+        return $pdf->stream();
+    }
+
+    public function sendInvoicePDF(Request $request)
+    {        
+        $invoice = Invoices::whereId($request->invoiceid)->first();
+        $pdf = PDF::loadView('account.invoice', ['invoice' => $invoice, 'user' => auth()->user(), 'logo' => asset('images/logo-dark.svg')]);
+
+        // Send Code
+        $data = array(
+            'subject' => 'Invoice copy for '. date('Y-m-d', strtotime($invoice->created_at)),
+            'heading' => 'Hi '. auth()->user()->fullname,
+            'content' => 'Please refer attached file for your copy of '. date('Y-m-d', strtotime($invoice->created_at)) .' invoice.',
+            'email' => auth()->user()->email,
+            'name' => auth()->user()->fullname,
+        );
+        Mail::send('emails.invoice', $data, function($message)use($data, $pdf) {
+            $message->to($data["email"], $data["name"])
+            ->subject($data["subject"])
+            ->attachData($pdf->output(), 'invoice_'. date('Y-m-d') .'.pdf');
+        });
+
+        return response()->json(array('error' => 0, 'msg'=> 'Email sent!'), 200);
+    }
 }

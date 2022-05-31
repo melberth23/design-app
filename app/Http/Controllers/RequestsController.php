@@ -48,8 +48,7 @@ class RequestsController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             $requests = Requests::where('user_id', $userid)->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
@@ -72,8 +71,7 @@ class RequestsController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 2)->paginate(10);
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
@@ -96,8 +94,7 @@ class RequestsController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 3)->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
@@ -120,8 +117,7 @@ class RequestsController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 4)->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
@@ -144,8 +140,7 @@ class RequestsController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 0)->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
@@ -168,8 +163,7 @@ class RequestsController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             $requests = Requests::where('user_id', $userid)->where('status', 1)->paginate(10);
             return view('requests.draft', ['requests' => $requests]);
         } else {
@@ -215,8 +209,7 @@ class RequestsController extends Controller
     {
         $userid = Auth::id();
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             $designtypes = RequestTypes::get();
 
             return view('requests.add', ['designtypes' => $designtypes]);
@@ -234,8 +227,7 @@ class RequestsController extends Controller
     {
         $userid = Auth::id();
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             $brands = Brand::where('user_id', $userid)->get();
             $file_types = $this->helper->request_file_types();
             $designtype = RequestTypes::whereId($type)->first();
@@ -676,8 +668,7 @@ class RequestsController extends Controller
         if(auth()->user()->hasRole('User')) {
             $userid = Auth::id();
             // Get payment link if not yet paid
-            $paymentinfo = Payments::where('user_id', $userid)->first();
-            if($paymentinfo->status == 'active') {
+            if(auth()->user()->payments->status == 'active') {
                 $permitted = true;
             }
         } else {

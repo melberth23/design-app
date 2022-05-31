@@ -16,13 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('home');
-// Route::get('/solutions', [App\Http\Controllers\PageController::class, 'index'])->name('solutions');
-// Route::get('/platform', [App\Http\Controllers\PageController::class, 'index'])->name('platform');
-// Route::get('/our-works', [App\Http\Controllers\PageController::class, 'index'])->name('ourworks');
-// Route::get('/resources', [App\Http\Controllers\PageController::class, 'index'])->name('resources');
-// Route::get('/plans', [App\Http\Controllers\PageController::class, 'plans'])->name('plans');
 Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
+Route::get('/change-payment-success', [App\Http\Controllers\PaymentsController::class, 'changepayment'])->name('change.payment');
 Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
 Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');
 
@@ -35,6 +30,9 @@ Auth::routes();
 Route::get('/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadBrandFile'])->name('download');
 Route::get('/request/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadRequestFile'])->name('request.download');
 Route::get('/comment/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadCommentFile'])->name('comment.download');
+Route::get('/generate-invoice/{invoice}', [App\Http\Controllers\AccountController::class, 'generateInvoicePDF'])->name('generate.invoice');
+Route::get('/view-invoice/{invoice}', [App\Http\Controllers\AccountController::class, 'viewInvoicePDF'])->name('view.invoice');
+Route::post('/send-invoice', [App\Http\Controllers\AccountController::class, 'sendInvoicePDF'])->name('send.invoice');
 
 Route::get('/search', [App\Http\Controllers\RequestsController::class, 'searchRequests'])->name('search');
 
@@ -47,8 +45,21 @@ Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])-
 Route::prefix('profile')->name('profile.')->middleware(['auth', 'is_verify_email'])->group(function(){
     Route::get('/', [HomeController::class, 'getProfile'])->name('detail');
     Route::get('/security', [HomeController::class, 'securityProfile'])->name('security');
+    Route::get('/delete-account', [HomeController::class, 'delete'])->name('delete.account');
+    Route::get('/upgrade', [HomeController::class, 'upgrade'])->name('upgrade');
+    Route::get('/subscription', [HomeController::class, 'subscription'])->name('subscription');
+    Route::get('/invoices', [HomeController::class, 'invoices'])->name('invoices');
+    Route::get('/payment-methods', [HomeController::class, 'paymentmethods'])->name('paymentmethods');
+    Route::get('/change-card', [HomeController::class, 'changecard'])->name('changecard');
+    Route::post('/upgradeplan', [HomeController::class, 'upgradeplan'])->name('upgradeplan');
+    Route::post('/addplan', [HomeController::class, 'addplan'])->name('addplan');
     Route::post('/update', [HomeController::class, 'updateProfile'])->name('update');
+    Route::post('/cancel', [HomeController::class, 'cancel'])->name('cancel');
+    Route::post('/emailverify', [HomeController::class, 'emailverifyProfile'])->name('emailverify');
+    Route::post('/phoneverify', [HomeController::class, 'phoneverifyProfile'])->name('phoneverify');
+    Route::post('/resendcode', [HomeController::class, 'resendcodeProfile'])->name('resendcode');
     Route::post('/delete', [HomeController::class, 'deleteAccount'])->name('delete');
+    Route::post('/confirm-delete', [HomeController::class, 'confirmDeleteAccount'])->name('confirm.delete');
     Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
 });
 

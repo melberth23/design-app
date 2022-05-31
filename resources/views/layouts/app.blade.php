@@ -61,6 +61,23 @@
             });
         });
     </script>
+    @hasrole('User')
+    <script type="text/javascript">
+        jQuery(function($) {
+            $(function () {
+                
+                $('#sendInvoiceModal').on('shown.bs.modal', function (event) {
+                    var button = $(event.relatedTarget);
+                    var ref = button.data('ref');
+                    var modal = $(this);
+                    modal.find('.modal-body #invoice_ref_id').val(ref);
+                });
+
+            });
+        });
+    </script>
+    @endhasrole
+
     @hasrole('Designer')
     <script type="text/javascript">
         jQuery(function($) {

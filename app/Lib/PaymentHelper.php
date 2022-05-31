@@ -71,14 +71,30 @@ class PaymentHelper {
 
         $this->curl = curl_init();
 
-        curl_setopt_array($this->curl, array(
-          CURLOPT_URL => $requestUrl,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_SSL_VERIFYPEER => false,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => http_build_query($data),
-          CURLOPT_HTTPHEADER => $headers,
-        ));
+        $options        = array();
+        $options[CURLOPT_HTTPHEADER] = $headers;
+        $options[CURLOPT_RETURNTRANSFER] = true;
+
+        if($method == 'POST') {
+            $options[CURLOPT_CUSTOMREQUEST] = "POST";
+            $options[CURLOPT_POSTFIELDS] = http_build_query($data);
+        } else if($method == 'DELETE') {
+            $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+        } else if($method == 'PATCH') {
+            $options[CURLOPT_POST] = 1;
+            $options[CURLOPT_POSTFIELDS] = http_build_query($data);         
+            $options[CURLOPT_CUSTOMREQUEST] = 'PATCH';
+        } else if ($method == 'GET' or $method == 'HEAD') {
+            if (!empty($data)) {
+                /* Update URL to container Query String of Paramaters */
+                $requestUrl .= '?' . http_build_query($data);
+            }
+        }
+
+        $options[CURLOPT_URL] = $requestUrl;
+        $options[CURLOPT_SSL_VERIFYPEER] = false;
+
+        curl_setopt_array($this->curl, $options);
 
         $response = curl_exec($this->curl);
         $err = curl_error($this->curl);
@@ -112,5 +128,15 @@ class PaymentHelper {
         $response = $this->api_call('POST', 'recurring-billing', $data); 
 
         return $response;
+    }
+
+    /**
+    * @param array account key.
+    * @return array single PaymentRequest object.
+    */
+    public function recurringDeleteAccount($reference)
+    {
+        $response = $this->api_call('DELETE', 'recurring-billing/'. $reference, array());
+        return $response; 
     }
 }

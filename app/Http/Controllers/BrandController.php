@@ -42,8 +42,7 @@ class BrandController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             // Get lists of brands
             $brands = Brand::where('user_id', $userid);
             if(!empty($type) && $type == 'date') {
@@ -70,8 +69,7 @@ class BrandController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             // Get lists of brands
             $brands = Brand::where('user_id', $userid)->where('status', 0);
             $brands = $brands->paginate(10);
@@ -92,8 +90,7 @@ class BrandController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             // Get lists of brands
             $brands = Brand::where('user_id', $userid)->where('status', 2);
             $brands = $brands->paginate(10);
@@ -172,8 +169,7 @@ class BrandController extends Controller
         $userid = Auth::id();
 
         // Get payment link if not yet paid
-        $paymentinfo = Payments::where('user_id', $userid)->first();
-        if($paymentinfo->status == 'active') {
+        if(auth()->user()->payments->status == 'active') {
             return view('brands.add');
         } else {
             return redirect()->route('dashboard');

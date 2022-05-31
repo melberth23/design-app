@@ -3,19 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserSettings;
 use App\Models\Requests;
 use App\Models\Brand;
 use App\Models\Payments;
+use App\Models\NewAttempt;
+use App\Models\DeleteReason;
+use App\Models\Invoices;
+use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
 use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use App\Lib\PaymentHelper;
+use App\Lib\SystemHelper;
+use Redirect;
 
 class HomeController extends Controller
 {
+    public $helper;
+
     /**
      * Create a new controller instance.
      *
@@ -24,6 +36,8 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->helper = new SystemHelper();
     }
 
     /**
@@ -105,13 +119,15 @@ class HomeController extends Controller
 
 
         if($user->hasRole('User')) {
-            // Get payment link if not yet paid
-            $paymentinfo = Payments::where('user_id', $user->id)->first();
-
             // Get all in progress requests
             $allinprogressreq = Requests::where('user_id', $user->id)->where('status', 3)->get();
 
-            return view('home', ['payment_status' => $paymentinfo->status, 'payment_url' => $paymentinfo->payment_url, 'user_fullname' => $user->fullname, 'total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'allinprogressreq' => $allinprogressreq, 'filter' => $filter, 'from' => $from, 'to' => $to]);
+            $payment_url = auth()->user()->payments->payment_url;
+            if(auth()->user()->payments->status == 'cancelled') {
+                $payment_url = route('profile.subscription');
+            }
+
+            return view('home', ['payment_status' => auth()->user()->payments->status, 'payment_url' => $payment_url, 'user_fullname' => $user->fullname, 'total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'allinprogressreq' => $allinprogressreq, 'filter' => $filter, 'from' => $from, 'to' => $to]);
         } else {
             // Get all request current month
             $currentmonthreq = Requests::where('user_id', '!=', $user->id)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)->count();
@@ -140,7 +156,7 @@ class HomeController extends Controller
      */
     public function getProfile()
     {
-        return view('profile');
+        return view('account.profile');
     }
 
     /**
@@ -150,7 +166,67 @@ class HomeController extends Controller
      */
     public function securityProfile()
     {
-        return view('profile');
+        return view('account.security');
+    }
+
+    /**
+     * User Upgrade Plan
+     * @param Nill
+     * @return View Profile
+     */
+    public function upgrade()
+    {  
+        if(auth()->user()->payments->status == 'cancelled') {
+            return redirect()->route('profile.subscription');
+        } else {
+            return view('account.upgrade');
+        }
+    }
+
+    /**
+     * User Upgrade Plan
+     * @param Nill
+     * @return View Profile
+     */
+    public function subscription()
+    {  
+        if(auth()->user()->payments->status == 'cancelled') {
+            return view('account.subscription');
+        } else {
+            return redirect()->route('profile.upgrade');
+        }
+    }
+
+    /**
+     * Invoices
+     * @return All user invoices
+     * */
+    public function invoices()
+    {
+        $invoices = Invoices::where('user_id', auth()->user()->id)->paginate(10);
+        return view('account.invoices', ['invoices' => $invoices]);
+    }
+
+    /**
+     * Payment method
+     * @return User Payment method
+     * */
+    public function paymentmethods()
+    {
+        $data = [
+            'billing_fname' => $this->helper->getUserSetting(auth()->user()->id, 'billing_fname'),
+            'billing_lname' => $this->helper->getUserSetting(auth()->user()->id, 'billing_lname'),
+            'billing_address1' => $this->helper->getUserSetting(auth()->user()->id, 'billing_address1'),
+            'billing_address2' => $this->helper->getUserSetting(auth()->user()->id, 'billing_address2'),
+            'billing_city' => $this->helper->getUserSetting(auth()->user()->id, 'billing_city'),
+            'billing_state' => $this->helper->getUserSetting(auth()->user()->id, 'billing_state'),
+            'billing_zipcode' => $this->helper->getUserSetting(auth()->user()->id, 'billing_zipcode'),
+            'billing_country' => $this->helper->getUserSetting(auth()->user()->id, 'billing_country'),
+            'card_brand' => $this->helper->getUserSetting(auth()->user()->id, 'card_brand'),
+            'card_last4' => $this->helper->getUserSetting(auth()->user()->id, 'card_last4'),
+            'card_expires_at' => $this->helper->getUserSetting(auth()->user()->id, 'card_expires_at')
+        ];
+        return view('account.paymentmethod', ['data' => $data]);
     }
 
     /**
@@ -161,32 +237,262 @@ class HomeController extends Controller
     public function updateProfile(Request $request)
     {
         #Validations
-        $request->validate([
-            'first_name'    => 'required',
-            'last_name'     => 'required',
-            'mobile_number' => 'required|numeric|digits:10',
-        ]);
+        $rules = [];
+        if($request->action == 'fullname') {
+            $rules = [
+                'first_name'    => 'required',
+                'last_name'     => 'required'
+            ];
+        } elseif($request->action == 'email') {
+            $rules = [
+                'email' => 'required|unique:users,email'
+            ];
+        } elseif($request->action == 'phone') {
+            $rules = [
+                'mobile_number' => 'required|numeric|digits:10'
+            ];
+        } elseif($request->action == 'address') {
+            $rules = [
+                'address_1' => 'required',
+                'city' => 'required',
+                'state' => 'required',
+                'zip' => 'required',
+                'country' => 'required'
+            ];
+        } elseif($request->action == 'timezone') {
+            $rules = [
+                'time_zone' => 'required'
+            ];
+        } elseif($request->action == 'language') {
+            $rules = [
+                'language' => 'required'
+            ];
+        } elseif($request->action == 'currency') {
+            $rules = [
+                'currency' => 'required'
+            ];
+        } elseif($request->action == 'password') {
+            $rules = [
+                'current_password' => ['required', new MatchOldPassword],
+                'new_password' => ['required'],
+                'new_confirm_password' => ['same:new_password']
+            ];
+        }
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails())
+        {
+            return response()->json(array('error' => 1, 'msg'=> $validator->errors()->all()), 200);
+        }
 
         try {
             DB::beginTransaction();
             
+            $userid = auth()->user()->id;
+            $key = 0;
+            $value = 0;
+
             #Update Profile Data
-            User::whereId(auth()->user()->id)->update([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'mobile_number' => $request->mobile_number,
-            ]);
+            $data = [];
+            if($request->action == 'fullname') {
+                $data = [
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name
+                ];
+                User::whereId($userid)->update($data);
+            } elseif($request->action == 'email') {
+                $data = [
+                    'email' => $request->email,
+                ];
+                $key = 'email';
+                $value = $request->email;
+                $this->helper->updateOrCreateUserSetting($userid, 'new_email', $request->email);
+
+                // Send Code
+                $code = sprintf("%04d", mt_rand(1, 9999));
+                $details = array(
+                    'subject' => 'Request change email code',
+                    'heading' => 'Hi '. auth()->user()->fullname,
+                    'message' => 'This email to confirm that you are about to change your email.',
+                    'fieldlabel' => 'Email Address',
+                    'code' => $code,
+                    'template' => 'confirmcode'
+                );
+                Mail::to($request->email)->send(new DigitalMail($details));
+
+                $this->helper->updateOrCreateUserSetting($userid, 'email_code', $code);
+
+            } elseif($request->action == 'phone') {
+                $data = [
+                    'mobile_number' => $request->mobile_number
+                ];
+                User::whereId($userid)->update($data);
+                // $key = 'phone';
+                // $value = $request->mobile_number;
+                // $this->helper->updateOrCreateUserSetting($userid, 'new_phone', $request->mobile_number);
+
+                // // Send Code
+                // $pcode = sprintf("%04d", mt_rand(1, 9999));
+                // $details = array(
+                //     'subject' => 'Request change phone code',
+                //     'heading' => 'Hi '. auth()->user()->fullname,
+                //     'message' => 'This email to confirm that you are about to change your phone number.',
+                //     'fieldlabel' => 'phone number',
+                //     'code' => $pcode,
+                //     'template' => 'confirmcode'
+                // );
+                // Mail::to(auth()->user()->email)->send(new DigitalMail($details));
+
+                // $this->helper->updateOrCreateUserSetting($userid, 'phone_code', $pcode);
+
+            } elseif($request->action == 'address') {
+                $data = [
+                    'address_1' => $request->address_1,
+                    'address_2' => $request->address_2,
+                    'city' => $request->city,
+                    'state' => $request->state,
+                    'zip' => $request->zip,
+                    'country' => $request->country
+                ];
+                User::whereId($userid)->update($data);
+            } elseif($request->action == 'timezone') {
+                $data = [
+                    'time_zone' => $request->time_zone
+                ];
+                $this->helper->updateOrCreateUserSetting($userid, 'time_zone', $request->time_zone);
+            } elseif($request->action == 'language') {
+                $data = [
+                    'language' => $request->language
+                ];
+                $this->helper->updateOrCreateUserSetting($userid, 'language', $request->language);
+            } elseif($request->action == 'currency') {
+                $data = [
+                    'currency' => $request->currency
+                ];
+                $this->helper->updateOrCreateUserSetting($userid, 'currency', $request->currency);
+            } elseif($request->action == 'password') {
+                User::find($userid)->update(['password'=> Hash::make($request->new_password)]);
+            } elseif($request->action == 'billing') {
+                $this->helper->updateOrCreateUserSetting($userid, 'billing_fname', $request->billing_fname);
+                $this->helper->updateOrCreateUserSetting($userid, 'billing_lname', $request->billing_lname);
+                $this->helper->updateOrCreateUserSetting($userid, 'billing_address1', $request->billing_address1);
+                $this->helper->updateOrCreateUserSetting($userid, 'billing_address2', $request->billing_address2);
+                $this->helper->updateOrCreateUserSetting($userid, 'billing_city', $request->billing_city);
+                $this->helper->updateOrCreateUserSetting($userid, 'billing_state', $request->billing_state);
+                $this->helper->updateOrCreateUserSetting($userid, 'billing_zipcode', $request->billing_zipcode);
+                $this->helper->updateOrCreateUserSetting($userid, 'billing_country', $request->billing_country);
+            }
 
             #Commit Transaction
             DB::commit();
 
-            #Return To Profile page with success
-            return back()->with('success', 'Profile Updated Successfully.');
+            $request->session()->flash('success', 'Profile Updated Successfully.');
+
+            return response()->json(array('error' => 0, 'msg'=> ['Profile updated successfully!'], 'key' => $key, 'value' => $value), 200);
             
         } catch (\Throwable $th) {
             DB::rollBack();
-            return back()->with('error', $th->getMessage());
+            
+            return response()->json(array('error' => 1, 'msg'=> $th->getMessage()), 200);
         }
+    }
+
+    /**
+     * Verify new email
+     * @param $email
+     * @return Boolean with success
+     */
+    public function emailverifyProfile(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+                        'email_code' => 'required'
+                    ]);
+
+        if ($validator->fails())
+        {
+            return response()->json(array('error' => 1, 'msg'=> $validator->errors()->all()), 200);
+        }
+
+        try {
+            DB::beginTransaction();
+            
+            $userid = auth()->user()->id;
+            $email_code = UserSettings::where('user_id', $userid)->where('name', 'email_code')->first();
+            if(!empty($email_code) && $email_code->value == $request->email_code) {
+                $new_email = UserSettings::where('user_id', $userid)->where('name', 'new_email')->first();
+
+                #Update Profile Data
+                $data = [
+                    'email' => $new_email->value,
+                ];
+                User::whereId($userid)->update($data);
+
+                #Commit Transaction
+                DB::commit();
+
+                $request->session()->flash('success', 'Email updated and verified Successfully.');
+
+                return response()->json(array('error' => 0, 'msg'=> 'Email updated and verified successfully!'), 200);
+            } else {
+                DB::rollBack();
+            
+                return response()->json(array('error' => 1, 'msg'=> ['Invalid code. Please try again!']), 200);
+            }
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            
+            return response()->json(array('error' => 1, 'msg'=> $th->getMessage()), 200);
+        }
+    }
+
+    /**
+     * Verify new phone
+     * @param $phone
+     * @return Boolean with success
+     */
+    public function phoneverifyProfile(Request $request)
+    {
+
+    }
+
+    /**
+     * Resend new code
+     * @param $type
+     * @return Boolean with success
+     */
+    public function resendcodeProfile(Request $request)
+    {
+        $userid = auth()->user()->id;
+
+        // Send Code
+        $code = sprintf("%04d", mt_rand(1, 9999));
+
+        $field = 'phone_code';
+        $label = 'phone number';
+        $email = auth()->user()->email;
+        if($request->type == 'email') {
+            $field = 'email_code';
+            $label = 'Email Address';
+
+            $new_email = UserSettings::where('user_id', $userid)->where('name', 'new_email')->first();
+            $email = $new_email->value;
+        }
+
+        $details = array(
+            'subject' => 'Request change '. $request->type .' code',
+            'heading' => 'Hi '. auth()->user()->fullname,
+            'message' => 'This email to confirm that you are about to change your '. $label .'.',
+            'fieldlabel' => $label,
+            'code' => $code,
+            'template' => 'confirmcode'
+        );
+        Mail::to($email)->send(new DigitalMail($details));
+
+        $this->helper->updateOrCreateUserSetting($userid, $field, $code);
+
+        return response()->json(array('error' => 0, 'msg'=> 'New code sent!'), 200);
     }
 
     /**
@@ -234,13 +540,333 @@ class HomeController extends Controller
         try {
             #Match User
             if($request->email == auth()->user()->email) {
+
+                // Send Email
+                $details = array(
+                    'subject' => 'Request status changed',
+                    'heading' => 'Hi '. auth()->user()->fullname,
+                    'message' => 'This email to confirm that you are about to delete your account in Designsowl.',
+                    'template' => 'deleteaccount'
+                );
+                Mail::to(auth()->user()->email)->send(new DigitalMail($details));
+
                 #Return To Profile page with success
-                return back()->with('success', 'Password Changed Successfully.');
+                return response()->json(array('error' => 0, 'msg'=> ''), 200);
             } else {
-                return back()->with('error', 'The Email you');
+                return response()->json(array('error' => 1, 'msg'=> 'You provide different email acount. Please try again.'), 200);
             }   
         } catch (\Throwable $th) {
+            return response()->json(array('error' => 1, 'msg'=> $th->getMessage()), 200);
+        }
+    }
+
+    /**
+     * Delete Confirmation
+     * @param token
+     */
+    public function delete()
+    {
+        return view('account.delete');
+    }
+
+    /**
+     * Confirmation Delete
+     * @param reasons
+     * @return Redirect to login page
+     */
+    public function confirmDeleteAccount(Request $request)
+    {
+        $request->validate([
+            'reason' => ['required']
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Get Payment Config
+            $apikey = config('services.hitpay.key');
+            $isStg = config('services.hitpay.environment');
+            $payment = new PaymentHelper($apikey, $isStg);
+            $response = $payment->recurringDeleteAccount(auth()->user()->payments->reference);
+            if(!empty($response['status']) && $response['status'] == 'canceled') {
+                $reason = $this->helper->reasons($request->reason);
+
+                // Save reason
+                DeleteReason::create([
+                    'email' => auth()->user()->email,
+                    'reason' => $reason
+                ]);
+
+                // Delete Account
+                User::whereId(auth()->user()->id)->delete();
+
+                #Commit Transaction
+                DB::commit();
+
+                #Redirect To Login page with success
+                return redirect()->route('login')->with('message', 'Your account is successfully deleted!');
+            } else {
+                DB::rollBack();
+                return back()->with('error', 'There was a problem deleting account. Please try again.');
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
+        }
+    }
+
+    /**
+     * Cancel Subscription
+     * @param plan information
+     * @return redirect to new select plan
+     */
+    public function cancel()
+    {
+        try {
+            DB::beginTransaction();
+
+            // Get Payment Config
+            $apikey = config('services.hitpay.key');
+            $isStg = config('services.hitpay.environment');
+            $payment = new PaymentHelper($apikey, $isStg);
+            $response = $payment->recurringDeleteAccount(auth()->user()->payments->reference);
+            if(!empty($response['status']) && $response['status'] == 'canceled') {
+                
+                Payments::whereId(auth()->user()->payments->id)->update(['plan_status' => 1]);
+
+                #Commit Transaction
+                DB::commit();
+
+                #Redirect To Login page with success
+                return redirect()->route('profile.subscription')->with('message', 'Your subscription is successfully cancelled!');
+            } else {
+                DB::rollBack();
+                return back()->with('error', 'There was a problem cancelling subscription. Please try again.');
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('error', $th->getMessage());
+        }
+    }
+
+    /**
+     * Upgrade plan 
+     * @param plan informatio
+     * @return redirect to payment page
+     */
+    public function upgradeplan(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Get Payment Config
+            $apikey = config('services.hitpay.key');
+            $isStg = config('services.hitpay.environment');
+            $payment = new PaymentHelper($apikey, $isStg);
+            $response = $payment->recurringDeleteAccount(auth()->user()->payments->reference);
+            if(!empty($response['status']) && $response['status'] == 'canceled') {
+                
+                Payments::whereId(auth()->user()->payments->id)->update(['status' => 'cancelled']);
+
+                // Add new plan
+                $selectedplan = $request->plan;
+                $planInfo = $this->helper->getPlanInformation($selectedplan);
+                $respayment = $payment->recurringRequestCreate(array(
+                    'plan_id'    =>  $planInfo['id'],
+                    'customer_email'  =>  auth()->user()->email,
+                    'customer_name'  =>  auth()->user()->first_name .' '. auth()->user()->last_name,
+                    'start_date'  =>  date('Y-m-d', strtotime("+1 day")),
+                    'redirect_url'  =>  url("payment-success"),
+                    'reference'  =>  time()
+                ));
+
+                if(!empty($respayment['status']) && $respayment['status'] == 'scheduled') {
+
+                    Payments::create([
+                        'user_id' => auth()->user()->id,
+                        'reference' => $respayment['id'],
+                        'business_recurring_plans_id' => $respayment['business_recurring_plans_id'],
+                        'plan' => $selectedplan,
+                        'cycle' => $respayment['cycle'],
+                        'currency' => $respayment['currency'],
+                        'price' => $respayment['price'],
+                        'status' => $respayment['status'],
+                        'payment_methods' => json_encode($respayment['payment_methods']),
+                        'payment_url' => $respayment['url'],
+                    ]);
+
+                    // Send Email
+                    $details = array(
+                        'subject' => 'Payment Confirmation Details!',
+                        'message' => 'Welcome '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
+                        'extra_msg' => 'Please see details below:',
+                        'plan' => $planInfo['label'],
+                        'amount' => number_format($planInfo['amount']),
+                        'paymentlink' => 'Please pay to continue use your account '. $respayment['url'] .' or disregard if already paid.',
+                        'thank_msg' => 'Thank you!',
+                        'template' => 'payment'
+                    );
+
+                    Mail::to(auth()->user()->email)->send(new DigitalMail($details));
+
+                    #Commit Transaction
+                    DB::commit();
+
+                    return Redirect::away($respayment['url']);
+                } else {
+                    $errormsg = 'Please try again! Something wen\'t wrong.';
+                    if(!empty($respayment['errors'])) {
+                        $errormsg = $respayment['message'];
+                    }
+                    return Redirect::back()->with('error', $errormsg);
+                }
+            } else {
+                DB::rollBack();
+                return back()->with('error', 'There was a problem cancelling subscription. Please try again.');
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('error', $th->getMessage());
+        }
+    }
+
+    /**
+     * Select new plan
+     * @param plan
+     * @return redirect to payment page
+     * */
+    public function addplan(Request $request)
+    {
+        try {
+            $selectedplan = $request->plan;
+            $planInfo = $this->helper->getPlanInformation($selectedplan);
+
+            // Get Payment Config
+            $apikey = config('services.hitpay.key');
+            $isStg = config('services.hitpay.environment');
+            $payment = new PaymentHelper($apikey, $isStg);
+            $respayment = $payment->recurringRequestCreate(array(
+                'plan_id'    =>  $planInfo['id'],
+                'customer_email'  =>  auth()->user()->email,
+                'customer_name'  =>  auth()->user()->first_name .' '. auth()->user()->last_name,
+                'start_date'  =>  date('Y-m-d', strtotime("+1 day")),
+                'redirect_url'  =>  url("payment-success"),
+                'reference'  =>  time()
+            ));
+
+            if(!empty($respayment['status']) && $respayment['status'] == 'scheduled') {
+
+                Payments::create([
+                    'user_id' => auth()->user()->id,
+                    'reference' => $respayment['id'],
+                    'business_recurring_plans_id' => $respayment['business_recurring_plans_id'],
+                    'plan' => $selectedplan,
+                    'cycle' => $respayment['cycle'],
+                    'currency' => $respayment['currency'],
+                    'price' => $respayment['price'],
+                    'status' => $respayment['status'],
+                    'payment_methods' => json_encode($respayment['payment_methods']),
+                    'payment_url' => $respayment['url'],
+                ]);
+
+                // Send Email
+                $details = array(
+                    'subject' => 'Payment Confirmation Details!',
+                    'message' => 'Welcome '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
+                    'extra_msg' => 'Please see details below:',
+                    'plan' => $planInfo['label'],
+                    'amount' => number_format($planInfo['amount']),
+                    'paymentlink' => 'Please pay to continue use your account '. $respayment['url'] .' or disregard if already paid.',
+                    'thank_msg' => 'Thank you!',
+                    'template' => 'payment'
+                );
+
+                Mail::to(auth()->user()->email)->send(new DigitalMail($details));
+
+                #Commit Transaction
+                DB::commit();
+
+                return Redirect::away($respayment['url']);
+            } else {
+                $errormsg = 'Please try again! Something wen\'t wrong.';
+                if(!empty($respayment['errors'])) {
+                    $errormsg = $respayment['message'];
+                }
+                return Redirect::back()->with('error', $errormsg);
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('error', $th->getMessage());
+        }
+    }
+
+    /**
+     * Change card
+     * @param confirmation
+     * @return redirect to payment page
+     * */
+    public function changecard()
+    {
+        $plan = auth()->user()->payments->plan;
+        $planInfo = $this->helper->getPlanInformation($plan);
+
+        // Start date
+        $startdate = auth()->user()->payments->created_at;
+        if(auth()->user()->payments->recurring_date) {
+            $startdate = auth()->user()->payments->recurring_date;
+        }
+
+        // Get Payment Config
+        $apikey = config('services.hitpay.key');
+        $isStg = config('services.hitpay.environment');
+        $payment = new PaymentHelper($apikey, $isStg);
+        $respayment = $payment->recurringRequestCreate(array(
+            'plan_id'    =>  $planInfo['id'],
+            'customer_email'  =>  auth()->user()->email,
+            'customer_name'  =>  auth()->user()->first_name .' '. auth()->user()->last_name,
+            'start_date'  =>  date('Y-m-d', strtotime($startdate)),
+            'redirect_url'  =>  url("change-payment-success"),
+            'reference'  =>  time()
+        ));
+
+        if(!empty($respayment['status']) && $respayment['status'] == 'scheduled') {
+            NewAttempt::create([
+                'user_id' => auth()->user()->id,
+                'reference' => $respayment['id'],
+                'business_recurring_plans_id' => $respayment['business_recurring_plans_id'],
+                'plan' => $plan,
+                'cycle' => $respayment['cycle'],
+                'currency' => $respayment['currency'],
+                'price' => $respayment['price'],
+                'status' => $respayment['status'],
+                'payment_methods' => json_encode($respayment['payment_methods']),
+                'payment_url' => $respayment['url'],
+            ]);
+
+            // Send Email
+            $details = array(
+                'subject' => 'Change Payment Method Card!',
+                'message' => 'Hi '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
+                'extra_msg' => 'Please see details below:',
+                'plan' => $planInfo['label'],
+                'amount' => number_format($planInfo['amount']),
+                'paymentlink' => 'Please click or visit link '. $respayment['url'] .' to continue change your card for subscription.',
+                'thank_msg' => 'Thank you!',
+                'template' => 'payment'
+            );
+
+            Mail::to(auth()->user()->email)->send(new DigitalMail($details));
+
+            #Commit Transaction
+            DB::commit();
+
+            return Redirect::away($respayment['url']);
+        } else {
+            $errormsg = 'Please try again! Something wen\'t wrong.';
+            if(!empty($respayment['errors'])) {
+                $errormsg = $respayment['message'];
+            }
+            return Redirect::back()->with('error', $errormsg);
         }
     }
 }

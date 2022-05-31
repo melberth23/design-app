@@ -71,6 +71,6 @@ class User extends Authenticatable
 
     public function payments()
     {
-        return $this->hasMany(Payments::class);
+        return $this->hasOne(Payments::class)->latestOfMany();
     }
 }
