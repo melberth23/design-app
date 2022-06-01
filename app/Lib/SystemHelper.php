@@ -617,7 +617,7 @@ class SystemHelper {
         if(empty($lang)) {
             $lang = $this->getUserSetting(auth()->user()->id, 'language');
         }
-        return $this->getLanguages($lang);
+        return !empty($lang)?$this->getLanguages($lang):false;
     }
 
     public function getCurrency($cur=false, $type='')
@@ -625,10 +625,13 @@ class SystemHelper {
         if(empty($cur)) {
             $cur = $this->getUserSetting(auth()->user()->id, 'currency');
         }
-        $currency = $this->getCurrencies($cur);
-        if(!empty($type)) {
-            return $currency[$type];
+        if(!empty($cur)) {
+            $currency = $this->getCurrencies($cur);
+            if(!empty($type)) {
+                return $currency[$type];
+            }
+            return !empty($currency)?'('. $currency['symbol'] .')'. $currency['name'] : '';
         }
-        return !empty($currency)?'('. $currency['symbol'] .')'. $currency['name'] : '';
+        return false;
     }
 }
