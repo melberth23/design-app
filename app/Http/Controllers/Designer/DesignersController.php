@@ -156,6 +156,7 @@ class DesignersController extends Controller
                         'type' => 'comment',
                         'file_type' => $extension
                     ]);
+                }
             }
 
             // Commit And Redirected To Listing

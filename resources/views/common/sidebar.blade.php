@@ -8,7 +8,7 @@
     @if(str_contains(url()->current(), 'profile'))
 
         <li class="nav-item">
-            <a class="btn btn-primary m-3 shadow menu-btn-link" href="{{ route('request.create') }}">
+            <a class="btn btn-primary m-3 shadow menu-btn-link" href="{{ route('dashboard') }}">
                 <i class="fas fa-arrow-left fa-sm"></i>
                 <span>Back</span>
             </a>
@@ -25,44 +25,45 @@
                 <img src="{{ asset('images/baseline-https-24px.svg') }}" class="menu-icons">
                 <span>Security and Log in</span></a>
         </li>
+        @hasrole('User')
+            @if(auth()->user()->payments->status == 'active')
+            <li class="nav-item {{ (request()->is('profile/upgrade')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('profile.upgrade') }}">
+                    <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
+                    <span>Upgrade</span></a>
+            </li>
+            @elseif(auth()->user()->payments->status == 'scheduled')
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="{{ auth()->user()->payments->payment_url }}">
+                    <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
+                    <span>Pay</span></a>
+            </li>
+            @else
+            <li class="nav-item {{ (request()->is('profile/subscription')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('profile.subscription') }}">
+                    <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
+                    <span>Select Plan</span></a>
+            </li>
+            @endif
 
-        @if(auth()->user()->payments->status == 'active')
-        <li class="nav-item {{ (request()->is('profile/upgrade')) ? 'active' : '' }}">
-            <a class="nav-link text-dark" href="{{ route('profile.upgrade') }}">
-                <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
-                <span>Upgrade</span></a>
-        </li>
-        @elseif(auth()->user()->payments->status == 'scheduled')
-        <li class="nav-item">
-            <a class="nav-link text-dark" href="{{ auth()->user()->payments->payment_url }}">
-                <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
-                <span>Pay</span></a>
-        </li>
-        @else
-        <li class="nav-item {{ (request()->is('profile/subscription')) ? 'active' : '' }}">
-            <a class="nav-link text-dark" href="{{ route('profile.subscription') }}">
-                <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
-                <span>Select Plan</span></a>
-        </li>
-        @endif
+            <li class="nav-item {{ (request()->is('profile/invoices')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('profile.invoices') }}">
+                    <img src="{{ asset('images/Invoices.svg') }}" class="menu-icons">
+                    <span>Invoices</span></a>
+            </li>
 
-        <li class="nav-item {{ (request()->is('profile/invoices')) ? 'active' : '' }}">
-            <a class="nav-link text-dark" href="{{ route('profile.invoices') }}">
-                <img src="{{ asset('images/Invoices.svg') }}" class="menu-icons">
-                <span>Invoices</span></a>
-        </li>
+            <li class="nav-item {{ (request()->is('profile/paymentmethods')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('profile.paymentmethods') }}">
+                    <img src="{{ asset('images/baseline-payment-24px.svg') }}" class="menu-icons">
+                    <span>Payment Method</span></a>
+            </li>
 
-        <li class="nav-item {{ (request()->is('profile/paymentmethods')) ? 'active' : '' }}">
-            <a class="nav-link text-dark" href="{{ route('profile.paymentmethods') }}">
-                <img src="{{ asset('images/baseline-payment-24px.svg') }}" class="menu-icons">
-                <span>Payment Method</span></a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-dark" href="#">
-                <img src="{{ asset('images/notifications.svg') }}" class="menu-icons">
-                <span>Notifications</span></a>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="#">
+                    <img src="{{ asset('images/notifications.svg') }}" class="menu-icons">
+                    <span>Notifications</span></a>
+            </li>
+        @endhasrole
 
     @else
 
