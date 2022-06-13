@@ -10,6 +10,7 @@ use App\Models\RequestAssets;
 use App\Models\Admin\RequestTypes;
 use App\Models\Comments;
 use App\Models\CommentsAssets;
+use App\Models\CommentNotification;
 use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -190,13 +191,16 @@ class RequestsController extends Controller
         $previous = Requests::where('user_id', $userid)->where('id', '<', $requests->id)->max('id');
         $next = Requests::where('user_id', $userid)->where('id', '>', $requests->id)->min('id');
 
+        $notifications = $this->getNotifications($requests->id, $userid);
+
         return view('requests.view')->with([
             'requests'  => $requests,
             'previous' => $previous,
             'next' => $next,
             'brand' => $brand,
             'designtype' => $designtype,
-            'medias' => $medias
+            'medias' => $medias,
+            'notifications'  => $notifications
         ]);
     }
 
@@ -393,7 +397,7 @@ class RequestsController extends Controller
             }
         } else {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Account limit: Your are not allowed to add more than '. $allowed['allowedrequest'] .' requests.');
+            return redirect()->back()->with('limiterror', 'Account limit: Your are not allowed to add more than '. $allowed['allowedrequest'] .' requests.');
         }
     }
 
@@ -433,12 +437,19 @@ class RequestsController extends Controller
         $previous = Requests::where('user_id', $userid)->where('id', '<', $requests->id)->max('id');
         $next = Requests::where('user_id', $userid)->where('id', '>', $requests->id)->min('id');
 
-        $comments = Comments::where('request_id', $requests->id)->get();
+        // Get notifications
+        $notifications = $this->getNotifications($requests->id, $userid);
+
+        // Update all notifications to read
+        $this->updateNotifications($requests->id, $userid);
+
+        $comments = Comments::where('request_id', $requests->id)->latest()->get();
         return view('requests.comment')->with([
             'requests'  => $requests,
             'previous' => $previous,
             'next' => $next,
-            'comments'  => $comments
+            'comments'  => $comments,
+            'notifications' => $notifications
         ]);
     }
 
@@ -467,8 +478,12 @@ class RequestsController extends Controller
         $media = CommentsAssets::where('comments_id', $reviewid)->whereIn('file_type', $media_ext)->get();
         $dobe = CommentsAssets::where('comments_id', $reviewid)->whereIn('file_type', $adobe_ext)->get();
 
+        // Get notifications
+        $notifications = $this->getNotifications($requests->id, $userid);
+
         return view('requests.files')->with([
             'requests'  => $requests,
+            'notifications'  => $notifications,
             'previous' => $previous,
             'next' => $next,
             'medias'  => $media,
@@ -487,6 +502,8 @@ class RequestsController extends Controller
 
         DB::beginTransaction();
         try {
+            // Get Request Data
+            $requests = Requests::whereId($request->id)->first();
 
             // Store Data
             $comment = Comments::create([
@@ -518,6 +535,90 @@ class RequestsController extends Controller
                         'type' => 'comment',
                         'file_type' => $extension
                     ]);
+                }
+            }
+
+            $notificationAdminEmail = false;
+            $notificationUserEmail = false;
+            $notificationDesignerEmail = false;
+            // For admin
+            if(auth()->user()->hasRole('Admin')) {
+                $notificationUserEmail = true;
+                $notificationDesignerEmail = true;
+            }
+
+            // For Owner
+            if(auth()->user()->hasRole('User')) {
+                $notificationAdminEmail = true;
+                $notificationDesignerEmail = true;
+            }
+
+            // For Designer
+            if(auth()->user()->hasRole('Designer')) {
+                $notificationAdminEmail = true;
+                $notificationUserEmail = true;
+            }
+
+            // Save notification for designer
+            if($notificationDesignerEmail && !empty($requests->designer_id)) {
+                $designer_info = User::whereId($requests->designer_id)->first();
+                CommentNotification::create([
+                    'comment_id'       => $comment->id,
+                    'user_id'       => $designer_info->id,
+                    'title'    => route('request.view', ['requests' => $requests->id])
+                ]);
+
+                // Send email for notification
+                $details = array(
+                    'subject' => 'Request notification',
+                    'heading' => 'Hi there,',
+                    'message' => 'You have new notification.',
+                    'sub_message' => 'Please login using your login information to check. Thank you!',
+                    'template' => 'status'
+                );
+                Mail::to($designer_info->email)->send(new DigitalMail($details));
+            }
+
+
+            // Save notification for owner
+            if($notificationUserEmail && !empty($requests->user_id)) {
+                $owner_info = User::whereId($requests->user_id)->first();
+                CommentNotification::create([
+                    'comment_id'       => $comment->id,
+                    'user_id'       => $requests->user_id,
+                    'title'    => route('request.view', ['requests' => $requests->id])
+                ]);
+
+                // Send email for notification
+                $details = array(
+                    'subject' => 'Request notification',
+                    'heading' => 'Hi there,',
+                    'message' => 'You have new notification.',
+                    'sub_message' => 'Please login using your login information to check. Thank you!',
+                    'template' => 'notification'
+                );
+                Mail::to($owner_info->email)->send(new DigitalMail($details));
+            }
+
+            // Save notification for admin
+            $admins = User::where('role_id', 1)->get();
+            if($notificationAdminEmail && !empty($admins)) {
+                foreach($admins as $admin) {
+                    CommentNotification::create([
+                        'comment_id'       => $comment->id,
+                        'user_id'       => $admin->id,
+                        'title'    => route('request.view', ['requests' => $requests->id])
+                    ]);
+
+                    // Send email for notification
+                    $details = array(
+                        'subject' => 'Request notification',
+                        'heading' => 'Hi there,',
+                        'message' => 'You have new notification.',
+                        'sub_message' => 'Please login using your login information to check. Thank you!',
+                        'template' => 'status'
+                    );
+                    Mail::to($admin->email)->send(new DigitalMail($details));
                 }
             }
 
@@ -697,5 +798,21 @@ class RequestsController extends Controller
         } else {
             return redirect()->route('dashboard');
         }
+    }
+
+    public function getNotifications($request_id, $userid)
+    {
+        $notifications = CommentNotification::whereHas('comment', function($query) use($request_id) {
+            $query->where('request_id', $request_id);  
+        })->where('user_id', $userid)->where('read', 0)->get();  
+
+        return $notifications;
+    }
+
+    public function updateNotifications($request_id, $userid)
+    {
+        CommentNotification::whereHas('comment', function($query) use($request_id) {
+            $query->where('request_id', $request_id);  
+        })->where('user_id', $userid)->where('read', 0)->update(['read' => 1]);
     }
 }

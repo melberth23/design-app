@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
+Route::get('/upgrade-payment-success', [App\Http\Controllers\PaymentsController::class, 'upgradepayment'])->name('upgrade.payment');
 Route::get('/change-payment-success', [App\Http\Controllers\PaymentsController::class, 'changepayment'])->name('change.payment');
 Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
 Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');

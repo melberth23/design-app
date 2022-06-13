@@ -496,7 +496,7 @@ class BrandController extends Controller
                 return redirect()->route('brand.index')->with('success','Brand Created Successfully.');
             } else {
                 DB::rollBack();
-                return redirect()->back()->withInput()->with('error', 'Account limit: Your are not allowed to add more than '. $allowed['allowedbrand'] .' brand profile.');
+                return redirect()->back()->withInput()->with('limiterror', 'Account limit: Your are not allowed to add more than '. $allowed['allowedbrand'] .' brand profile.');
             }
         } catch (\Throwable $th) {
             // Rollback and return with Error

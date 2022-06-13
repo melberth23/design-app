@@ -42,7 +42,7 @@
                                         @endif
                                     </td>
                                     <td style="display: flex">
-                                        <a href="{{ route('designer.view', ['requests' => $request->id]) }}"
+                                        <a href="{{ route('request.view', ['requests' => $request->id]) }}"
                                             class="btn btn-info m-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>
                                         </a>

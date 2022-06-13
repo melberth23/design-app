@@ -11,6 +11,7 @@ use App\Models\RequestAssets;
 use App\Models\Admin\RequestTypes;
 use App\Models\Comments;
 use App\Models\CommentsAssets;
+use App\Models\CommentNotification;
 use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -193,6 +194,8 @@ class RequestsAdminController extends Controller
 
         DB::beginTransaction();
         try {
+            // Get Request Data
+            $requests = Requests::whereId($request->id)->first();
 
             // Store Data
             $comment = Comments::create([
@@ -229,6 +232,46 @@ class RequestsAdminController extends Controller
                         ]);
                     }
                 }
+            }
+
+            // Save notification for owner
+            if(!empty($requests->user_id)) {
+                $owner_info = User::whereId($requests->user_id)->first();
+                CommentNotification::create([
+                    'comment_id'       => $comment->id,
+                    'user_id'       => $owner_info->id,
+                    'title'    => route('request.view', ['requests' => $requests->id])
+                ]);
+
+                // Send email for notification
+                $details = array(
+                    'subject' => 'Request notification',
+                    'heading' => 'Hi there,',
+                    'message' => 'You have new notification.',
+                    'sub_message' => 'Please login using your login information to check. Thank you!',
+                    'template' => 'notification'
+                );
+                Mail::to($owner_info->email)->send(new DigitalMail($details));
+            }
+
+            // Save notification for designer
+            if(!empty($requests->designer_id)) {
+                $designer_info = User::whereId($requests->designer_id)->first();
+                CommentNotification::create([
+                    'comment_id'       => $comment->id,
+                    'user_id'       => $designer_info->id,
+                    'title'    => route('request.view', ['requests' => $requests->id])
+                ]);
+
+                // Send email for notification
+                $details = array(
+                    'subject' => 'Request notification',
+                    'heading' => 'Hi there,',
+                    'message' => 'You have new notification.',
+                    'sub_message' => 'Please login using your login information to check. Thank you!',
+                    'template' => 'notification'
+                );
+                Mail::to($designer_info->email)->send(new DigitalMail($details));
             }
 
             // Commit And Redirected To Listing

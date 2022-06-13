@@ -95,7 +95,7 @@
                                         @elseif ($request->status == 4)
                                             <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 0]) }}"
                                                 class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Complete Request">
-                                                <i class="fa fa-cloud-upload"></i>
+                                                <i class="fas fa-check-circle" aria-hidden="true"></i>
                                             </a>
                                         @endif
                                         @if ($request->status == 1 || $request->status == 2)

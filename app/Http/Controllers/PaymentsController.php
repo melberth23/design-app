@@ -63,51 +63,60 @@ class PaymentsController extends Controller
         if(!empty($payments['reference']) && $payments['status'] == 'active') {
             $rowpayment = NewAttempt::where('reference', $payments['reference'])->first();
             $user = User::whereId($rowpayment->user_id)->first();
-            $customerfullname = $user->first_name .' '. $user->last_name;
 
-            $datetoday = date('Y-m-d', strtotime($user->payments->recurring_date));
-            $current_date = strtotime($datetoday);
-            $next_recurring_date = date("Y-m-d", strtotime("+1 month", $current_date));
+            // Cancel old subscription
+            // Get Payment Config
+            $apikey = config('services.hitpay.key');
+            $isStg = config('services.hitpay.environment');
+            $paymentApi = new PaymentHelper($apikey, $isStg);
+            $responseApi = $paymentApi->recurringDeleteAccount($user->payments->reference);
+            if(!empty($responseApi['status']) && $responseApi['status'] == 'canceled') {
+                $customerfullname = $user->first_name .' '. $user->last_name;
 
-            // Cancel old payment
-            Payments::whereId($user->payments->id)->update(['status' => 'cancelled']);
+                $datetoday = date('Y-m-d', strtotime($user->payments->recurring_date));
+                // $current_date = strtotime($datetoday);
+                // $next_recurring_date = date("Y-m-d", strtotime("+1 month", $current_date));
 
-            $helper = new SystemHelper();
-            $planInfo = $helper->getPlanInformation($rowpayment->plan);
+                // Cancel old payment
+                Payments::whereId($user->payments->id)->update(['status' => 'cancelled']);
 
-            // Save new payment
-            $payment = Payments::create([
-                'user_id' => $user->id,
-                'reference' => $rowpayment->reference,
-                'business_recurring_plans_id' => $rowpayment->business_recurring_plans_id,
-                'plan' => $rowpayment->plan,
-                'cycle' => $rowpayment->cycle,
-                'currency' => $rowpayment->currency,
-                'price' => $rowpayment->price,
-                'status' => $payments['status'],
-                'payment_methods' => $rowpayment->payment_methods,
-                'payment_url' => $rowpayment->payment_url,
-                'type' => $payments['type']
-            ]);
-            Payments::whereId($payment->id)->update(['recurring_date' => $next_recurring_date]);
+                $helper = new SystemHelper();
+                $planInfo = $helper->getPlanInformation($rowpayment->plan);
 
-            // Send confirmation email
-            $details = array(
-                'subject' => 'New card added!',
-                'message' => 'Greetings '. $customerfullname,
-                'extra_msg' => 'Please refer your plan information below:',
-                'plan' => $planInfo['label'],
-                'amount' => number_format($planInfo['amount']),
-                'paymentlink' => '',
-                'thank_msg' => 'Please login using your login information to check your new payment method setup. Thank you!',
-                'template' => 'payment'
-            );
-            Mail::to($user->email)->send(new DigitalMail($details));
+                // Save new payment
+                $payment = Payments::create([
+                    'user_id' => $user->id,
+                    'reference' => $rowpayment->reference,
+                    'business_recurring_plans_id' => $rowpayment->business_recurring_plans_id,
+                    'plan' => $rowpayment->plan,
+                    'cycle' => $rowpayment->cycle,
+                    'currency' => $rowpayment->currency,
+                    'price' => $rowpayment->price,
+                    'status' => $payments['status'],
+                    'payment_methods' => $rowpayment->payment_methods,
+                    'payment_url' => $rowpayment->payment_url,
+                    'type' => $payments['type']
+                ]);
+                Payments::whereId($payment->id)->update(['recurring_date' => $datetoday]);
 
-            #Commit Transaction
-            DB::commit();
+                // Send confirmation email
+                $details = array(
+                    'subject' => 'New card added!',
+                    'message' => 'Greetings '. $customerfullname,
+                    'extra_msg' => 'Please refer your plan information below:',
+                    'plan' => $planInfo['label'],
+                    'amount' => number_format($planInfo['amount']),
+                    'paymentlink' => '',
+                    'thank_msg' => 'Please login using your login information to check your new payment method setup. Thank you!',
+                    'template' => 'payment'
+                );
+                Mail::to($user->email)->send(new DigitalMail($details));
 
-            $request->session()->flash('success', 'Card information updated successfully!');
+                #Commit Transaction
+                DB::commit();
+
+                $request->session()->flash('success', 'Card information updated successfully!');
+            }
         }
 
         return redirect()->route('profile.paymentmethods');

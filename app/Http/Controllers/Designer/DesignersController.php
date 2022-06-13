@@ -10,6 +10,7 @@ use App\Models\Brand;
 use App\Models\RequestAssets;
 use App\Models\Comments;
 use App\Models\CommentsAssets;
+use App\Models\CommentNotification;
 use App\Models\Admin\RequestTypes;
 use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
@@ -125,6 +126,8 @@ class DesignersController extends Controller
 
         DB::beginTransaction();
         try {
+            // Get Request Data
+            $requests = Requests::whereId($request->id)->first();
 
             // Store Data
             $comment = Comments::create([
@@ -156,6 +159,48 @@ class DesignersController extends Controller
                         'type' => 'comment',
                         'file_type' => $extension
                     ]);
+                }
+            }
+
+            // Save notification for owner
+            if(!empty($requests->user_id)) {
+                $owner_info = User::whereId($requests->user_id)->first();
+                CommentNotification::create([
+                    'comment_id'       => $comment->id,
+                    'user_id'       => $requests->user_id,
+                    'title'    => route('request.view', ['requests' => $requests->id])
+                ]);
+
+                // Send email for notification
+                $details = array(
+                    'subject' => 'Request notification',
+                    'heading' => 'Hi there,',
+                    'message' => 'You have new notification.',
+                    'sub_message' => 'Please login using your login information to check. Thank you!',
+                    'template' => 'notification'
+                );
+                Mail::to($owner_info->email)->send(new DigitalMail($details));
+            }
+
+            // Save notification for admin
+            $admins = User::where('role_id', 1)->get();
+            if(!empty($admins)) {
+                foreach($admins as $admin) {
+                    CommentNotification::create([
+                        'comment_id'       => $comment->id,
+                        'user_id'       => $admin->id,
+                        'title'    => route('request.view', ['requests' => $requests->id])
+                    ]);
+
+                    // Send email for notification
+                    $details = array(
+                        'subject' => 'Request notification',
+                        'heading' => 'Hi there,',
+                        'message' => 'You have new notification.',
+                        'sub_message' => 'Please login using your login information to check. Thank you!',
+                        'template' => 'notification'
+                    );
+                    Mail::to($admin->email)->send(new DigitalMail($details));
                 }
             }
 
@@ -280,6 +325,48 @@ class DesignersController extends Controller
                         'type' => 'review',
                         'file_type' => $extension
                     ]);
+                }
+            }
+
+            // Save notification for owner
+            if(!empty($request_data->user_id)) {
+                $owner_info = User::whereId($request_data->user_id)->first();
+                CommentNotification::create([
+                    'comment_id'       => $comment->id,
+                    'user_id'       => $owner_info->id,
+                    'title'    => route('request.view', ['requests' => $request_data->id])
+                ]);
+
+                // Send email for notification
+                $details = array(
+                    'subject' => 'Request notification',
+                    'heading' => 'Hi there,',
+                    'message' => 'You have new notification.',
+                    'sub_message' => 'Please login using your login information to check. Thank you!',
+                    'template' => 'notification'
+                );
+                Mail::to($owner_info->email)->send(new DigitalMail($details));
+            }
+
+            // Save notification for admin
+            $admins = User::where('role_id', 1)->get();
+            if(!empty($admins)) {
+                foreach($admins as $admin) {
+                    CommentNotification::create([
+                        'comment_id'       => $comment->id,
+                        'user_id'       => $admin->id,
+                        'title'    => route('request.view', ['requests' => $request_data->id])
+                    ]);
+
+                    // Send email for notification
+                    $details = array(
+                        'subject' => 'Request notification',
+                        'heading' => 'Hi there,',
+                        'message' => 'You have new notification.',
+                        'sub_message' => 'Please login using your login information to check. Thank you!',
+                        'template' => 'notification'
+                    );
+                    Mail::to($admin->email)->send(new DigitalMail($details));
                 }
             }
 

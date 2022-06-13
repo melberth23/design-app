@@ -21,7 +21,6 @@
         {{-- Alert Messages --}}
         @include('common.alert')
    
-
         <div class="card mb-4 {{ ($section == 'information' or $section == 'all') ? '' : 'd-none' }}">
             <div class="card-header d-flex align-items-center justify-content-between bg-light-custom">
                 <h3 class="text-dark mb-0">Brand Information</h3>
@@ -39,7 +38,7 @@
             </div>
             <div class="card-body py-0">
 
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pt-3 pb-3">
                     <label for="brandName">Brand Name</label>
                     <input 
                         type="text" 
@@ -52,7 +51,7 @@
                         <span class="text-danger">{{$message}}</span>
                     @enderror
                 </div>
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="description">Description</label>
                     <textarea id="description" class="form-control form-control-user @error('description') is-invalid @enderror" name="description">{{ old('description') ? old('description') : $brand->description }}</textarea>
 
@@ -60,7 +59,7 @@
                         <span class="text-danger">{{$message}}</span>
                     @enderror
                 </div>
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="targetIndustry">Industry</label>
                     <input 
                         type="text" 
@@ -73,7 +72,7 @@
                         <span class="text-danger">{{$message}}</span>
                     @enderror
                 </div>
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="targetAudience">Target Audience</label>
                     <input 
                         type="text" 
@@ -86,7 +85,7 @@
                         <span class="text-danger">{{$message}}</span>
                     @enderror
                 </div>
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="servicesProvider">Services Provider</label>
                     <input 
                         type="text" 
@@ -99,7 +98,7 @@
                         <span class="text-danger">{{$message}}</span>
                     @enderror
                 </div>
-                <div class="tab-text-label text-dark py-3">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="website">Website</label>
                     <input 
                         type="text" 
@@ -464,11 +463,11 @@
                             <p class="img-limit">Acceptable file, PNG, JPEG, PDF, max file size 150mb.</p>
                         </div>
                         <div class="inspiration-uploader">
-                            <button type="button" onclick="getElementById('inspirations').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
+                            <button type="button" onclick="getElementById('inspiration-field').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                         </div>
                     </div>
                     <div class="d-none">
-                        <input type="file" id="inspirations" name="inspirations[]" class="form-control-file" multiple >
+                        <input type="file" id="inspiration-field" name="inspirations[]" class="form-control-file" multiple >
                     </div>
                     @error('inspirations')
                         <span class="text-danger">{{$message}}</span>
@@ -498,11 +497,11 @@
         </div>
 
         <div class="card mb-4 {{ ($section == 'social' or $section == 'all') ? '' : 'd-none' }}">
-            <div class="card-header">
-                <h3 class="text-dark">Social Profile</h3>
+            <div class="card-header bg-light-custom">
+                <h3 class="text-dark mb-0">Social Profile</h3>
             </div>
             <div class="card-body">
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pt-3 pb-3">
                     <label for="facebook"> Facebook</label>
                     <input 
                         type="text" 
@@ -511,7 +510,7 @@
                         name="facebook" 
                         value="{{ old('facebook') ? old('facebook') : $brand->facebook }}">
                 </div>
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="linkedin"> Linkedin</label>
                     <input 
                         type="text" 
@@ -520,7 +519,7 @@
                         name="linkedin" 
                         value="{{ old('linkedin') ? old('linkedin') : $brand->linkedin }}">
                 </div>
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="instagram"> Instagram</label>
                     <input 
                         type="text" 
@@ -529,7 +528,7 @@
                         name="instagram" 
                         value="{{ old('instagram') ? old('instagram') : $brand->instagram }}">
                 </div>
-                <div class="tab-text-label text-dark py-3 border-bottom">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="twitter"> Twitter</label>
                     <input 
                         type="text" 
@@ -538,7 +537,7 @@
                         name="twitter" 
                         value="{{ old('twitter') ? old('twitter') : $brand->twitter }}">
                 </div>
-                <div class="tab-text-label text-dark py-3">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="youtube"> Youtube</label>
                     <input 
                         type="text" 
@@ -547,7 +546,7 @@
                         name="youtube" 
                         value="{{ old('youtube') ? old('youtube') : $brand->youtube }}">
                 </div>
-                <div class="tab-text-label text-dark py-3">
+                <div class="tab-text-label text-dark pb-3">
                     <label for="tiktok"> Tiktok</label>
                     <input 
                         type="text" 

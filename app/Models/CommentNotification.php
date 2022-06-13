@@ -5,26 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comments extends Model
+class CommentNotification extends Model
 {
     use HasFactory;
 
-    protected $table = 'comments';
+    protected $table = 'comments_notification';
 
     protected $fillable = [
-        'request_id',
+        'comment_id', 
         'user_id',
-        'comments',
-        'comment_type'
+        'request_id'
     ];
 
-    public function request()
+    public function comment()
     {
-        return $this->belongsTo(Requests::class);
+        return $this->belongsTo(Comments::class);
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function request()
+    {
+        return $this->belongsTo(Requests::class);
     }
 }

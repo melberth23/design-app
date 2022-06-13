@@ -58,6 +58,12 @@
             $(function () {
                 $('.datepicker').datepicker({ dateFormat: 'mm-dd-yy' });
                 $('[data-toggle="tooltip"]').tooltip();
+
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    var target = $(e.target).attr("href") // activated tab
+                    $('#brand-tabs .nav-link').removeClass('active');
+                    $(target +'-tab').addClass('active');
+                });
             });
         });
     </script>

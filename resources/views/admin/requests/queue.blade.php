@@ -42,11 +42,11 @@
                                         @endif
                                     </td>
                                     <td style="display: flex">
-                                        <a href="{{ route('adminrequest.view', ['requests' => $request->id]) }}"
+                                        <a href="{{ route('request.view', ['requests' => $request->id]) }}"
                                             class="btn btn-info m-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('adminrequest.comment', ['requests' => $request->id]) }}"
+                                        <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
                                             class="btn btn-primary m-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>
                                         </a>

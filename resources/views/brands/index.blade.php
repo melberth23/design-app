@@ -129,7 +129,7 @@
 
             <div class="card mb-4 p-2 bg-transparent">
                 <div class="card-body py-0 px-1 text-center">
-                    <a href="{{ route('request.create') }}" class="text-decoration-none">
+                    <a href="{{ route('brand.create') }}" class="text-decoration-none">
                         <i class="fas fa-plus"></i>
                         <span>Add New Brand Profile</span>
                     </a>

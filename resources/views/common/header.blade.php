@@ -22,11 +22,23 @@
 
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto">
-            
+            <?php 
+                $notifications = (new \App\Lib\SystemHelper)->getNotifications();
+            ?>
             <!-- Nav Item - User Information -->
             <li class="nav-item d-flex align-items-center">
-                <img class="img-profile rounded-circle"
-                        src="{{asset('images/bell.svg')}}">
+                <div class="dropdown m-0">
+                    <button class="btn btn-link p-0" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img class="img-profile rounded-circle" src="{{asset('images/bell.svg')}}"><span class="counter counter-lg bg-primary">{{ $notifications['counter'] }}</span>
+                    </button>
+                    @if(!empty($notifications['lists']))
+                        <div class="dropdown-menu dropdown-menu-right p-2" aria-labelledby="notificationDropdown">
+                        @foreach($notifications['lists'] as $list)
+                            <a class="dropdown-item" href="{{ route('request.view', ['requests' => $list['request_id']]) }}">New comment in <strong>{{ $list['request_title'] }}</strong> from <strong>{{ $list['user_name'] }}</strong></a>
+                        @endforeach
+                        </div>
+                    @endif
+                </div>
             </li>
             <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"

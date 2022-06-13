@@ -9,6 +9,8 @@ use App\Models\Requests;
 use App\Models\Brand;
 use App\Models\BrandAssets;
 use App\Models\UserSettings;
+use App\Models\Comments;
+use App\Models\CommentNotification;
 
 class SystemHelper {
 
@@ -633,5 +635,31 @@ class SystemHelper {
             return !empty($currency)?'('. $currency['symbol'] .')'. $currency['name'] : '';
         }
         return false;
+    }
+
+    public function getNotifications()
+    {
+        $notifications = CommentNotification::where('user_id', auth()->user()->id)->where('read', 0)->get();
+        return array(
+            'counter' => ($notifications->count()>100)?'999+':$notifications->count(),
+            'lists' => $this->getNotificationInformation($notifications)
+        );
+    }
+
+    public function getNotificationInformation($notifications)
+    {
+        $lists = [];
+        if($notifications->count() > 0) {
+            foreach($notifications as $notification) {
+                $comment = Comments::whereId($notification->comment_id)->first();
+                $lists[] = array(
+                    'request_id' => $comment->request_id,
+                    'request_title' => $comment->request->title,
+                    'user_name' => $comment->user->first_name
+                );
+            }
+        }
+
+        return $lists;
     }
 }

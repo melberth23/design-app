@@ -30,7 +30,7 @@
             <li class="nav-item {{ (request()->is('profile/upgrade')) ? 'active' : '' }}">
                 <a class="nav-link text-dark" href="{{ route('profile.upgrade') }}">
                     <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
-                    <span>Upgrade</span></a>
+                    <span>{{ (auth()->user()->payments->plan=='royal')?'Upgraded':'Upgrade' }}</span></a>
             </li>
             @elseif(auth()->user()->payments->status == 'scheduled')
             <li class="nav-item">

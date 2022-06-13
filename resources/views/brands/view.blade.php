@@ -148,7 +148,7 @@
                             @if ($logos->count() > 0)
                                 @foreach ($logos as $logo)
                                     <div id="media-{{ $logo->id }}" class="mx-1 logo media-container">
-                                        <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $logo->filename }}" class="logo-img" />
+                                        <img src="{{ url('storage/logos') }}/{{ $brand->user_id }}/{{ $logo->filename }}" class="logo-img" />
                                         <div class="overlay">
                                             <a href="{{ route('download', ['asset' => $logo->id]) }}" class="icon">
                                               <i class="fas fa-download"></i>
@@ -167,7 +167,7 @@
                             @if ($secondary_logos->count() > 0)
                                 @foreach ($secondary_logos as $secondary_logo)
                                     <div id="media-{{ $secondary_logo->id }}" class="mx-1 logo media-container">
-                                        <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $secondary_logo->filename }}" class="logo-img" />
+                                        <img src="{{ url('storage/logos') }}/{{  $brand->user_id }}/{{ $secondary_logo->filename }}" class="logo-img" />
                                         <div class="overlay">
                                             <a href="{{ route('download', ['asset' => $secondary_logo->id]) }}" class="icon">
                                               <i class="fas fa-download"></i>
@@ -287,7 +287,7 @@
                             @if ($images->count() > 0)
                                 @foreach ($images as $image)
                                     <div id="media-{{ $image->id }}" class="mx-1 picture media-container">
-                                        <img src="{{ url('storage/pictures') }}/{{ auth()->user()->id }}/{{ $image->filename }}" class="picture-img">
+                                        <img src="{{ url('storage/pictures') }}/{{ $brand->user_id }}/{{ $image->filename }}" class="picture-img">
                                         <div class="overlay">
                                             <a href="{{ route('download', ['asset' => $image->id]) }}" class="icon">
                                               <i class="fas fa-download"></i>
@@ -379,7 +379,7 @@
                         @if ($inspirations->count() > 0)
                             @foreach ($inspirations as $inspiration)
                                 <div class="mx-1 inspiration media-container">
-                                    <img src="{{ url('storage/inspirations') }}/{{ auth()->user()->id }}/{{ $inspiration->filename }}" class="inspiration-img">
+                                    <img src="{{ url('storage/inspirations') }}/{{ $brand->user_id }}/{{ $inspiration->filename }}" class="inspiration-img">
                                     <div class="overlay">
                                         <a href="{{ route('download', ['asset' => $inspiration->id]) }}" class="icon">
                                           <i class="fas fa-download"></i>

@@ -659,70 +659,66 @@ class HomeController extends Controller
         try {
             DB::beginTransaction();
 
+            // Start date
+            $startdate = auth()->user()->payments->created_at;
+            if(auth()->user()->payments->recurring_date) {
+                $startdate = auth()->user()->payments->recurring_date;
+            }
+
+            // Add new plan
+            $selectedplan = $request->plan;
+            $planInfo = $this->helper->getPlanInformation($selectedplan);
             // Get Payment Config
             $apikey = config('services.hitpay.key');
             $isStg = config('services.hitpay.environment');
             $payment = new PaymentHelper($apikey, $isStg);
-            $response = $payment->recurringDeleteAccount(auth()->user()->payments->reference);
-            if(!empty($response['status']) && $response['status'] == 'canceled') {
-                
-                Payments::whereId(auth()->user()->payments->id)->update(['status' => 'cancelled']);
+            $respayment = $payment->recurringRequestCreate(array(
+                'plan_id'    =>  $planInfo['id'],
+                'customer_email'  =>  auth()->user()->email,
+                'customer_name'  =>  auth()->user()->first_name .' '. auth()->user()->last_name,
+                'start_date'  =>  date('Y-m-d', strtotime($startdate)),
+                'redirect_url'  =>  url("change-payment-success"),
+                'reference'  =>  time()
+            ));
 
-                // Add new plan
-                $selectedplan = $request->plan;
-                $planInfo = $this->helper->getPlanInformation($selectedplan);
-                $respayment = $payment->recurringRequestCreate(array(
-                    'plan_id'    =>  $planInfo['id'],
-                    'customer_email'  =>  auth()->user()->email,
-                    'customer_name'  =>  auth()->user()->first_name .' '. auth()->user()->last_name,
-                    'start_date'  =>  date('Y-m-d', strtotime("+1 day")),
-                    'redirect_url'  =>  url("payment-success"),
-                    'reference'  =>  time()
-                ));
+            if(!empty($respayment['status']) && $respayment['status'] == 'scheduled') {
+                NewAttempt::create([
+                    'user_id' => auth()->user()->id,
+                    'reference' => $respayment['id'],
+                    'business_recurring_plans_id' => $respayment['business_recurring_plans_id'],
+                    'plan' => $selectedplan,
+                    'cycle' => $respayment['cycle'],
+                    'currency' => $respayment['currency'],
+                    'price' => $respayment['price'],
+                    'status' => $respayment['status'],
+                    'payment_methods' => json_encode($respayment['payment_methods']),
+                    'payment_url' => $respayment['url'],
+                ]);
 
-                if(!empty($respayment['status']) && $respayment['status'] == 'scheduled') {
+                // Send Email
+                $details = array(
+                    'subject' => 'Payment Confirmation Details!',
+                    'message' => 'Welcome '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
+                    'extra_msg' => 'Please see details below:',
+                    'plan' => $planInfo['label'],
+                    'amount' => number_format($planInfo['amount']),
+                    'paymentlink' => 'Please pay to continue use your account '. $respayment['url'] .' or disregard if already paid.',
+                    'thank_msg' => 'Thank you!',
+                    'template' => 'payment'
+                );
 
-                    Payments::create([
-                        'user_id' => auth()->user()->id,
-                        'reference' => $respayment['id'],
-                        'business_recurring_plans_id' => $respayment['business_recurring_plans_id'],
-                        'plan' => $selectedplan,
-                        'cycle' => $respayment['cycle'],
-                        'currency' => $respayment['currency'],
-                        'price' => $respayment['price'],
-                        'status' => $respayment['status'],
-                        'payment_methods' => json_encode($respayment['payment_methods']),
-                        'payment_url' => $respayment['url'],
-                    ]);
+                Mail::to(auth()->user()->email)->send(new DigitalMail($details));
 
-                    // Send Email
-                    $details = array(
-                        'subject' => 'Payment Confirmation Details!',
-                        'message' => 'Welcome '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
-                        'extra_msg' => 'Please see details below:',
-                        'plan' => $planInfo['label'],
-                        'amount' => number_format($planInfo['amount']),
-                        'paymentlink' => 'Please pay to continue use your account '. $respayment['url'] .' or disregard if already paid.',
-                        'thank_msg' => 'Thank you!',
-                        'template' => 'payment'
-                    );
+                #Commit Transaction
+                DB::commit();
 
-                    Mail::to(auth()->user()->email)->send(new DigitalMail($details));
-
-                    #Commit Transaction
-                    DB::commit();
-
-                    return Redirect::away($respayment['url']);
-                } else {
-                    $errormsg = 'Please try again! Something wen\'t wrong.';
-                    if(!empty($respayment['errors'])) {
-                        $errormsg = $respayment['message'];
-                    }
-                    return Redirect::back()->with('error', $errormsg);
-                }
+                return Redirect::away($respayment['url']);
             } else {
-                DB::rollBack();
-                return back()->with('error', 'There was a problem cancelling subscription. Please try again.');
+                $errormsg = 'Please try again! Something wen\'t wrong.';
+                if(!empty($respayment['errors'])) {
+                    $errormsg = $respayment['message'];
+                }
+                return Redirect::back()->with('error', $errormsg);
             }
         } catch (\Throwable $th) {
             DB::rollBack();
