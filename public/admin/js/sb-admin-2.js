@@ -58,4 +58,12 @@
     e.preventDefault();
   });
 
+  $(".star label").click(function(){
+    $(this).parent().find("label").css({"color": "#D6D3DC"});
+    $(this).css({"color": "#9672FB"});
+    $(this).nextAll().css({"color": "#9672FB"});
+    $(this).css({"background-color": "transparent"});
+    $(this).nextAll().css({"background-color": "transparent"});
+  });
+
 })(jQuery); // End of use strict

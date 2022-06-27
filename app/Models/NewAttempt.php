@@ -21,6 +21,7 @@ class NewAttempt extends Model
         'price',
         'status',
         'payment_methods',
-        'payment_url'
+        'payment_url',
+        'duration'
     ];
 }

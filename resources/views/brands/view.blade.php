@@ -11,7 +11,8 @@
    
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="brand-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between"><a href="{{route('brand.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $brand->name }}</span></h1>
+        <h1 class="brand-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between"><a href="{{ $backurl }}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $brand->name }}</span></h1>
+        @if(!auth()->user()->hasRole('Designer'))
         <div class="actions d-sm-flex align-items-center justify-content-between">
             <div class="dropdown m-1">
               <button class="btn btn-outline-light text-dark border dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -43,6 +44,7 @@
                 @endif
             </div>
         </div>
+        @endif
     </div>
 
     <div class="card mb-4 single-view">
@@ -131,9 +133,11 @@
                         </div>
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'information', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
         </div>
         <div class="tab-pane fade" id="assets" role="tabpanel" aria-labelledby="assets-tab">
@@ -181,9 +185,11 @@
                         </div>
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'logo', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
 
             <div class="card mb-4">
@@ -216,9 +222,11 @@
                         </div>
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'colors', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
 
             <div class="card mb-4">
@@ -271,9 +279,11 @@
                         </div>
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'fonts', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
 
             <div class="card mb-4">
@@ -301,9 +311,11 @@
                         </div>
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'images', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
         </div>
 
@@ -333,9 +345,11 @@
                         @endif
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'guidelines', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
         </div>
         <div class="tab-pane fade" id="templates" role="tabpanel" aria-labelledby="templates-tab">
@@ -364,9 +378,11 @@
                         @endif
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'templates', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
         </div>
         <div class="tab-pane fade" id="inspirations" role="tabpanel" aria-labelledby="inspirations-tab">
@@ -395,9 +411,11 @@
                         <p>{{ $brand->other_inspirations }}</p>
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'inspirations', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
         </div>
         <div class="tab-pane fade" id="social" role="tabpanel" aria-labelledby="social-tab">
@@ -443,9 +461,11 @@
                         </div>
                     </div>
                 </div>
+                @if(!auth()->user()->hasRole('Designer'))
                 <div class="card-footer bg-light-custom">
                     <a href="{{ route('brand.edit', ['section' => 'social', 'brand' => $brand->id]) }}">Edit</a>
                 </div>
+                @endif
             </div>
         </div>
     </div>

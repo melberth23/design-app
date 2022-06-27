@@ -79,6 +79,13 @@
                     modal.find('.modal-body #invoice_ref_id').val(ref);
                 });
 
+                $('#leaveReviewModal').on('shown.bs.modal', function (event) {
+                    var button = $(event.relatedTarget);
+                    var ref = button.data('ref');
+                    var modal = $(this);
+                    modal.find('.modal-footer #request_id').val(ref);
+                });
+
             });
         });
     </script>

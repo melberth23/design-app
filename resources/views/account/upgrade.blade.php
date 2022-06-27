@@ -14,6 +14,20 @@
             <h1 class="text-dark font-weight-bold">Upgrade to higher plan to unleash more features</h1>
         </div>
     </div>
+
+    <div class="row justify-content-center mt-5 text-center">
+        <div class="col-md-3">
+            <div id="plan-toggle" class="btn-group btn-group-toggle btn-light" data-toggle="buttons">
+                <label id="yearly-plan" class="btn btn-light">
+                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" {{ ($durationlabel == 'yearly')?'checked':'' }}> Yearly
+                </label>
+                <label id="monthly-plan" class="btn btn-light active">
+                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" {{ ($durationlabel == 'monthly')?'checked':'' }}> Monthly
+                </label>
+            </div>
+        </div>
+    </div>
+
     <div class="row justify-content-center mt-5 text-center">
         <div class="col-md-8">
             <div class="row">
@@ -22,12 +36,15 @@
                         <div class="card-body pt-5 pb-5 text-dark">
                             <h6 class="card-title">SILVER</h6>
                             <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2>$449</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">$449</h2>
+                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">$1,759</h2>
+                            <p>USD / <span class="monthly-per-duration {{ ($durationlabel == 'yearly')?'hide-per-duration':'' }}">MONTH</span><span class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }}">YEAR</span></p>
                             @if(auth()->user()->payments->plan == 'basic')
-                                <div class="bg-opacity-primary rounded d-block py-2 px-4 text-dark">Monthly plan, paid monthly</div>
+                                <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
+                                <div class="yearly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'monthly')?'hide-label':'d-block' }}">Yearly plan, paid yearly</div>
                             @else
-                                <div class="bg-primary rounded-pill d-inline-block py-2 px-4 text-white">Monthly</div>
+                                <div class="monthly-label bg-primary rounded-pill py-2 px-4 text-white {{ ($durationlabel == 'yearly')?'hide-label':'d-inline-block' }}">Monthly</div>
+                                <div class="yearly-label bg-primary rounded-pill py-2 px-4 text-white {{ ($durationlabel == 'monthly')?'hide-label':'d-inline-block' }}">Yearly</div>
                             @endif
                             <ul class="pricing-details">
                                 <li>
@@ -69,6 +86,7 @@
                             <form method="POST" action="{{ route('profile.upgradeplan') }}" class="mt-3">
                                 @csrf
                                 <input type="hidden" name="plan" value="basic" />
+                                <input type="hidden" name="duration" class="duration" value="{{ $durationlabel }}" />
                                 <button type="submit" class="btn btn-primary btn-block">
                                     {{ __('Upgrade') }}
                                 </button>
@@ -87,12 +105,15 @@
                         <div class="card-body pt-5 pb-5 text-dark">
                             <h6 class="card-title">BRONZE</h6>
                             <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2>$1,145</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount">$1,145</h2>
+                            <h2 class="yearly-amount hide-amount">$2,545</h2>
+                            <p>USD / <span class="monthly-per-duration {{ ($durationlabel == 'yearly')?'hide-per-duration':'' }}">MONTH</span><span class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }}">YEAR</span></p>
                             @if(auth()->user()->payments->plan == 'premium')
-                                <div class="bg-opacity-primary rounded d-block py-2 px-4 text-dark">Monthly plan, paid monthly</div>
+                                <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
+                                <div class="yearly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'monthly')?'hide-label':'d-block' }}">Yearly plan, paid yearly</div>
                             @else
-                                <div class="bg-primary rounded-pill d-inline-block py-2 px-4 text-white">Monthly</div>
+                                <div class="monthly-label bg-primary rounded-pill py-2 px-4 text-white {{ ($durationlabel == 'yearly')?'hide-label':'d-inline-block' }}">Monthly</div>
+                                <div class="yearly-label bg-primary rounded-pill py-2 px-4 text-white {{ ($durationlabel == 'monthly')?'hide-label':'d-inline-block' }}">Yearly</div>
                             @endif
                             <ul class="pricing-details">
                                 <li>
@@ -139,6 +160,7 @@
                             <form method="POST" action="{{ route('profile.upgradeplan') }}" class="mt-3">
                                 @csrf
                                 <input type="hidden" name="plan" value="premium" />
+                                <input type="hidden" name="duration" class="duration" value="{{ $durationlabel }}" />
                                 <button type="submit" class="btn btn-primary btn-block">
                                     {{ __('Upgrade') }}
                                 </button>
@@ -156,12 +178,15 @@
                         <div class="card-body pt-5 pb-5 text-dark">
                             <h6 class="card-title">GOLD</h6>
                             <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2>$2,395</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount">$2,395</h2>
+                            <h2 class="yearly-amount hide-amount">$3,795</h2>
+                            <p>USD / <span class="monthly-per-duration {{ ($durationlabel == 'yearly')?'hide-per-duration':'' }}">MONTH</span><span class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }}">YEAR</span></p>
                             @if(auth()->user()->payments->plan == 'royal')
-                                <div class="bg-opacity-primary rounded d-block py-2 px-4 text-dark">Monthly plan, paid monthly</div>
+                                <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
+                                <div class="yearly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'monthly')?'hide-label':'d-block' }}">Yearly plan, paid yearly</div>
                             @else
-                                <div class="bg-primary rounded-pill d-inline-block py-2 px-4 text-white">Monthly</div>
+                                <div class="monthly-label bg-primary rounded-pill py-2 px-4 text-white {{ ($durationlabel == 'yearly')?'hide-label':'d-inline-block' }}">Monthly</div>
+                                <div class="yearly-label bg-primary rounded-pill py-2 px-4 text-white {{ ($durationlabel == 'monthly')?'hide-label':'d-inline-block' }}">Yearly</div>
                             @endif
                             <ul class="pricing-details">
                                 <li>
@@ -208,6 +233,7 @@
                             <form method="POST" action="{{ route('profile.upgradeplan') }}" class="mt-3">
                                 @csrf
                                 <input type="hidden" name="plan" value="royal" />
+                                <input type="hidden" name="duration" class="duration" value="{{ $durationlabel }}" />
                                 <button type="submit" class="btn btn-primary btn-block">
                                     {{ __('Upgrade') }}
                                 </button>
@@ -275,7 +301,40 @@
 
 <script type="text/javascript">
     jQuery(function($) {
-        
+        $('#yearly-plan').on('click', function() {
+            $('#monthly-plan').removeClass('active');
+            $('.yearly-amount').removeClass('hide-amount');
+            $('.monthly-amount').addClass('hide-amount');
+            $('.yearly-per-duration').removeClass('hide-per-duration');
+            $('.monthly-per-duration').addClass('hide-per-duration');
+            $('.yearly-label').removeClass('hide-label');
+            $('.yearly-label').addClass('d-inline-block');
+            $('.monthly-label').removeClass('d-inline-block');
+            $('.monthly-label').addClass('hide-label');
+            $('.yearly-block-label').removeClass('hide-label');
+            $('.yearly-block-label').addClass('d-block');
+            $('.monthly-block-label').removeClass('d-block');
+            $('.monthly-block-label').addClass('hide-label');
+            $(this).addClass('active');
+            $('.duration').val('yearly');
+        });
+        $('#monthly-plan').on('click', function() {
+            $('#yearly-plan').removeClass('active');
+            $('.monthly-amount').removeClass('hide-amount');
+            $('.yearly-amount').addClass('hide-amount');
+            $('.monthly-per-duration').removeClass('hide-per-duration');
+            $('.yearly-per-duration').addClass('hide-per-duration');
+            $('.monthly-label').removeClass('hide-label');
+            $('.monthly-label').addClass('d-inline-block');
+            $('.yearly-label').removeClass('d-inline-block');
+            $('.yearly-label').addClass('hide-label');
+            $('.monthly-block-label').removeClass('hide-label');
+            $('.monthly-block-label').addClass('d-block');
+            $('.yearly-block-label').removeClass('d-block');
+            $('.yearly-block-label').addClass('hide-label');
+            $(this).addClass('active');
+            $('.duration').val('monthly');
+        });
     });
 </script>
     

@@ -23,6 +23,20 @@
             <h1>Choose the plan that works for you</h1>
         </div>
     </div>
+
+    <div class="row justify-content-center mt-5 text-center">
+        <div class="col-md-3">
+            <div id="plan-toggle" class="btn-group btn-group-toggle btn-light" data-toggle="buttons">
+                <label id="yearly-plan" class="btn btn-light">
+                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked> Yearly
+                </label>
+                <label id="monthly-plan" class="btn btn-light active">
+                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off"> Monthly
+                </label>
+            </div>
+        </div>
+    </div>
+
     @if (session('error'))
     <div class="row justify-content-center mt-5 text-center">
         <div class="col-md-6">
@@ -38,11 +52,13 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">SILVER</h6>
                             <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2>$449</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount">$449</h2>
+                            <h2 class="yearly-amount hide-amount">$1,759</h2>
+                            <p>USD / <span class="monthly-per-duration">MONTH</span><span class="yearly-per-duration hide-per-duration">YEAR</span></p>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
                                 <input type="hidden" name="plan" value="basic" />
+                                <input type="hidden" name="duration" class="duration" value="monthly" />
                                 <button type="submit" class="btn btn-outline-primary btn-lg btn-block">
                                     {{ __('Get Started') }}
                                 </button>
@@ -88,11 +104,13 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">BRONZE</h6>
                             <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2>$1,145</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount">$1,145</h2>
+                            <h2 class="yearly-amount hide-amount">$2,545</h2>
+                            <p>USD / <span class="monthly-per-duration">MONTH</span><span class="yearly-per-duration hide-per-duration">YEAR</span></p>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
                                 <input type="hidden" name="plan" value="premium" />
+                                <input type="hidden" name="duration" class="duration" value="monthly" />
                                 <button type="submit" class="btn btn-primary btn-lg btn-block">
                                     {{ __('Get Started') }}
                                 </button>
@@ -142,11 +160,13 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">GOLD</h6>
                             <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2>$2,395</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount">$2,395</h2>
+                            <h2 class="yearly-amount hide-amount">$3,795</h2>
+                            <p>USD / <span class="monthly-per-duration">MONTH</span><span class="yearly-per-duration hide-per-duration">YEAR</span></p>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
                                 <input type="hidden" name="plan" value="royal" />
+                                <input type="hidden" name="duration" class="duration" value="monthly" />
                                 <button type="submit" class="btn btn-outline-primary btn-lg btn-block">
                                     {{ __('Get Started') }}
                                 </button>
@@ -212,4 +232,31 @@
         margin-top: 40px;
     }
 </style>
+@endsection
+
+@section('scripts')
+
+<script type="text/javascript">
+    jQuery(function($) {
+        $('#yearly-plan').on('click', function() {
+            $('#monthly-plan').removeClass('active');
+            $('.yearly-amount').removeClass('hide-amount');
+            $('.monthly-amount').addClass('hide-amount');
+            $('.yearly-per-duration').removeClass('hide-per-duration');
+            $('.monthly-per-duration').addClass('hide-per-duration');
+            $(this).addClass('active');
+            $('.duration').val('yearly');
+        });
+        $('#monthly-plan').on('click', function() {
+            $('#yearly-plan').removeClass('active');
+            $('.monthly-amount').removeClass('hide-amount');
+            $('.yearly-amount').addClass('hide-amount');
+            $('.monthly-per-duration').removeClass('hide-per-duration');
+            $('.yearly-per-duration').addClass('hide-per-duration');
+            $(this).addClass('active');
+            $('.duration').val('monthly');
+        });
+    });
+</script>
+    
 @endsection

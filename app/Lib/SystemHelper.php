@@ -26,36 +26,64 @@ class SystemHelper {
     * @param string plan
     * @return array Plan information
     */
-    public function getPlanInformation($plan='basic')
+    public function getPlanInformation($plan='basic', $duration='monthly')
     {
         $plans = array(
-            'basic' => array(
-                'label' => 'Basic',
-                'id' => '95d369cc-7fbd-4608-b53f-562605eab522',
-                'amount' => 449,
-                'request' => 1,
-                'backlog' => false,
-                'brand' => 1
+            'monthly' => array(
+                'basic' => array(
+                    'label' => 'Basic',
+                    'id' => '95d369cc-7fbd-4608-b53f-562605eab522',
+                    'amount' => 449,
+                    'request' => 1,
+                    'backlog' => false,
+                    'brand' => 1
+                ),
+                'premium' => array(
+                    'label' => 'Premium',
+                    'id' => '95d369fd-9228-4f36-bd7f-d03c6805027a',
+                    'amount' => 1145,
+                    'request' => 2,
+                    'backlog' => false,
+                    'brand' => 2
+                ),
+                'royal' => array(
+                    'label' => 'Royal',
+                    'id' => '95d36a21-671d-48f9-909f-002d022c6b59',
+                    'amount' => 2395,
+                    'request' => 2,
+                    'backlog' => true,
+                    'brand' => 9999
+                )
             ),
-            'premium' => array(
-                'label' => 'Premium',
-                'id' => '95d369fd-9228-4f36-bd7f-d03c6805027a',
-                'amount' => 1145,
-                'request' => 2,
-                'backlog' => false,
-                'brand' => 2
-            ),
-            'royal' => array(
-                'label' => 'Royal',
-                'id' => '95d36a21-671d-48f9-909f-002d022c6b59',
-                'amount' => 2395,
-                'request' => 2,
-                'backlog' => true,
-                'brand' => 9999
+            'yearly' => array(
+                'basic' => array(
+                    'label' => 'Basic',
+                    'id' => '95d32cca-1c37-4efc-a0f5-48203c8386f7',
+                    'amount' => 1759,
+                    'request' => 1,
+                    'backlog' => false,
+                    'brand' => 1
+                ),
+                'premium' => array(
+                    'label' => 'Premium',
+                    'id' => '9699a9c9-63e4-4895-9b01-cf7fa598dcc4',
+                    'amount' => 2545,
+                    'request' => 2,
+                    'backlog' => false,
+                    'brand' => 2
+                ),
+                'royal' => array(
+                    'label' => 'Royal',
+                    'id' => '9699aa3b-6196-426b-ac73-7627b7d94780',
+                    'amount' => 3795,
+                    'request' => 2,
+                    'backlog' => true,
+                    'brand' => 9999
+                )
             )
         );
 
-        return $plans[$plan];
+        return $plans[$duration][$plan];
     }
 
     /**

@@ -22,11 +22,16 @@ Route::get('/change-payment-success', [App\Http\Controllers\PaymentsController::
 Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
 Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');
 
+Route::get('/admin-login', [App\Http\Controllers\Auth\AuthenticateController::class, 'getAdminLogin'])->name('adminlogin');
+Route::post('/userlogin', [App\Http\Controllers\Auth\AuthenticateController::class, 'authenticate'])->name('userlogin');
+
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
 Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadBrandFile'])->name('download');
 Route::get('/request/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadRequestFile'])->name('request.download');
@@ -52,6 +57,7 @@ Route::prefix('profile')->name('profile.')->middleware(['auth', 'is_verify_email
     Route::get('/invoices', [HomeController::class, 'invoices'])->name('invoices');
     Route::get('/payment-methods', [HomeController::class, 'paymentmethods'])->name('paymentmethods');
     Route::get('/change-card', [HomeController::class, 'changecard'])->name('changecard');
+    Route::post('/updateprofileimage', [HomeController::class, 'updateProfileImage'])->name('updateprofileimage');
     Route::post('/upgradeplan', [HomeController::class, 'upgradeplan'])->name('upgradeplan');
     Route::post('/addplan', [HomeController::class, 'addplan'])->name('addplan');
     Route::post('/update', [HomeController::class, 'updateProfile'])->name('update');
@@ -102,6 +108,7 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::post('/user-comment', [App\Http\Controllers\RequestsController::class, 'addComment'])->name('addcomment');
     Route::put('/update/{requests}', [App\Http\Controllers\RequestsController::class, 'update'])->name('update');
     Route::post('/delete', [App\Http\Controllers\RequestsController::class, 'delete'])->name('destroy');
+    Route::post('/leavereview', [App\Http\Controllers\RequestsController::class, 'leavereview'])->name('leavereview');
     Route::post('/delete-media', [App\Http\Controllers\RequestsController::class, 'deleteAsset'])->name('destroyassets');
     Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
 });
@@ -110,6 +117,7 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
 Route::middleware(['auth'])->prefix('designers')->name('designer.')->group(function(){
     Route::get('/', [App\Http\Controllers\Designer\DesignersController::class, 'index'])->name('index');
     Route::get('/queue', [App\Http\Controllers\Designer\DesignersController::class, 'queue'])->name('queue');
+    Route::get('/progress', [App\Http\Controllers\Designer\DesignersController::class, 'progress'])->name('progress');
     Route::get('/review', [App\Http\Controllers\Designer\DesignersController::class, 'review'])->name('review');
     Route::get('/completed', [App\Http\Controllers\Designer\DesignersController::class, 'delivered'])->name('completed');
     Route::get('/designer-view/{requests}', [App\Http\Controllers\Designer\DesignersController::class, 'view'])->name('view');

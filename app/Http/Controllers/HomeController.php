@@ -59,6 +59,12 @@ class HomeController extends Controller
             $inprogress = Requests::where('user_id', $user->id)->where('status', 3);
             $forreview = Requests::where('user_id', $user->id)->where('status', 4);
             $queue = Requests::where('user_id', $user->id)->whereIn('status', [2, 3]);
+        } if($user->hasRole('Designer')) {
+            $overall = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC');
+            $completed = Requests::where('designer_id', $user->id)->where('status', 0);
+            $inprogress = Requests::where('designer_id', $user->id)->where('status', 3);
+            $forreview = Requests::where('designer_id', $user->id)->where('status', 4);
+            $queue = Requests::where('designer_id', $user->id)->where('status', 2);
         } else {
             $overall = Requests::where('user_id', '!=', $user->id);
             $completed = Requests::where('user_id', '!=', $user->id)->where('status', 0);
@@ -128,6 +134,8 @@ class HomeController extends Controller
             }
 
             return view('home', ['payment_status' => auth()->user()->payments->status, 'payment_url' => $payment_url, 'user_fullname' => $user->fullname, 'total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'allinprogressreq' => $allinprogressreq, 'filter' => $filter, 'from' => $from, 'to' => $to]);
+        } elseif($user->hasRole('Designer')) {
+            return view('designer.home', ['total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'filter' => $filter, 'from' => $from, 'to' => $to]);
         } else {
             // Get all request current month
             $currentmonthreq = Requests::where('user_id', '!=', $user->id)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)->count();
@@ -179,7 +187,9 @@ class HomeController extends Controller
         if(auth()->user()->payments->status == 'cancelled') {
             return redirect()->route('profile.subscription');
         } else {
-            return view('account.upgrade');
+            $duration = auth()->user()->payments->duration;
+            $durationLabel = !empty($duration)?$duration:'monthly';
+            return view('account.upgrade', ['durationlabel' => $durationLabel]);
         }
     }
 
@@ -667,7 +677,8 @@ class HomeController extends Controller
 
             // Add new plan
             $selectedplan = $request->plan;
-            $planInfo = $this->helper->getPlanInformation($selectedplan);
+            $selectedduration = $request->duration;
+            $planInfo = $this->helper->getPlanInformation($selectedplan, $selectedduration);
             // Get Payment Config
             $apikey = config('services.hitpay.key');
             $isStg = config('services.hitpay.environment');
@@ -693,6 +704,7 @@ class HomeController extends Controller
                     'status' => $respayment['status'],
                     'payment_methods' => json_encode($respayment['payment_methods']),
                     'payment_url' => $respayment['url'],
+                    'duration' => $selectedduration,
                 ]);
 
                 // Send Email

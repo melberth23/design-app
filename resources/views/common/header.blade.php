@@ -15,7 +15,7 @@
                         <i class="fas fa-search fa-sm"></i>
                     </button>
                 </div>
-                <input type="text" name="keyword" class="form-control bg-light small border border-left-0" placeholder="Search requests..."
+                <input type="text" name="keyword" value="{{ !empty(Request::get('keyword'))?Request::get('keyword'):'' }}" class="form-control bg-light small border border-left-0" placeholder="Search requests..."
                     aria-label="Search" aria-describedby="basic-addon2">
             </div>
         </form>

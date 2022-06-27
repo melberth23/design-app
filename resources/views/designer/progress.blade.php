@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Delivered Requests List')
+@section('title', 'Queue Requests List')
 
 @section('content')
     <div class="container-fluid">
@@ -11,7 +11,7 @@
         @if ($requests->count() > 0)
 
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800 page-heading">Completed requests</h1>
+            <h1 class="h3 mb-0 text-gray-800 page-heading">In progress requests</h1>
         </div>
 
         <div class="card">
@@ -24,13 +24,13 @@
                         <a class="nav-link py-3 {{ (request()->is('designer/queue')) ? 'active' : '' }}" id="queue-tab" href="{{ route('designer.queue') }}">Queue {{ $queue }}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('designer/progress')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designer/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('designer.progress') }}">Progress {{ $progress }}</a>
+                        <a class="nav-link py-3 {{ (request()->is('designer/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('designer.progress') }}">Progress {{ $requests->count() }}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('designer/review')) ? 'border-bottom' : '' }}">
                         <a class="nav-link py-3 {{ (request()->is('designer/review')) ? 'active' : '' }}" id="review-tab" href="{{ route('designer.review') }}">Review {{ $review }}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('designer/completed')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designer/completed')) ? 'active' : '' }}" id="completed-tab" href="{{ route('designer.completed') }}">Completed {{ $requests->count() }}</a>
+                        <a class="nav-link py-3 {{ (request()->is('designer/completed')) ? 'active' : '' }}" id="completed-tab" href="{{ route('designer.completed') }}">Completed {{ $completed }}</a>
                     </li>
                 </ul>
             </div>
@@ -62,6 +62,9 @@
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>
                                         </a>
+                                        <a class="text-dark mx-2" href="#" data-ref="{{ $request->id }}" data-toggle="modal" data-target="#reviewModal" >
+                                            <i class="fa fa-check"></i>
+                                        </a>
                                         <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>
@@ -77,6 +80,7 @@
             </div>
         </div>
 
+        @include('designer.review-modal')  
         @else
 
             <div class="card shadow mb-4">
@@ -85,7 +89,7 @@
                         <div class="no-record py-4 text-center">
                             <img src="{{ asset('images/requests-empty.svg') }}">
                             <div class="pt-4">
-                                <h2>No completed requests.</h2>
+                                <h2>No in progress requests.</h2>
                             </div>
                         </div>
                     </div>

@@ -36,6 +36,7 @@ class DesignersController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('role:Designer');
 
         $this->helper = new SystemHelper();
     }
@@ -47,8 +48,15 @@ class DesignersController extends Controller
      */
     public function index()
     {
+        $userid = Auth::id();
+
         $requests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->paginate(10);
-        return view('designer.index', ['requests' => $requests]);
+        $queue = Requests::where('designer_id', $userid)->where('status',2)->count();
+        $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
+        $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
+        $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
+
+        return view('designer.index', ['requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
     }
     
     /**
@@ -60,8 +68,30 @@ class DesignersController extends Controller
     {
         $userid = Auth::id();
 
-        $requests = Requests::where('designer_id', $userid)->whereIn('status', array(2, 3))->paginate(10);
-        return view('designer.queue', ['requests' => $requests]);
+        $requests = Requests::where('designer_id', $userid)->where('status', 2)->paginate(10);
+        $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
+        $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
+        $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
+        $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
+
+        return view('designer.queue', ['requests' => $requests, 'all' => $allrequests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+    }
+
+    /**
+     * Progress requests 
+     * @param Nill
+     * @return Array $requests
+     */
+    public function progress()
+    {
+        $userid = Auth::id();
+
+        $requests = Requests::where('designer_id', $userid)->where('status', 3)->paginate(10);
+        $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
+        $queue = Requests::where('designer_id', $userid)->where('status',2)->count();
+        $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
+        $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
+        return view('designer.progress', ['requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
     }
 
     /**
@@ -74,7 +104,12 @@ class DesignersController extends Controller
         $userid = Auth::id();
 
         $requests = Requests::where('designer_id', $userid)->where('status', 4)->paginate(10);
-        return view('designer.review', ['requests' => $requests]);
+        $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
+        $queue = Requests::where('designer_id', $userid)->where('status',2)->count();
+        $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
+        $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
+
+        return view('designer.review', ['requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
     }
 
     /**
@@ -87,7 +122,12 @@ class DesignersController extends Controller
         $userid = Auth::id();
 
         $requests = Requests::where('designer_id', $userid)->where('status', 0)->paginate(10);
-        return view('designer.delivered', ['requests' => $requests]);
+        $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
+        $queue = Requests::where('designer_id', $userid)->where('status',2)->count();
+        $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
+        $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
+
+        return view('designer.delivered', ['requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
     }
 
     public function view(Requests $requests) {

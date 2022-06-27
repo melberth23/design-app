@@ -119,22 +119,29 @@
 
             <li class="nav-item {{ (request()->is('designers/queue')) ? 'active' : '' }}">
                 <a class="nav-link text-dark" href="{{ route('designer.queue') }}">
-                    <i class="fa fa-list"></i>
-                    <span>Queue Requests</span>
+                    <i class="fa fa-tags"></i>
+                    <span>On Queue</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ (request()->is('designers/progress')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('designer.progress') }}">
+                    <i class="fa fa-tags"></i>
+                    <span>In Progress</span>
                 </a>
             </li>
 
             <li class="nav-item {{ (request()->is('designers/review')) ? 'active' : '' }}">
                 <a class="nav-link text-dark" href="{{ route('designer.review') }}">
-                    <i class="fa fa-check-square-o"></i>
-                    <span>Review Requests</span>
+                    <i class="fa fa-tags"></i>
+                    <span>For Review</span>
                 </a>
             </li>
 
             <li class="nav-item {{ (request()->is('designers/completed')) ? 'active' : '' }}">
                 <a class="nav-link text-dark" href="{{ route('designer.completed') }}">
-                    <i class="fa fa-cloud-upload"></i>
-                    <span>Completed Requests</span>
+                    <i class="fa fa-tags"></i>
+                    <span>Completed</span>
                 </a>
             </li>
             

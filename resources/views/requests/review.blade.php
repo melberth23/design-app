@@ -71,10 +71,16 @@
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>
                                         </a>
-                                        <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 0]) }}"
-                                            class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Complete Request">
-                                            <i class="fas fa-check-circle" aria-hidden="true"></i>
-                                        </a>
+                                        @if(!empty(auth()->user()->review->id))
+                                            <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 0]) }}"
+                                                class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Complete Request">
+                                                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                            </a>
+                                        @else
+                                            <a class="text-dark mx-2" href="#" data-ref="{{ $request->id }}" data-toggle="modal" data-target="#leaveReviewModal" >
+                                                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -90,6 +96,7 @@
             </div>
         </div>
 
+        @include('requests.leavereview-modal')
         @else
 
             <div class="card shadow mb-4">

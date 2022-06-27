@@ -86,6 +86,7 @@ class AccountController extends Controller
 
                 if(!$user->is_email_verified) {
                     $verifyUser->user->is_email_verified = 1;
+                    $verifyUser->user->status = 1;
                     $verifyUser->user->save();
 
                     Auth::login($verifyUser->user);
@@ -118,7 +119,8 @@ class AccountController extends Controller
             $isStg = config('services.hitpay.environment');
             $customerfullname = $first_name .' '. $last_name;
             $selectedplan = $posts['plan'];
-            $planInfo = $this->helper->getPlanInformation($selectedplan);
+            $selectedduration = $posts['duration'];
+            $planInfo = $this->helper->getPlanInformation($selectedplan, $selectedduration);
             $payment = new PaymentHelper($apikey, $isStg);
             $response = $payment->recurringRequestCreate(array(
                 'plan_id'    =>  $planInfo['id'],
@@ -142,6 +144,7 @@ class AccountController extends Controller
                     'status' => $response['status'],
                     'payment_methods' => json_encode($response['payment_methods']),
                     'payment_url' => $response['url'],
+                    'duration' => $selectedduration
                 ]);
 
                 // Send Email

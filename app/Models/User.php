@@ -73,4 +73,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Payments::class)->latestOfMany();
     }
+
+    public function review()
+    {
+        return $this->hasOne(Reviews::class)->latestOfMany();
+    }
 }

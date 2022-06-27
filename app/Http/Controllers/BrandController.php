@@ -109,54 +109,59 @@ class BrandController extends Controller
     public function view(Brand $brand)
     {
         $userid = Auth::id();
-        if($brand->user_id == $userid) {
-            /* Get all assets by type */
-            // Get Logo
-            $logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo')->get();
-            $secondary_logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo_second')->get();
+        /* Get all assets by type */
+        // Get Logo
+        $logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo')->get();
+        $secondary_logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo_second')->get();
 
-            // Get Colors
-            $colors = BrandAssets::where('brand_id', $brand->id)->where('type', 'color')->get();
-            $secondary_colors = BrandAssets::where('brand_id', $brand->id)->where('type', 'color_second')->get();
+        // Get Colors
+        $colors = BrandAssets::where('brand_id', $brand->id)->where('type', 'color')->get();
+        $secondary_colors = BrandAssets::where('brand_id', $brand->id)->where('type', 'color_second')->get();
 
-            // Get Fonts
-            $fonts = BrandAssets::where('brand_id', $brand->id)->where('type', 'font')->get();
-            $secondary_fonts = BrandAssets::where('brand_id', $brand->id)->where('type', 'font_second')->get();
+        // Get Fonts
+        $fonts = BrandAssets::where('brand_id', $brand->id)->where('type', 'font')->get();
+        $secondary_fonts = BrandAssets::where('brand_id', $brand->id)->where('type', 'font_second')->get();
 
-            // Get images
-            $images = BrandAssets::where('brand_id', $brand->id)->where('type', 'picture')->get();
+        // Get images
+        $images = BrandAssets::where('brand_id', $brand->id)->where('type', 'picture')->get();
 
-            // Get Guidelines
-            $guidelines = BrandAssets::where('brand_id', $brand->id)->where('type', 'guideline')->get();
+        // Get Guidelines
+        $guidelines = BrandAssets::where('brand_id', $brand->id)->where('type', 'guideline')->get();
 
-            // Get Templates
-            $templates = BrandAssets::where('brand_id', $brand->id)->where('type', 'template')->get();
+        // Get Templates
+        $templates = BrandAssets::where('brand_id', $brand->id)->where('type', 'template')->get();
 
-            // Get Inspirations
-            $inspirations = BrandAssets::where('brand_id', $brand->id)->where('type', 'inspiration')->get();
+        // Get Inspirations
+        $inspirations = BrandAssets::where('brand_id', $brand->id)->where('type', 'inspiration')->get();
 
-            // get next and previous
-            $previous = Brand::where('user_id', $userid)->where('id', '<', $brand->id)->max('id');
-            $next = Brand::where('user_id', $userid)->where('id', '>', $brand->id)->min('id');
+        // get next and previous
+        $previous = Brand::where('user_id', $userid)->where('id', '<', $brand->id)->max('id');
+        $next = Brand::where('user_id', $userid)->where('id', '>', $brand->id)->min('id');
 
-            return view('brands.view')->with([
-                'brand'  => $brand,
-                'previous'  => $previous,
-                'next'  => $next,
-                'logos' => $logos,
-                'secondary_logos' => $secondary_logos,
-                'colors' => $colors,
-                'secondary_colors' => $secondary_colors,
-                'fonts' => $fonts,
-                'secondary_fonts' => $secondary_fonts,
-                'images' => $images,
-                'guidelines' => $guidelines,
-                'templates' => $templates,
-                'inspirations' => $inspirations
-            ]);
-        } else {
-            return redirect()->route('dashboard');
+        $backurl = route('brand.index');
+        if(auth()->user()->hasRole('Admin')) {
+            $backurl = route('adminrequest.index');
         }
+        if(auth()->user()->hasRole('Designer')) {
+            $backurl = route('designer.index');
+        }
+
+        return view('brands.view')->with([
+            'brand'  => $brand,
+            'backurl'  => $backurl,
+            'previous'  => $previous,
+            'next'  => $next,
+            'logos' => $logos,
+            'secondary_logos' => $secondary_logos,
+            'colors' => $colors,
+            'secondary_colors' => $secondary_colors,
+            'fonts' => $fonts,
+            'secondary_fonts' => $secondary_fonts,
+            'images' => $images,
+            'guidelines' => $guidelines,
+            'templates' => $templates,
+            'inspirations' => $inspirations
+        ]);
     }
 
     /**

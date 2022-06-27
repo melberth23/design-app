@@ -11,6 +11,7 @@ use App\Models\Admin\RequestTypes;
 use App\Models\Comments;
 use App\Models\CommentsAssets;
 use App\Models\CommentNotification;
+use App\Models\Reviews;
 use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -193,7 +194,17 @@ class RequestsController extends Controller
 
         $notifications = $this->getNotifications($requests->id, $userid);
 
+        // Get url by role
+        $backurl = route('request.index');
+        if(auth()->user()->hasRole('Admin')) {
+            $backurl = route('adminrequest.index');
+        }
+        if(auth()->user()->hasRole('Designer')) {
+            $backurl = route('designer.index');
+        }
+
         return view('requests.view')->with([
+            'backurl'  => $backurl,
             'requests'  => $requests,
             'previous' => $previous,
             'next' => $next,
@@ -402,6 +413,33 @@ class RequestsController extends Controller
     }
 
     /**
+     * Leave review and mark complete the request
+     * @param Review information
+     * @return Redirect
+     * */
+    public function leavereview(Request $request)
+    {
+        $userid = Auth::id();
+
+        // Leave reviews but optional
+        Reviews::create([
+            'user_id' => $userid,
+            'rate_designer' => $request->rate_designer,
+            'com_designer' => $request->com_designer,
+            'experience_to_designer' => $request->experience_to_designer,
+            'work_again_option' => $request->work_again_option,
+            'rate_platform' => $request->rate_platform,
+            'experience_platform' => $request->experience_platform,
+            'suggestion' => $request->suggestion,
+            'recommend_option' => $request->recommend_option
+        ]);
+
+        $this->updateStatus($request->id, 0);
+
+        return redirect()->route('request.index')->with('success','Requests Status Updated Successfully!');
+    }
+
+    /**
      * Edit Requests
      * @param Integer $requests
      * @return Collection $requests
@@ -444,8 +482,19 @@ class RequestsController extends Controller
         $this->updateNotifications($requests->id, $userid);
 
         $comments = Comments::where('request_id', $requests->id)->latest()->get();
+
+        // Get url by role
+        $backurl = route('request.index');
+        if(auth()->user()->hasRole('Admin')) {
+            $backurl = route('adminrequest.index');
+        }
+        if(auth()->user()->hasRole('Designer')) {
+            $backurl = route('designer.index');
+        }
+
         return view('requests.comment')->with([
             'requests'  => $requests,
+            'backurl'  => $backurl,
             'previous' => $previous,
             'next' => $next,
             'comments'  => $comments,
@@ -481,9 +530,19 @@ class RequestsController extends Controller
         // Get notifications
         $notifications = $this->getNotifications($requests->id, $userid);
 
+        // Get url by role
+        $backurl = route('request.index');
+        if(auth()->user()->hasRole('Admin')) {
+            $backurl = route('adminrequest.index');
+        }
+        if(auth()->user()->hasRole('Designer')) {
+            $backurl = route('designer.index');
+        }
+
         return view('requests.files')->with([
             'requests'  => $requests,
             'notifications'  => $notifications,
+            'backurl' => $backurl,
             'previous' => $previous,
             'next' => $next,
             'medias'  => $media,

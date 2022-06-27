@@ -11,7 +11,7 @@
    
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="request-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between page-heading"><a href="{{route('request.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $requests->title }}</span>
+        <h1 class="request-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between page-heading"><a href="{{ $backurl }}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $requests->title }}</span>
             @if ($requests->status == 0)
                 <span class="badge badge-primary py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
             @elseif ($requests->status == 1)
@@ -23,10 +23,11 @@
             @elseif ($requests->status == 4)
                 <span class="badge badge-dark py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
             @endif
-            @if ($requests->status == 4)
+            @if ($requests->status == 4 && !auth()->user()->hasRole('Designer'))
             <a href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 0]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fas fa-check" aria-hidden="true"></i> Mark Complete</a>
             @endif
         </h1>
+        @if(!auth()->user()->hasRole('Designer'))
         <div class="actions d-sm-flex align-items-center justify-content-between">
             <div class="dropdown m-1">
                 <button class="btn btn-outline-light text-dark border" id="dropdownUpdate{{ $requests->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -80,6 +81,7 @@
                 @endif
             </div>
         </div>
+        @endif
     </div>
 
     <div class="card mb-4">

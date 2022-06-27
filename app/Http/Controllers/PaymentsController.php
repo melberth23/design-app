@@ -95,7 +95,8 @@ class PaymentsController extends Controller
                     'status' => $payments['status'],
                     'payment_methods' => $rowpayment->payment_methods,
                     'payment_url' => $rowpayment->payment_url,
-                    'type' => $payments['type']
+                    'type' => $payments['type'],
+                    'duration' => $rowpayment->duration
                 ]);
                 Payments::whereId($payment->id)->update(['recurring_date' => $datetoday]);
 
