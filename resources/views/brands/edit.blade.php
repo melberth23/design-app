@@ -370,7 +370,7 @@
                         <div class="guideline-information">
                             <h5 class="card-label text-dark">Brand Guidelines</h5>
                             <p class="img-description mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                            <p class="img-limit">Acceptable file, PNG, JPEG, PDF, DOC, PPT, max file size 150mb.</p>
+                            <p class="img-limit">Acceptable file PDF max file size 150mb.</p>
                         </div>
                         <div class="guideline-uploader">
                             <button type="button" onclick="getElementById('guidelines').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
@@ -460,7 +460,7 @@
                         <div class="inspiration-information">
                             <h5 class="card-label text-dark">Brand Inspiration</h5>
                             <p class="img-description mb-0">Upload your brand inspiration, it helps us determine the direction you like</p>
-                            <p class="img-limit">Acceptable file, PNG, JPEG, PDF, max file size 150mb.</p>
+                            <p class="img-limit">Acceptable file, PNG, JPEG, max file size 150mb.</p>
                         </div>
                         <div class="inspiration-uploader">
                             <button type="button" onclick="getElementById('inspiration-field').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>

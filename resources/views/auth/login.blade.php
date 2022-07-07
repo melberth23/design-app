@@ -20,6 +20,9 @@
             <div id="rightside-content" class="row justify-content-center mt-5">
                 <div class="col-md-6">
                     <h1>Welcome back!</h1>
+
+                    <p>New User? <a href="{{ route('register') }}" class="text-decoration-none">Create Account</a></p>
+
                     <form class="form mb-4 mt-4" method="POST" action="{{ route('login') }}">
                         @csrf
 
@@ -42,7 +45,16 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password" class="col-form-label">{{ __('Password') }}</label>
+                            <div class="col-md-4">
+                                 <label for="password" class="col-form-label">{{ __('Password') }}</label>
+                            </div>
+                            @if (Route::has('password.request'))
+                            <div class="col-md-8 text-end col-form-label">
+                              <a class="text-decoration-none" href="{{ route('password.request') }}">
+                                  {{ __('Forgot Your Password?') }}
+                              </a>
+                            </div>
+                            @endif
 
                             <div class="col-md-12">
                                 <input id="password" type="password" class="form-control form-control-user @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
@@ -65,13 +77,6 @@
                                     {{ __('Login') }}
                                 </button>
                             </div>
-                            @if (Route::has('password.request'))
-                            <div class="col-md-8">
-                              <p><a class="btn btn-link" href="{{ route('password.request') }}">
-                                  {{ __('Forgot Your Password?') }}
-                              </a></p>
-                            </div>
-                            @endif
                         </div>
                     </form>
                 </div>

@@ -58,8 +58,8 @@
                     <span>Payment Method</span></a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link text-dark" href="#">
+            <li class="nav-item {{ (request()->is('profile/notifications')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('profile.notifications') }}">
                     <img src="{{ asset('images/notifications.svg') }}" class="menu-icons">
                     <span>Notifications</span></a>
             </li>
@@ -149,45 +149,36 @@
 
         @hasrole('Admin')
 
+            <!-- Subscribers -->
+            <li class="nav-item {{ (request()->is('admin/subscribers')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('subscribers.index') }}">
+                    <img src="{{ asset('images/subscribers.svg') }}" class="menu-icons">
+                    <span>Subscribers</span>
+                </a>
+            </li>
+
             <!-- Requests -->
             <li class="nav-item {{ (request()->is('admin/requests')) ? 'active' : '' }} {{ (request()->is('admin/requests/queue')) ? 'active' : '' }} {{ (request()->is('admin/requests/review')) ? 'active' : '' }} {{ (request()->is('admin/requests/delivered')) ? 'active' : '' }}">
-                <a class="nav-link text-dark {{ (request()->is('admin/requests')) ? '' : 'collapsed' }} {{ (request()->is('admin/requests/queue')) ? '' : 'collapsed' }} {{ (request()->is('admin/requests/review')) ? '' : 'collapsed' }} {{ (request()->is('admin/requests/delivered')) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#requestDropdown"
-                    aria-expanded="true" aria-controls="requestDropdown">
+                <a class="nav-link text-dark" href="{{ route('adminrequest.index') }}">
                     <img src="{{ asset('images/myrequest.svg') }}" class="menu-icons">
                     <span>Requests</span>
                 </a>
-                <div id="requestDropdown" class="{{ (request()->is('admin/requests')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/requests/queue')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/requests/review')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/requests/delivered')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item {{ (request()->is('admin/requests')) ? 'active' : '' }}" href="{{ route('adminrequest.index') }}">All Requests</a>
-                        <a class="collapse-item {{ (request()->is('admin/requests/queue')) ? 'active' : '' }}" href="{{ route('adminrequest.queue') }}">Queue Requests</a>
-                        <a class="collapse-item {{ (request()->is('admin/requests/review')) ? 'active' : '' }}" href="{{ route('adminrequest.review') }}">Review Requests</a>
-                        <a class="collapse-item {{ (request()->is('admin/requests/delivered')) ? 'active' : '' }}" href="{{ route('adminrequest.delivered') }}">Completed Requests</a>
-                    </div>
-                </div>
             </li>
 
-            <!-- Nav Item - Request Types -->
-            <li class="nav-item {{ (request()->is('admin/requesttypes')) ? 'active' : '' }} {{ (request()->is('admin/requesttypes/create')) ? 'active' : '' }}">
-                <a class="nav-link text-dark {{ (request()->is('admin/requesttypes')) ? '' : 'collapsed' }} {{ (request()->is('admin/requesttypes/create')) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#requestTypesDropdown"
-                    aria-expanded="true" aria-controls="requestTypesDropdown">
-                    <i class="fas fa-file"></i>
-                    <span>Request Types</span>
+            <!-- Brand Profiles -->
+            <li class="nav-item {{ (request()->is('admin/brand')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('adminbrand.index') }}">
+                    <img src="{{ asset('images/brand-icon.svg') }}" class="menu-icons">
+                    <span>Brand Profiles</span>
                 </a>
-                <div id="requestTypesDropdown" class="{{ (request()->is('admin/requesttypes')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/requesttypes/create')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item {{ (request()->is('admin/requesttypes')) ? 'active' : '' }}" href="{{ route('requesttypes.index') }}">List</a>
-                        <a class="collapse-item {{ (request()->is('admin/requesttypes/create')) ? 'active' : '' }}" href="{{ route('requesttypes.create') }}">Add New</a>
-                    </div>
-                </div>
             </li>
-
 
             <!-- Nav Item - Payments -->
             <li class="nav-item {{ (request()->is('admin/payments')) ? 'active' : '' }} {{ (request()->is('admin/payments/pending')) ? 'active' : '' }} {{ (request()->is('admin/payments/completed')) ? 'active' : '' }}">
                 <a class="nav-link text-dark {{ (request()->is('admin/payments')) ? '' : 'collapsed' }} {{ (request()->is('admin/payments/pending')) ? '' : 'collapsed' }} {{ (request()->is('admin/payments/completed')) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#paymentsDropdown"
                     aria-expanded="true" aria-controls="paymentsDropdown">
-                    <i class="fas fa-database"></i>
-                    <span>Payments</span>
+                    <img src="{{ asset('images/payments.svg') }}" class="menu-icons">
+                    <span>Payment History</span>
                 </a>
                 <div id="paymentsDropdown" class="{{ (request()->is('admin/payments')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/payments/pending')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/payments/completed')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
@@ -202,7 +193,7 @@
             <li class="nav-item {{ (request()->is('admin/users')) ? 'active' : '' }} {{ (request()->is('admin/users/create')) ? 'active' : '' }}">
                 <a class="nav-link text-dark {{ (request()->is('admin/users')) ? '' : 'collapsed' }} {{ (request()->is('admin/users/create')) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#usersDropdown"
                     aria-expanded="true" aria-controls="usersDropdown">
-                    <i class="fas fa-user-alt"></i>
+                    <img src="{{ asset('images/user-lists.svg') }}" class="menu-icons">
                     <span>Users</span>
                 </a>
                 <div id="usersDropdown" class="{{ (request()->is('admin/users')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/users/create')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -221,11 +212,15 @@
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Masters</span>
                 </a>
-                <div id="collapsePages" class="{{ (request()->is('roles')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('permissions')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div id="collapsePages" class="{{ (request()->is('roles')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('permissions')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/requesttypes')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header text-dark">Role & Permissions</h6>
                         <a class="collapse-item {{ (request()->is('roles')) ? 'active' : '' }}" href="{{ route('roles.index') }}">Roles</a>
                         <a class="collapse-item {{ (request()->is('permissions')) ? 'active' : '' }}" href="{{ route('permissions.index') }}">Permissions</a>
+                    </div>
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Others</h6>
+                        <a class="collapse-item {{ (request()->is('admin/requesttypes')) ? 'active' : '' }}" href="{{ route('requesttypes.index') }}">List</a>
                     </div>
                 </div>
             </li>

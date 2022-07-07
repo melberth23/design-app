@@ -13,6 +13,9 @@
         <div class="col-md-3">
             <h1>Verify your email address</h1>
             <p>We’ve sent a message to {{ $email }} with a code to verify your email address.</p>
+
+            <div id="msg"></div>
+
             <form id="verify-form" method="POST" action="{{ route('user.check') }}">
                 @csrf
                 <input type="hidden" value="{{ $token }}" name="token">
@@ -59,12 +62,18 @@
                     </div>
                 </div>
 
+            </form>
+
+            <form id="resend-code-form" method="POST">
+                @csrf
+
+                <input type="hidden" value="{{ $token }}" name="token">
+
                 <div class="row mb-0">
                     <div class="col-md-12">
-                        <p>{{ __("Didn't received a code?") }} <a href="#">{{ __("Resend") }}</a></p>
+                        <p>{{ __("Didn't received a code?") }} <button type="submit" class="btn btn-link">{{ __("Resend") }}</button></p>
                     </div>
                 </div>
-
             </form>
         </div>
     </div>
@@ -79,4 +88,32 @@
         border-width: 2px;
     }
 </style>
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+    jQuery(function($) {
+        $('#resend-code-form').on('submit', function(e) {
+            e.preventDefault();
+
+            $("#msg").html('');
+
+            $.ajax({
+               type:'POST',
+               url:'{{ route('user.resendcode') }}',
+               data: $(this).serialize(),
+               success:function(data) {
+                if(data.error == 1) {
+                    $("#msg").html('<p class="alert alert-danger">'+ data.msg +'</p>');
+                } else {
+                    // Success
+                    $("#msg").html('<p class="alert alert-success">'+ data.msg +'</p>');
+                }
+               }
+            });
+
+            return false;
+        });
+    });
+</script>
 @endsection

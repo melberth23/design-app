@@ -28,16 +28,16 @@
         </div>
     </div>
 
-    <div class="row justify-content-center mt-5 text-center">
+    <div class="row justify-content-center mt-5 text-center pricing-table">
         <div class="col-md-8">
             <div class="row">
                 <div class="col-md-4 mt-2">
                     <div class="shadow bg-white rounded card no-header">
                         <div class="card-body pt-5 pb-5 text-dark">
-                            <h6 class="card-title">SILVER</h6>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">$449</h2>
-                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">$1,759</h2>
+                            <h6 class="card-title">Basic</h6>
+                            <p class="card-text">Ideal for entrepreneurs and small companies who only require a few designs. Our top-notch designers will help them fulfill their design needs while staying on-brand.</p>
+                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">$399</h2>
+                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">$4310</h2>
                             <p>USD / <span class="monthly-per-duration {{ ($durationlabel == 'yearly')?'hide-per-duration':'' }}">MONTH</span><span class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }}">YEAR</span></p>
                             @if(auth()->user()->payments->plan == 'basic')
                                 <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
@@ -55,27 +55,32 @@
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">1 Brand profile</span>
+                                    <span class="c-black">1 Brand Profile</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Unlimited design requests & revisions</span>
+                                    <span class="c-black">Dedicated Designer</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Social media ads, posters & banners</span>
+                                    <span class="c-black">Unlimited Design Requests</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Incl. stock library usage</span>
+                                    <span class="c-black">Unlimited Revisions</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Cancel monthly</span>
+                                    <span class="c-black">48 Hours Turnaround</span>
+                                </li>
+                                <li>
+                                    <div class="md-v-line"></div>
+                                    <i class="fa fa-check mr-2" aria-hidden="true"></i>
+                                    <span class="c-black">Source Files (AI, PSD, INDD)</span>
                                 </li>
                             </ul>
                             @if(auth()->user()->payments->plan == 'basic')
@@ -103,10 +108,10 @@
                     <div class="shadow bg-white rounded card">
                         <div class="card-header">MOST POPULAR</div>
                         <div class="card-body pt-5 pb-5 text-dark">
-                            <h6 class="card-title">BRONZE</h6>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2 class="monthly-amount">$1,145</h2>
-                            <h2 class="yearly-amount hide-amount">$2,545</h2>
+                            <h6 class="card-title">Premium</h6>
+                            <p class="card-text">Ideal for marketing teams looking to increase their creative output while also refreshing their brand.</p>
+                            <h2 class="monthly-amount">$599</h2>
+                            <h2 class="yearly-amount hide-amount">$6470</h2>
                             <p>USD / <span class="monthly-per-duration {{ ($durationlabel == 'yearly')?'hide-per-duration':'' }}">MONTH</span><span class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }}">YEAR</span></p>
                             @if(auth()->user()->payments->plan == 'premium')
                                 <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
@@ -119,37 +124,37 @@
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">2 Projects at a time</span>
+                                    <span class="c-black">2 Ongoing Requests</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">2 Brand profiles</span>
+                                    <span class="c-black">2 Brand Profiles</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Unlimited design requests & revisions</span>
+                                    <span class="c-black">Dedicated Designer</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Social media ads, posters & banners</span>
+                                    <span class="c-black">Unlimited Design Requests</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Incl. stock library usage</span>
+                                    <span class="c-black">Unlimited Revisions</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Animated GIFs</span>
+                                    <span class="c-black">24 Hours Turnaround</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Cancel monthly</span>
+                                    <span class="c-black">Source Files (AI, PSD, INDD)</span>
                                 </li>
                             </ul>
                             @if(auth()->user()->payments->plan == 'premium')
@@ -176,10 +181,10 @@
                 <div class="col-md-4 mt-2">
                     <div class="shadow bg-white rounded card no-header">
                         <div class="card-body pt-5 pb-5 text-dark">
-                            <h6 class="card-title">GOLD</h6>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur</p>
-                            <h2 class="monthly-amount">$2,395</h2>
-                            <h2 class="yearly-amount hide-amount">$3,795</h2>
+                            <h6 class="card-title">Enterprise</h6>
+                            <p class="card-text">Ideal for businesses who want full-service creative and want to increase their productivity by a factor of two to help them grow their business.</p>
+                            <h2 class="monthly-amount">$2395</h2>
+                            <h2 class="yearly-amount hide-amount">$8795</h2>
                             <p>USD / <span class="monthly-per-duration {{ ($durationlabel == 'yearly')?'hide-per-duration':'' }}">MONTH</span><span class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }}">YEAR</span></p>
                             @if(auth()->user()->payments->plan == 'royal')
                                 <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
@@ -192,37 +197,42 @@
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">2 Active projects + backlog</span>
+                                    <span class="c-black">2 Ongoing Requests</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Unlimited brand profiles</span>
+                                    <span class="c-black">Unlimited Brand Profiles</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Unlimited design requests & revisions</span>
+                                    <span class="c-black">Dedicated Designer</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Social media ads, posters & banners</span>
+                                    <span class="c-black">Unlimited Design Requests</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Incl. stock library usage</span>
+                                    <span class="c-black">Unlimited Revisions</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Animated GIFs</span>
+                                    <span class="c-black">24 Hours Turnaround</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="fa fa-check mr-2" aria-hidden="true"></i>
-                                    <span class="c-black">Cancel monthly</span>
+                                    <span class="c-black">Source Files (AI, PSD, INDD)</span>
+                                </li>
+                                <li>
+                                    <div class="md-v-line"></div>
+                                    <i class="fa fa-check mr-2" aria-hidden="true"></i>
+                                    <span class="c-black">Dedicated Account Manager</span>
                                 </li>
                             </ul>
                             @if(auth()->user()->payments->plan == 'royal')

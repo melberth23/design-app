@@ -137,6 +137,7 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         ),
         'I' => 
         array (
+            'Infinitypaul\\LaravelPasswordHistoryValidation\\' => 46,
             'Illuminate\\Support\\' => 19,
             'Illuminate\\Foundation\\Auth\\' => 27,
             'Illuminate\\' => 11,
@@ -457,6 +458,10 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         array (
             0 => __DIR__ . '/..' . '/laravel/sail/src',
         ),
+        'Infinitypaul\\LaravelPasswordHistoryValidation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/infinitypaul/laravel-password-history-validation/src',
+        ),
         'Illuminate\\Support\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Macroable',
@@ -640,12 +645,15 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'App\\Models\\CommentNotification' => __DIR__ . '/../..' . '/app/Models/CommentNotification.php',
         'App\\Models\\Comments' => __DIR__ . '/../..' . '/app/Models/Comments.php',
         'App\\Models\\CommentsAssets' => __DIR__ . '/../..' . '/app/Models/CommentsAssets.php',
+        'App\\Models\\Country' => __DIR__ . '/../..' . '/app/Models/Country.php',
         'App\\Models\\DeleteReason' => __DIR__ . '/../..' . '/app/Models/DeleteReason.php',
+        'App\\Models\\Dimensions' => __DIR__ . '/../..' . '/app/Models/Dimensions.php',
         'App\\Models\\Invoices' => __DIR__ . '/../..' . '/app/Models/Invoices.php',
         'App\\Models\\NewAttempt' => __DIR__ . '/../..' . '/app/Models/NewAttempt.php',
         'App\\Models\\Payments' => __DIR__ . '/../..' . '/app/Models/Payments.php',
         'App\\Models\\RequestAssets' => __DIR__ . '/../..' . '/app/Models/RequestAssets.php',
         'App\\Models\\Requests' => __DIR__ . '/../..' . '/app/Models/Requests.php',
+        'App\\Models\\Reviews' => __DIR__ . '/../..' . '/app/Models/Reviews.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\UserSettings' => __DIR__ . '/../..' . '/app/Models/UserSettings.php',
         'App\\Models\\UserVerify' => __DIR__ . '/../..' . '/app/Models/UserVerify.php',
@@ -654,6 +662,7 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
+        'App\\Rules\\IsValidPassword' => __DIR__ . '/../..' . '/app/Rules/IsValidPassword.php',
         'App\\Rules\\MatchOldPassword' => __DIR__ . '/../..' . '/app/Rules/MatchOldPassword.php',
         'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Cors.php',
         'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/CorsService.php',
@@ -772,7 +781,9 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'Cron\\MonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MonthField.php',
         'Database\\Factories\\UserFactory' => __DIR__ . '/../..' . '/database/factories/UserFactory.php',
         'Database\\Seeders\\AdminSeeder' => __DIR__ . '/../..' . '/database/seeders/AdminSeeder.php',
+        'Database\\Seeders\\CountryTableSeeder' => __DIR__ . '/../..' . '/database/seeders/CountryTableSeeder.php',
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
+        'Database\\Seeders\\DimensionsSeeder' => __DIR__ . '/../..' . '/database/seeders/DimensionsSeeder.php',
         'Database\\Seeders\\PermissionSeeder' => __DIR__ . '/../..' . '/database/seeders/PermissionSeeder.php',
         'Database\\Seeders\\RoleSeeder' => __DIR__ . '/../..' . '/database/seeders/RoleSeeder.php',
         'DeepCopy\\DeepCopy' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/DeepCopy.php',
@@ -3048,6 +3059,13 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'Illuminate\\View\\ViewFinderInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewFinderInterface.php',
         'Illuminate\\View\\ViewName' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewName.php',
         'Illuminate\\View\\ViewServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewServiceProvider.php',
+        'Infinitypaul\\LaravelPasswordHistoryValidation\\Console\\ClearOldPasswordHistory' => __DIR__ . '/..' . '/infinitypaul/laravel-password-history-validation/src/Console/ClearOldPasswordHistory.php',
+        'Infinitypaul\\LaravelPasswordHistoryValidation\\LaravelPasswordHistoryValidationServiceProvider' => __DIR__ . '/..' . '/infinitypaul/laravel-password-history-validation/src/LaravelPasswordHistoryValidationServiceProvider.php',
+        'Infinitypaul\\LaravelPasswordHistoryValidation\\Models\\PasswordHistory' => __DIR__ . '/..' . '/infinitypaul/laravel-password-history-validation/src/Models/PasswordHistory.php',
+        'Infinitypaul\\LaravelPasswordHistoryValidation\\Models\\PasswordHistoryRepo' => __DIR__ . '/..' . '/infinitypaul/laravel-password-history-validation/src/Models/PasswordHistoryRepo.php',
+        'Infinitypaul\\LaravelPasswordHistoryValidation\\Observers\\UserObserver' => __DIR__ . '/..' . '/infinitypaul/laravel-password-history-validation/src/Observers/UserObserver.php',
+        'Infinitypaul\\LaravelPasswordHistoryValidation\\Rules\\NotFromPasswordHistory' => __DIR__ . '/..' . '/infinitypaul/laravel-password-history-validation/src/Rules/NotFromPasswordHistory.php',
+        'Infinitypaul\\LaravelPasswordHistoryValidation\\Traits\\PasswordHistoryTrait' => __DIR__ . '/..' . '/infinitypaul/laravel-password-history-validation/src/Traits/PasswordHistoryTrait.php',
         'Laravel\\Sail\\Console\\InstallCommand' => __DIR__ . '/..' . '/laravel/sail/src/Console/InstallCommand.php',
         'Laravel\\Sail\\Console\\PublishCommand' => __DIR__ . '/..' . '/laravel/sail/src/Console/PublishCommand.php',
         'Laravel\\Sail\\SailServiceProvider' => __DIR__ . '/..' . '/laravel/sail/src/SailServiceProvider.php',

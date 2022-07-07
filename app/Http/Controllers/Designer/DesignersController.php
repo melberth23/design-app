@@ -50,8 +50,8 @@ class DesignersController extends Controller
     {
         $userid = Auth::id();
 
-        $requests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->paginate(10);
-        $queue = Requests::where('designer_id', $userid)->where('status',2)->count();
+        $requests = Requests::where('status', '!=', 1)->orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('status',2)->count();
         $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
         $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
         $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
@@ -68,7 +68,7 @@ class DesignersController extends Controller
     {
         $userid = Auth::id();
 
-        $requests = Requests::where('designer_id', $userid)->where('status', 2)->paginate(10);
+        $requests = Requests::where('status', 2)->orderBy('updated_at', 'DESC')->paginate(10);
         $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
         $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
         $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
@@ -86,9 +86,9 @@ class DesignersController extends Controller
     {
         $userid = Auth::id();
 
-        $requests = Requests::where('designer_id', $userid)->where('status', 3)->paginate(10);
+        $requests = Requests::where('designer_id', $userid)->where('status', 3)->orderBy('updated_at', 'DESC')->paginate(10);
         $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
-        $queue = Requests::where('designer_id', $userid)->where('status',2)->count();
+        $queue = Requests::where('status',2)->count();
         $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
         $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
         return view('designer.progress', ['requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
@@ -103,9 +103,9 @@ class DesignersController extends Controller
     {
         $userid = Auth::id();
 
-        $requests = Requests::where('designer_id', $userid)->where('status', 4)->paginate(10);
+        $requests = Requests::where('designer_id', $userid)->where('status', 4)->orderBy('updated_at', 'DESC')->paginate(10);
         $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
-        $queue = Requests::where('designer_id', $userid)->where('status',2)->count();
+        $queue = Requests::where('status',2)->count();
         $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
         $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
 
@@ -121,9 +121,9 @@ class DesignersController extends Controller
     {
         $userid = Auth::id();
 
-        $requests = Requests::where('designer_id', $userid)->where('status', 0)->paginate(10);
+        $requests = Requests::where('designer_id', $userid)->where('status', 0)->orderBy('updated_at', 'DESC')->paginate(10);
         $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
-        $queue = Requests::where('designer_id', $userid)->where('status',2)->count();
+        $queue = Requests::where('status',2)->count();
         $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
         $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
 
@@ -358,6 +358,32 @@ class DesignersController extends Controller
                     $randomfilename = $this->helper->generateRandomString(15);
                     $attachmentpath = $randomfilename .'.'. $extension;
                     $mediafile->move($mediapath, $attachmentpath);
+
+                    $assets = CommentsAssets::create([
+                        'filename' => $attachmentpath,
+                        'comments_id' => $comment->id,
+                        'type' => 'review',
+                        'file_type' => $extension
+                    ]);
+                }
+            }
+
+            // Check upload adobe
+            if($request->hasFile('documents')) {
+
+                $documentspath = public_path('storage/comments') .'/'. $userid;
+                if(!File::isDirectory($documentspath)){
+                    // Create Path
+                    File::makeDirectory($documentspath, 0777, true, true);
+                }
+
+                $documentsfiles = $request->file('documents');
+                foreach($documentsfiles as $documentsfile) {
+                    $filename = $documentsfile->getClientOriginalName();
+                    $extension = $documentsfile->getClientOriginalExtension();
+                    $randomfilename = $this->helper->generateRandomString(15);
+                    $attachmentpath = $randomfilename .'.'. $extension;
+                    $documentsfile->move($documentspath, $attachmentpath);
 
                     $assets = CommentsAssets::create([
                         'filename' => $attachmentpath,

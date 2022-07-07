@@ -14,7 +14,8 @@ class CommentsAssets extends Model
     protected $fillable = [
         'comments_id', 
         'filename',
-        'type'
+        'type',
+        'file_type'
     ];
 
     public function comments()

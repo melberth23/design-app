@@ -27,7 +27,6 @@
             <a href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 0]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fas fa-check" aria-hidden="true"></i> Mark Complete</a>
             @endif
         </h1>
-        @if(!auth()->user()->hasRole('Designer'))
         <div class="actions d-sm-flex align-items-center justify-content-between">
             <div class="dropdown m-1">
                 <button class="btn btn-outline-light text-dark border" id="dropdownUpdate{{ $requests->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -37,6 +36,7 @@
                     <span>Last Updated: {{ $requests->updated_at->format('d F, Y, h:i:s A') }}</span>
                 </div>
             </div>
+            @if(!auth()->user()->hasRole('Designer'))
             <div class="dropdown m-1">
               <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -75,8 +75,19 @@
                     <a href="javascript:void(0);" class="btn btn-outline-light text-dark border disabled"><i class="fas fa-angle-right fa-sm"></i></a>
                 @endif
             </div>
+            @else
+                @if ($requests->status == 3)
+                    <div class="dropdown m-1">
+                      <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#movereviewModal"><i class="fa fa-check"></i> Move to review</a>
+                      </div>
+                    </div>
+                @endif
+            @endif
         </div>
-        @endif
     </div>
 
     <div class="card mb-4">
@@ -116,7 +127,7 @@
                         <div class="d-flex align-items-center justify-content-end py-1">
                             <div class="d-none text-dark py-3">
                                 <label>Attach File</label>
-                                <input type="file" id="attachments" name="attachments[]" class="form-control-file" multiple >
+                                <input type="file" id="attachments" name="attachments[]" class="form-control-file" multiple accept="image/png, image/gif, image/jpeg, application/pdf">
                             </div>
                             <a class="btn btn-link text-dark" href="javascript:void(0);" onclick="getElementById('attachments').click();" >
                                 <i class="fa fa-paperclip" aria-hidden="true"></i>
@@ -124,6 +135,10 @@
                             <button type="submit" class="btn btn-primary btn-user">Post</button>
                         </div>
                     </form>
+
+                    <div id="comment-media-preview" class="d-flex pictures" data-toggle="tooltip" data-placement="left" title="All files are in preview to replace select new sets of files">
+                        <!-- Preview Files -->
+                    </div>
                 </div>
                 <div class="py-2">
                     @if ($comments->count() > 0)
@@ -177,5 +192,70 @@
 
 </div>
 
+@if(auth()->user()->hasRole('Designer'))
+<div class="modal fade" id="movereviewModal" tabindex="-1" role="dialog" aria-labelledby="movereviewModalExample"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="movereviewModalExample">Please upload all your works before moving for review.</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('designer.addfilereview') }}" enctype="multipart/form-data" id="form-review-request">
+                    @csrf
 
+                    <input type="hidden" id="request_ref_id" name="id" value="{{ $requests->id }}">
+                    <div class="text-dark py-3">
+                        <label for="media">Add Images</label>
+                        <input type="file" name="media[]" class="form-control-file" multiple >
+                    </div>
+
+                    <hr>
+
+                    <div class="text-dark py-3">
+                        <label for="documents">Add Documents</label>
+                        <input type="file" name="documents[]" class="form-control-file" multiple >
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-success" href="javascript:void(0);"
+                    onclick="event.preventDefault(); document.getElementById('form-review-request').submit();">
+                    Review
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+@endsection
+
+@section('scripts')
+<script>
+    jQuery(function($) {
+        $('#attachments').on('change', function(e) {
+            var files = e.target.files;
+            $('#comment-media-preview').html('');
+            $.each( files, function( i, file ) {
+                var filename = file.name;
+                var fileExt = filename.split('.').pop();
+                if(fileExt == 'pdf') {
+                   $('#comment-media-preview').append('<div><div class="mx-1 template media-container media-documents"><img src="<?php echo asset('images/template-img-pdf.png'); ?>" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                } else {
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+
+                    reader.onload = readerEvent => {
+                        var content = readerEvent.target.result; // this is the content!
+                        $('#comment-media-preview').append('<div><div class="mx-1 media media-container"><img src="'+ content +'" class="picture-img" /></div></div>');
+                    }
+                }
+            });
+        });
+    });
+</script>
 @endsection

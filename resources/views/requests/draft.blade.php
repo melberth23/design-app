@@ -28,7 +28,8 @@
                                 <th width="10%" class="border-left-0 border-right-0">REQUEST ID</th>
                                 <th width="25%" class="border-left-0 border-right-0">REQUEST NAME</th>
                                 <th width="25%" class="border-left-0 border-right-0">CATEGORY</th>
-                                <th width="15%" class="border-left-0 border-right-0">DATE CREATED</th>
+                                <th width="10%" class="border-left-0 border-right-0">STATUS</th>
+                                <th width="10%" class="border-left-0 border-right-0">DATE CREATED</th>
                                 <th width="20%" class="border-left-0 border-right-0"></th>
                             </tr>
                         </thead>
@@ -42,6 +43,9 @@
                                     @else
                                     <td class="border-left-0 border-right-0"></td>
                                     @endif
+                                    <td class="border-left-0 border-right-0">
+                                        <span class="badge badge-warning">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                    </td>
                                     <td class="border-left-0 border-right-0">{{ $request->created_at->format('d F, Y') }}</td>
                                     <td class="d-flex justify-content-end border-left-0 border-right-0">
                                         <div class="dropdown mx-2">

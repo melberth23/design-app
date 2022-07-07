@@ -53,6 +53,29 @@ class AccountController extends Controller
             return redirect()->route('register');
         }
     }
+
+    /**
+     * Resend code
+     * */
+    public function resendCode(Request $request)
+    {
+        $existToken = UserVerify::where('token', $request->token)->first();
+
+        // Update token code
+        $code = sprintf("%04d", mt_rand(1, 9999));
+        UserVerify::where('token', $request->token)->update(['code' => $code]);
+
+        // Send Email
+        $details = array(
+            'subject' => 'Account Email Verification',
+            'token' => $request->token,
+            'code' => $code,
+            'template' => 'emailverification',
+        );
+        Mail::to($existToken->user->email)->send(new DigitalMail($details));
+
+        return response()->json(array('error' => 0, 'msg'=> "Code was sent to your email. Please check."), 200);
+    }
     
     /**
     * Plan View 
@@ -133,7 +156,7 @@ class AccountController extends Controller
 
             if(!empty($response['status']) && $response['status'] == 'scheduled') {
 
-                Payments::create([
+                $payments = Payments::create([
                     'user_id' => $user->id,
                     'reference' => $response['id'],
                     'business_recurring_plans_id' => $response['business_recurring_plans_id'],
@@ -145,6 +168,17 @@ class AccountController extends Controller
                     'payment_methods' => json_encode($response['payment_methods']),
                     'payment_url' => $response['url'],
                     'duration' => $selectedduration
+                ]);
+
+                // Create invoice
+                $datetoday = date('Y-m-d');
+                Invoices::create([
+                    'user_id' => $user->id,
+                    'payment_id' => $payments->id,
+                    'number' => 100000000,
+                    'date_invoice' => $datetoday,
+                    'plan' => $payments->plan,
+                    'amount' => $payments->price
                 ]);
 
                 // Send Email

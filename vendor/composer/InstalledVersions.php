@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '7c1dc215d13e8c14ae623e94e957bb28256b3fd7',
+    'reference' => 'b1d3dc5d37cf7e8d516f188074732af998f504e1',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -462,6 +462,16 @@ private static $installed = array (
         0 => 'v9.3.1',
       ),
     ),
+    'infinitypaul/laravel-password-history-validation' => 
+    array (
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
+      'aliases' => 
+      array (
+        0 => '9999999-dev',
+      ),
+      'reference' => '4b1a771a3dba4435c1d8bedc0a6d56fda5810534',
+    ),
     'kodova/hamcrest-php' => 
     array (
       'replaced' => 
@@ -485,7 +495,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '7c1dc215d13e8c14ae623e94e957bb28256b3fd7',
+      'reference' => 'b1d3dc5d37cf7e8d516f188074732af998f504e1',
     ),
     'laravel/sail' => 
     array (

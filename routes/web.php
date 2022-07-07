@@ -4,6 +4,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,7 @@ Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 
 Route::get('/upgrade-payment-success', [App\Http\Controllers\PaymentsController::class, 'upgradepayment'])->name('upgrade.payment');
 Route::get('/change-payment-success', [App\Http\Controllers\PaymentsController::class, 'changepayment'])->name('change.payment');
 Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
+Route::post('/account/resend-code', [App\Http\Controllers\AccountController::class, 'resendCode'])->name('user.resendcode'); 
 Route::post('/account/check', [App\Http\Controllers\AccountController::class, 'checkTokenAccount'])->name('user.check');
 
 Route::get('/admin-login', [App\Http\Controllers\Auth\AuthenticateController::class, 'getAdminLogin'])->name('adminlogin');
@@ -32,6 +35,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sedResetPasswordEmail'])->name('forgot.password');
 
 Route::get('/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadBrandFile'])->name('download');
 Route::get('/request/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadRequestFile'])->name('request.download');
@@ -57,6 +62,7 @@ Route::prefix('profile')->name('profile.')->middleware(['auth', 'is_verify_email
     Route::get('/invoices', [HomeController::class, 'invoices'])->name('invoices');
     Route::get('/payment-methods', [HomeController::class, 'paymentmethods'])->name('paymentmethods');
     Route::get('/change-card', [HomeController::class, 'changecard'])->name('changecard');
+    Route::get('/notifications', [HomeController::class, 'notifications'])->name('notifications');
     Route::post('/updateprofileimage', [HomeController::class, 'updateProfileImage'])->name('updateprofileimage');
     Route::post('/upgradeplan', [HomeController::class, 'upgradeplan'])->name('upgradeplan');
     Route::post('/addplan', [HomeController::class, 'addplan'])->name('addplan');
@@ -102,6 +108,7 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::get('/create', [App\Http\Controllers\RequestsController::class, 'create'])->name('create');
     Route::get('/request-type/{type}', [App\Http\Controllers\RequestsController::class, 'request_type'])->name('requesttype');
     Route::post('/store', [App\Http\Controllers\RequestsController::class, 'store'])->name('store');
+    Route::post('/dimensions', [App\Http\Controllers\RequestsController::class, 'getDimensions'])->name('dimensions');
     Route::get('/edit/{requests}', [App\Http\Controllers\RequestsController::class, 'edit'])->name('edit');
     Route::get('/comment/{requests}', [App\Http\Controllers\RequestsController::class, 'comment'])->name('comment');
     Route::get('/files/{requests}', [App\Http\Controllers\RequestsController::class, 'files'])->name('files');
@@ -111,6 +118,7 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::post('/leavereview', [App\Http\Controllers\RequestsController::class, 'leavereview'])->name('leavereview');
     Route::post('/delete-media', [App\Http\Controllers\RequestsController::class, 'deleteAsset'])->name('destroyassets');
     Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
+    Route::post('/fileupload', [App\Http\Controllers\RequestsController::class, 'fileupload'])->name('fileupload');
 });
 
 /* Designer Dashboard */
@@ -153,6 +161,11 @@ Route::middleware('auth')->prefix('admin/users')->name('users.')->group(function
 
 });
 
+// Admin Subscribers 
+Route::middleware('auth')->prefix('admin/subscribers')->name('subscribers.')->group(function(){
+    Route::get('/', [App\Http\Controllers\Admin\PaymentsController::class, 'index'])->name('index');
+});
+
 // Request Types
 Route::middleware('auth')->prefix('admin/requesttypes')->name('requesttypes.')->group(function(){
     Route::get('/', [App\Http\Controllers\Admin\RequestTypesController::class, 'index'])->name('index');
@@ -183,4 +196,22 @@ Route::middleware('auth')->prefix('admin/payments')->name('adminpayment.')->grou
     Route::get('/', [App\Http\Controllers\Admin\PaymentsController::class, 'index'])->name('index');
     Route::get('/pending', [App\Http\Controllers\Admin\PaymentsController::class, 'pending'])->name('pending');
     Route::get('/completed', [App\Http\Controllers\Admin\PaymentsController::class, 'completed'])->name('completed');
+});
+
+// Admin Brand Profiles 
+Route::middleware('auth')->prefix('admin/brand')->name('adminbrand.')->group(function(){
+    Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
+    Route::get('/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'index'])->name('index.sort');
+    Route::get('/drafts', [App\Http\Controllers\BrandController::class, 'drafts'])->name('drafts');
+    Route::get('/drafts/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'drafts'])->name('drafts.sort');
+    Route::get('/archived', [App\Http\Controllers\BrandController::class, 'archived'])->name('archived');
+    Route::get('/archived/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'archived'])->name('archived.sort');
+    Route::get('/view/{brand}', [App\Http\Controllers\BrandController::class, 'view'])->name('view');
+    Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
+    Route::get('/edit/{section}/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
+    Route::put('/update/{brand}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
+    Route::delete('/delete/{brand}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
+    Route::post('/delete-assets', [App\Http\Controllers\BrandController::class, 'deleteAsset'])->name('destroyassets');
+    Route::get('/update/status/{brand_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
 });

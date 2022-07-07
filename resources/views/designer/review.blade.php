@@ -20,17 +20,17 @@
                     <li class="nav-item {{ (request()->is('designers')) ? 'border-bottom' : '' }}">
                         <a class="nav-link py-3 {{ (request()->is('designers')) ? 'active' : '' }}" id="allreq-tab" href="{{ route('designer.index') }}">All {{ $all }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('designer/queue')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designer/queue')) ? 'active' : '' }}" id="queue-tab" href="{{ route('designer.queue') }}">Queue {{ $queue }}</a>
+                    <li class="nav-item {{ (request()->is('designers/queue')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (request()->is('designers/queue')) ? 'active' : '' }}" id="queue-tab" href="{{ route('designer.queue') }}">Queue {{ $queue }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('designer/progress')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designer/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('designer.progress') }}">Progress {{ $progress }}</a>
+                    <li class="nav-item {{ (request()->is('designers/progress')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (request()->is('designers/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('designer.progress') }}">Progress {{ $progress }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('designer/review')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designer/review')) ? 'active' : '' }}" id="review-tab" href="{{ route('designer.review') }}">Review {{ $requests->count() }}</a>
+                    <li class="nav-item {{ (request()->is('designers/review')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (request()->is('designers/review')) ? 'active' : '' }}" id="review-tab" href="{{ route('designer.review') }}">Review {{ $requests->count() }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('designer/completed')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designer/completed')) ? 'active' : '' }}" id="completed-tab" href="{{ route('designer.completed') }}">Completed {{ $completed }}</a>
+                    <li class="nav-item {{ (request()->is('designers/completed')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (request()->is('designers/completed')) ? 'active' : '' }}" id="completed-tab" href="{{ route('designer.completed') }}">Completed {{ $completed }}</a>
                     </li>
                 </ul>
             </div>
@@ -42,7 +42,8 @@
                                 <th width="10%" class="border-left-0 border-right-0">REQUEST ID</th>
                                 <th width="25%" class="border-left-0 border-right-0">REQUEST NAME</th>
                                 <th width="25%" class="border-left-0 border-right-0">CATEGORY</th>
-                                <th width="15%" class="border-left-0 border-right-0">DATE CREATED</th>
+                                <th width="10%" class="border-left-0 border-right-0">STATUS</th>
+                                <th width="10%" class="border-left-0 border-right-0">DATE CREATED</th>
                                 <th width="20%" class="border-left-0 border-right-0"></th>
                             </tr>
                         </thead>
@@ -56,6 +57,9 @@
                                     @else
                                     <td class="border-left-0 border-right-0"></td>
                                     @endif
+                                    <td class="border-left-0 border-right-0">
+                                        <span class="badge badge-dark">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                    </td>
                                     <td class="border-left-0 border-right-0">{{ $request->created_at->format('d F, Y') }}</td>
                                     <td class="d-flex justify-content-end border-left-0 border-right-0">
                                         <a href="{{ route('request.view', ['requests' => $request->id]) }}"

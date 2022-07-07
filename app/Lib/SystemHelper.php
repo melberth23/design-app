@@ -11,6 +11,7 @@ use App\Models\BrandAssets;
 use App\Models\UserSettings;
 use App\Models\Comments;
 use App\Models\CommentNotification;
+use App\Models\User;
 
 class SystemHelper {
 
@@ -33,7 +34,7 @@ class SystemHelper {
                 'basic' => array(
                     'label' => 'Basic',
                     'id' => '95d369cc-7fbd-4608-b53f-562605eab522',
-                    'amount' => 449,
+                    'amount' => 399,
                     'request' => 1,
                     'backlog' => false,
                     'brand' => 1
@@ -41,7 +42,7 @@ class SystemHelper {
                 'premium' => array(
                     'label' => 'Premium',
                     'id' => '95d369fd-9228-4f36-bd7f-d03c6805027a',
-                    'amount' => 1145,
+                    'amount' => 599,
                     'request' => 2,
                     'backlog' => false,
                     'brand' => 2
@@ -59,7 +60,7 @@ class SystemHelper {
                 'basic' => array(
                     'label' => 'Basic',
                     'id' => '95d32cca-1c37-4efc-a0f5-48203c8386f7',
-                    'amount' => 1759,
+                    'amount' => 4310,
                     'request' => 1,
                     'backlog' => false,
                     'brand' => 1
@@ -67,7 +68,7 @@ class SystemHelper {
                 'premium' => array(
                     'label' => 'Premium',
                     'id' => '9699a9c9-63e4-4895-9b01-cf7fa598dcc4',
-                    'amount' => 2545,
+                    'amount' => 6470,
                     'request' => 2,
                     'backlog' => false,
                     'brand' => 2
@@ -116,8 +117,8 @@ class SystemHelper {
             }
         }
         $numberofitems = count($numberofitems);
-        $payments = Payments::where('user_id', $userid)->first();
-        $planrule = $this->getPlanRules($payments->plan);
+        $user = User::whereId($userid)->first();
+        $planrule = $this->getPlanRules($user->payments->plan);
         $allowedrule = $planrule[$type];
 
         $allowed = false;
@@ -689,5 +690,10 @@ class SystemHelper {
         }
 
         return $lists;
+    }
+
+    public function getCountries()
+    {
+        
     }
 }

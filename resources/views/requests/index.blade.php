@@ -47,7 +47,8 @@
                                 <th width="10%" class="border-left-0 border-right-0">REQUEST ID</th>
                                 <th width="25%" class="border-left-0 border-right-0">REQUEST NAME</th>
                                 <th width="25%" class="border-left-0 border-right-0">CATEGORY</th>
-                                <th width="15%" class="border-left-0 border-right-0">DATE CREATED</th>
+                                <th width="10%" class="border-left-0 border-right-0">STATUS</th>
+                                <th width="10%" class="border-left-0 border-right-0">DATE CREATED</th>
                                 <th width="20%" class="border-left-0 border-right-0"></th>
                             </tr>
                         </thead>
@@ -61,6 +62,19 @@
                                     @else
                                     <td class="border-left-0 border-right-0"></td>
                                     @endif
+                                    <td class="border-left-0 border-right-0">
+                                        @if ($request->status == 0)
+                                            <span class="badge badge-primary">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @elseif ($request->status == 1)
+                                            <span class="badge badge-warning">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @elseif ($request->status == 2)
+                                            <span class="badge badge-info">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @elseif ($request->status == 3)
+                                            <span class="badge badge-success">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @elseif ($request->status == 4)
+                                            <span class="badge badge-dark">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        @endif
+                                    </td>
                                     <td class="border-left-0 border-right-0">{{ $request->created_at->format('d F, Y') }}</td>
                                     <td class="d-flex justify-content-end border-left-0 border-right-0">
                                         <div class="dropdown mx-2">

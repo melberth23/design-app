@@ -53,7 +53,10 @@ class BrandController extends Controller
             }
             $brands = $brands->paginate(10);
 
-            return view('brands.index', ['brands' => $brands]);
+            // Check limit
+            $limit = $this->helper->userActionRules($userid, 'brand');
+
+            return view('brands.index', ['brands' => $brands, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -197,7 +200,7 @@ class BrandController extends Controller
             'description'     => 'required',
             'industry'     => 'required',
             'services_provider'     => 'required',
-            'website'     => 'required',
+            'website'     => 'required|url',
             'status'       =>  'required|numeric|in:0,1',
             'logos.*' => 'mimes:jpg,png',
             'logos_second.*' => 'mimes:jpg,png',
@@ -474,7 +477,8 @@ class BrandController extends Controller
                         File::makeDirectory($requestguidelinespath, 0777, true, true);
                     }
 
-                    $allowedGuidelinesExtension = ['psd', 'ai', 'doc', 'pdf', 'png', 'jpg', 'ppt'];
+                    // $allowedGuidelinesExtension = ['psd', 'ai', 'doc', 'pdf', 'png', 'jpg', 'ppt'];
+                    $allowedGuidelinesExtension = ['pdf'];
                     $guidelines = $request->file('guidelines');
                     foreach($guidelines as $guideline) {
                         $filename = $guideline->getClientOriginalName();

@@ -35,8 +35,7 @@ class IsVerifyEmail
             // Check if user didi not pay
             $paymentinfo = Payments::where('user_id', Auth::user()->id)->first();
             if(empty($paymentinfo)) {
-                return redirect()->route('user.plan')
-                        ->with('error', 'You need to confirm your account. We have sent you an activation code, please check your email.');
+                return redirect()->route('user.plan');
             }
         }
    

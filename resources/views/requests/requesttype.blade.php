@@ -57,9 +57,9 @@
                     <label for="dimensions">Design dimension</label>
                     <select id="dimensions" class="form-control form-control-user @error('dimensions') is-invalid @enderror" name="dimensions">
                         <option selected disabled>Select dimension</option>
-                        <option value="landscape" {{ old('dimensions') == 'landscape' ? 'selected' : '' }}>Landscape</option>
-                        <option value="square" {{ old('dimensions') == 'square' ? 'selected' : '' }}>Square</option>
-                        <option value="portrait" {{ old('dimensions') == 'portrait' ? 'selected' : '' }}>Portrait</option>
+                        @foreach($dimensions as $dimension)
+                            <option value="{{ $dimension->label }}" {{ old('dimensions') == $dimension->label ? 'selected' : '' }}>{{ $dimension->label }}</option>
+                        @endforeach
                         <option value="custom" {{ old('dimensions') == 'custom' ? 'selected' : '' }}>Custom</option>
                     </select>
 
@@ -99,6 +99,9 @@
                 <div class="tab-text-label text-dark pt-3">
                     <span class="text-dark font-weight-bold">Assets</span>
                 </div>
+                <div id="pictures-preview" class="d-flex pictures" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                    <!-- Preview Images -->
+                </div>
                 <div class="request-assets tab-text-label text-dark pt-3">
                     <label for="media">Upload any design assets or inspiration we should follow.</label>
                     <input type="file" id="asset-requests" name="media[]" class="form-control-file" multiple data-multiple-caption="{count} files selected" >
@@ -113,10 +116,14 @@
                     <label for="reference_link">Example of reference links</label>
                     <input 
                         type="text" 
-                        class="form-control" 
+                        class="form-control @error('reference_link') is-invalid @enderror" 
                         id="reference_link"
                         name="reference_link" 
                         value="{{ old('reference_link') }}">
+
+                    @error('reference_link')
+                        <span class="text-danger">{{$message}}</span>
+                    @enderror
                 </div>
                 <div class="tab-text-label text-dark pt-3">
                     <span class="text-dark font-weight-bold">File types</span>
@@ -194,6 +201,7 @@
 
         $input.on('change', function(e) {
           showFiles(e.target.files);
+          showPreview(e.target.files);
         });
 
         $('#include_text').on('change', function(e) {
@@ -212,6 +220,20 @@
             }
         });
     });
+
+    function showPreview(files)
+    {
+        $('#pictures-preview').html('');
+        $.each( files, function( i, file ) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = readerEvent => {
+                var content = readerEvent.target.result; // this is the content!
+                $('#pictures-preview').append('<div class="mx-1 media media-container"><img src="'+ content +'" class="picture-img" /></div>');
+            }
+        });
+    }
 </script>
 
 @endsection

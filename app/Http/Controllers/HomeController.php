@@ -10,6 +10,7 @@ use App\Models\Payments;
 use App\Models\NewAttempt;
 use App\Models\DeleteReason;
 use App\Models\Invoices;
+use App\Models\Country;
 use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
 use App\Rules\MatchOldPassword;
@@ -19,10 +20,12 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Infinitypaul\LaravelPasswordHistoryValidation\Rules\NotFromPasswordHistory;
 use Illuminate\Support\Carbon;
 use App\Lib\PaymentHelper;
 use App\Lib\SystemHelper;
 use Redirect;
+use File;
 
 class HomeController extends Controller
 {
@@ -59,7 +62,7 @@ class HomeController extends Controller
             $inprogress = Requests::where('user_id', $user->id)->where('status', 3);
             $forreview = Requests::where('user_id', $user->id)->where('status', 4);
             $queue = Requests::where('user_id', $user->id)->whereIn('status', [2, 3]);
-        } if($user->hasRole('Designer')) {
+        } elseif($user->hasRole('Designer')) {
             $overall = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC');
             $completed = Requests::where('designer_id', $user->id)->where('status', 0);
             $inprogress = Requests::where('designer_id', $user->id)->where('status', 3);
@@ -137,22 +140,44 @@ class HomeController extends Controller
         } elseif($user->hasRole('Designer')) {
             return view('designer.home', ['total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'filter' => $filter, 'from' => $from, 'to' => $to]);
         } else {
-            // Get all request current month
-            $currentmonthreq = Requests::where('user_id', '!=', $user->id)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)->count();
-            // Get number of completed requests
-            $completedreq = Requests::where('user_id', '!=', $user->id)->where('status', 0)->count();
-            // Get number of pending requests
-            $reqforreview = Requests::where('user_id', '!=', $user->id)->where('status', 1)->count();
-            // Get number of active requests
-            $activereq = Requests::where('user_id', '!=', $user->id)->where('status', 2)->count();
-            // Get number of active brands
-            $activebrands = Brand::where('user_id', '!=', $user->id)->where('status', 1)->count();
-            // Get number of active users
-            $activeusers = User::where('id', '!=', $user->id)->where('role_id', 2)->where('status', 1)->count();
-            // Get number of pending users
-            $pendingusers = User::where('id', '!=', $user->id)->where('role_id', 2)->where('status', 0)->count();
 
-            return view('admin.home', ['active_brands' => $activebrands, 'active_users' => $activeusers, 'pending_users' => $pendingusers, 'user_fullname' => $user->fullname, 'cur_month_req' => $currentmonthreq, 'completed_req' => $completedreq, 'req_for_review' => $reqforreview, 'active_req' => $activereq]);
+            $completeddata = $completed->groupBy('date')
+                            ->get(array(
+                                DB::raw('Date(created_at) as date'),
+                                DB::raw('COUNT(*) as "records"')
+                            ));
+
+            $overdata = array();
+            foreach($completeddata as $datav) {
+                $overdata[] = array(
+                    'date' => $datav->date,
+                    'records' => $datav->records
+                );
+            }
+
+            $numberofdays = date('t');
+            if($filter == 'today') {
+                $numberofdays = 1;
+                $today = Carbon::now();
+            }
+            if($filter == 'yesterday') {
+                $numberofdays = 1;
+                $yesterday = Carbon::yesterday();
+            }
+            if($filter == 'last7') {
+                $numberofdays = 7;
+                $last7 = Carbon::now()->subDays(7);
+                print_r($last7);
+            }
+            if($filter == 'custom') {
+                $fromn = strtotime($from);
+                $ton = strtotime($to);
+                $datediff = $ton - $fromn;
+
+                $numberofdays = round($datediff / (60 * 60 * 24));
+            }
+
+            return view('admin.home', ['total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'filter' => $filter, 'from' => $from, 'to' => $to]);
         }
 
     }
@@ -164,7 +189,9 @@ class HomeController extends Controller
      */
     public function getProfile()
     {
-        return view('account.profile');
+        $countries = Country::all();
+
+        return view('account.profile', compact('countries'));
     }
 
     /**
@@ -284,7 +311,7 @@ class HomeController extends Controller
         } elseif($request->action == 'password') {
             $rules = [
                 'current_password' => ['required', new MatchOldPassword],
-                'new_password' => ['required'],
+                'new_password' => ['required', new NotFromPasswordHistory($request->user())],
                 'new_confirm_password' => ['same:new_password']
             ];
         }
@@ -514,7 +541,7 @@ class HomeController extends Controller
     {
         $request->validate([
             'current_password' => ['required', new MatchOldPassword],
-            'new_password' => ['required'],
+            'new_password' => ['required', new NotFromPasswordHistory($request->user())],
             'new_confirm_password' => ['same:new_password'],
         ]);
 
@@ -876,5 +903,41 @@ class HomeController extends Controller
             }
             return Redirect::back()->with('error', $errormsg);
         }
+    }
+
+    public function notifications()
+    {
+        return view('account.notifications');
+    }
+
+    public function updateProfileImage(Request $request)
+    {
+        $userid = $request->user()->id;
+
+        if($request->hasFile('file')) {
+            $requestprofilepath = public_path('storage/profiles') .'/'. $userid;
+            if(!File::isDirectory($requestprofilepath)){
+                // Create Path
+                File::makeDirectory($requestprofilepath, 0777, true, true);
+            }
+
+            $allowedprofileExtension = ['jpg','png'];
+            $profile = $request->file('file');
+
+            $filename = $profile->getClientOriginalName();
+            $extension = $profile->getClientOriginalExtension();
+            $check = in_array($extension, $allowedprofileExtension);
+
+            if($check) { 
+                $randomfilename = $this->helper->generateRandomString(15);
+                $profilepath = $randomfilename .'.'. $extension;
+                $profile->move($requestprofilepath, $profilepath);
+
+                User::where('id', $userid)->update([
+                    'profile_img' => $profilepath
+                ]);
+            }
+        }
+
     }
 }

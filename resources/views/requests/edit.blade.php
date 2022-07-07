@@ -69,10 +69,10 @@
                     <label for="dimensions">Design dimension</label>
                     <select id="dimensions" class="form-control form-control-user @error('dimensions') is-invalid @enderror" name="dimensions">
                         <option selected disabled>Select dimension</option>
-                        <option value="landscape" {{old('dimensions') ? ((old('dimensions') == 'landscape') ? 'selected' : '') : (($requests->dimensions == 'landscape') ? 'selected' : '')}}>Landscape</option>
-                                <option value="square" {{old('dimensions') ? ((old('dimensions') == 'square') ? 'selected' : '') : (($requests->dimensions == 'square') ? 'selected' : '')}}>Square</option>
-                                <option value="portrait" {{old('dimensions') ? ((old('dimensions') == 'portrait') ? 'selected' : '') : (($requests->dimensions == 'portrait') ? 'selected' : '')}}>Portrait</option>
-                                <option value="custom" {{old('dimensions') ? ((old('dimensions') == 'custom') ? 'selected' : '') : (($requests->dimensions == 'custom') ? 'selected' : '')}}>Custom</option>
+                        @foreach($dimensions as $dimension)
+                            <option value="{{ $dimension->label }}" {{old('dimensions') ? ((old('dimensions') == $dimension->label) ? 'selected' : '') : (($requests->dimensions == $dimension->label) ? 'selected' : '')}}>{{ $dimension->label }}</option>
+                        @endforeach  
+                        <option value="custom" {{old('dimensions') ? ((old('dimensions') == 'custom') ? 'selected' : '') : (($requests->dimensions == 'custom') ? 'selected' : '')}}>Custom</option>
                     </select>
 
                     @error('dimensions')
@@ -111,6 +111,9 @@
                 <div class="tab-text-label text-dark pt-3">
                     <span class="text-dark font-weight-bold">Assets</span>
                 </div>
+                <div id="pictures-preview" class="d-flex pictures" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                    <!-- Preview Images -->
+                </div>
                 <div class="tab-text-label text-dark pt-3">
                     <p class="img-description">Upload any design assets or inspiration we should follow.</p>
                     <div class="d-flex pictures">
@@ -146,10 +149,14 @@
                     <label for="reference_link">Example of reference links</label>
                     <input 
                         type="text" 
-                        class="form-control" 
+                        class="form-control @error('reference_link') is-invalid @enderror" 
                         id="reference_link"
                         name="reference_link" 
                         value="{{ old('reference_link') ?  old('reference_link') : $requests->reference_link }}">
+
+                    @error('reference_link')
+                        <span class="text-danger">{{$message}}</span>
+                    @enderror
                 </div>
                 <div class="tab-text-label text-dark pt-3">
                     <span class="text-dark font-weight-bold">File types</span>
@@ -231,6 +238,7 @@
 
         $input.on('change', function(e) {
           showFiles(e.target.files);
+          showPreview(e.target.files);
         });
 
         $('#include_text').on('change', function(e) {
@@ -247,6 +255,20 @@
             } else {
                 $('#custom-dimension').addClass('d-none');
             }
+        });
+
+        $('#designType').on('change', function() {
+            jQuery.ajax({
+                type:'POST',
+                url:"{{ route('request.dimensions') }}",
+                data: {
+                    design_type:$(this).val(),
+                    _token: jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success:function(data) {
+                    $('#dimensions').html(data.dimensions);
+                }
+            });
         });
     });
     
@@ -266,6 +288,20 @@
                 }
             });
         }
+    }
+
+    function showPreview(files)
+    {
+        $('#pictures-preview').html('');
+        $.each( files, function( i, file ) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = readerEvent => {
+                var content = readerEvent.target.result; // this is the content!
+                $('#pictures-preview').append('<div class="mx-1 media media-container"><img src="'+ content +'" class="picture-img" /></div>');
+            }
+        });
     }
 </script>
 @stop

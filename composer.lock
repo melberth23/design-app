@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c51f9b9d10cfcf6aba1249f7f935ec8c",
+    "content-hash": "40698fb4b708922ee738e567fe702952",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1223,6 +1223,66 @@
                 }
             ],
             "time": "2021-10-06T17:43:30+00:00"
+        },
+        {
+            "name": "infinitypaul/laravel-password-history-validation",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/infinitypaul/laravel-password-history-validation.git",
+                "reference": "4b1a771a3dba4435c1d8bedc0a6d56fda5810534"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/infinitypaul/laravel-password-history-validation/zipball/4b1a771a3dba4435c1d8bedc0a6d56fda5810534",
+                "reference": "4b1a771a3dba4435c1d8bedc0a6d56fda5810534",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^4.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Infinitypaul\\LaravelPasswordHistoryValidation\\LaravelPasswordHistoryValidationServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Infinitypaul\\LaravelPasswordHistoryValidation\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Edward Paul",
+                    "email": "infinitypaul@live.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Prevent users from reusing recently used passwords",
+            "homepage": "https://github.com/infinitypaul/laravel-password-history-validation",
+            "keywords": [
+                "infinitypaul",
+                "laravel",
+                "laravel-password-history-validation",
+                "password"
+            ],
+            "support": {
+                "issues": "https://github.com/infinitypaul/laravel-password-history-validation/issues",
+                "source": "https://github.com/infinitypaul/laravel-password-history-validation/tree/master"
+            },
+            "time": "2021-12-01T11:42:18+00:00"
         },
         {
             "name": "laravel/framework",
@@ -8770,7 +8830,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "infinitypaul/laravel-password-history-validation": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="91.634" height="106" viewBox="0 0 91.634 106">
+  <g id="svgicon" transform="translate(-438 -1752.75)">
+    <path id="Path_663" data-name="Path 663" d="M231.868,48.628,210.041,26.8a1.711,1.711,0,0,0-1.273-.546H155.762a7.056,7.056,0,0,0-7.021,7.021V68.091a1.819,1.819,0,1,0,3.638,0V33.275a3.382,3.382,0,0,1,3.383-3.383h51.186V49.9a1.819,1.819,0,0,0,1.819,1.819h20.008v73.014a3.382,3.382,0,0,1-3.383,3.383H155.764a3.382,3.382,0,0,1-3.383-3.383v-9.35a1.819,1.819,0,0,0-3.638,0v9.35a7.056,7.056,0,0,0,7.021,7.021h69.629a7.056,7.056,0,0,0,7.021-7.021V49.9a1.71,1.71,0,0,0-.546-1.273ZM210.586,32.476l15.606,15.606H210.586Z" transform="translate(296.97 1726.746)" fill="#433f4d" stroke="#433f4d" stroke-width="0.5"/>
+    <g id="Group_2226" data-name="Group 2226" transform="translate(438 1799.314)">
+      <rect id="Rectangle_118" data-name="Rectangle 118" width="76.566" height="32.752" rx="4" transform="translate(0 1.687)" fill="#9672fb"/>
+      <text id="ADOBE" transform="translate(37.916 24.686)" fill="#fff" font-size="16" font-family="EuclidCircularA-SemiBold, Euclid Circular A" font-weight="600"><tspan x="-27" y="0">ADOBE</tspan></text>
+    </g>
+  </g>
+</svg>

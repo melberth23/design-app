@@ -62,7 +62,7 @@
             <div class="extra-information">
                 <ul class="d-flex justify-content-start">
                     <li>{{ $brand->industry }}</li>
-                    <li>{{ $brand->website }}</li>
+                    <li><a href="{{ $brand->website }}" target="_blank">{{ $brand->website }}</a></li>
                 </ul>
             </div>
         </div>

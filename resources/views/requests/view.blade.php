@@ -27,7 +27,6 @@
             <a href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 0]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fas fa-check" aria-hidden="true"></i> Mark Complete</a>
             @endif
         </h1>
-        @if(!auth()->user()->hasRole('Designer'))
         <div class="actions d-sm-flex align-items-center justify-content-between">
             <div class="dropdown m-1">
                 <button class="btn btn-outline-light text-dark border" id="dropdownUpdate{{ $requests->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -37,6 +36,7 @@
                     <span>Last Updated: {{ $requests->updated_at->format('d F, Y, h:i:s A') }}</span>
                 </div>
             </div>
+            @if(!auth()->user()->hasRole('Designer'))
             <div class="dropdown m-1">
               <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -80,8 +80,19 @@
                     <a href="javascript:void(0);" class="btn btn-outline-light text-dark border disabled"><i class="fas fa-angle-right fa-sm"></i></a>
                 @endif
             </div>
+            @else
+                @if ($requests->status == 3)
+                    <div class="dropdown m-1">
+                      <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#movereviewModal"><i class="fa fa-check"></i> Move to review</a>
+                      </div>
+                    </div>
+                @endif
+            @endif
         </div>
-        @endif
     </div>
 
     <div class="card mb-4">
@@ -112,12 +123,12 @@
                         <div class="col-md-9">{{ $requests->created_at->format('d F, Y') }}</div>
                     </div>
                 </div>
-                <div class="tab-text-label text-dark py-3">
+                <!-- <div class="tab-text-label text-dark py-3">
                     <div class="row">
                         <div class="col-md-3 single-label">Delivery Date</div>
                         <div class="col-md-9">{{ $requests->created_at->format('d F, Y') }}</div>
                     </div>
-                </div>
+                </div> -->
                 <div class="tab-text-label text-dark py-3">
                     <div class="row">
                         <div class="col-md-3 single-label">Project Category</div>
@@ -139,7 +150,7 @@
                 <div class="tab-text-label text-dark py-3">
                     <div class="row">
                         <div class="col-md-3 single-label">Project Brief</div>
-                        <div class="col-md-9">{{ $requests->description }}</div>
+                        <div class="col-md-9"><?php echo nl2br($requests->description); ?></div>
                     </div>
                 </div>
                 <div class="tab-text-label text-dark py-3">
@@ -191,7 +202,7 @@
                 <div class="tab-text-label text-dark py-3">
                     <div class="row">
                         <div class="col-md-3 single-label">Reference Links</div>
-                        <div class="col-md-9">{{ $requests->reference_link }}</div>
+                        <div class="col-md-9"><a href="{{ $requests->reference_link }}" target="_blank">{{ $requests->reference_link }}</a></div>
                     </div>
                 </div>
                 <div class="tab-text-label text-dark py-3">
@@ -217,5 +228,45 @@
 
 </div>
 
+@if(auth()->user()->hasRole('Designer'))
+<div class="modal fade" id="movereviewModal" tabindex="-1" role="dialog" aria-labelledby="movereviewModalExample"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="movereviewModalExample">Please upload all your works before moving for review.</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('designer.addfilereview') }}" enctype="multipart/form-data" id="form-review-request">
+                    @csrf
+
+                    <input type="hidden" id="request_ref_id" name="id" value="{{ $requests->id }}">
+                    <div class="text-dark py-3">
+                        <label for="media">Add Images</label>
+                        <input type="file" name="media[]" class="form-control-file" multiple >
+                    </div>
+
+                    <hr>
+
+                    <div class="text-dark py-3">
+                        <label for="documents">Add Documents</label>
+                        <input type="file" name="documents[]" class="form-control-file" multiple >
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-success" href="javascript:void(0);"
+                    onclick="event.preventDefault(); document.getElementById('form-review-request').submit();">
+                    Review
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 @endsection

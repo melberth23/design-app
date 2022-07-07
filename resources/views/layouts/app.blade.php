@@ -52,7 +52,9 @@
     <script src="{{asset('js/app.js')}}"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-
+    @hasrole('Admin')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.js" charset="utf-8"></script>
+    @endhasrole
     <script type="text/javascript">
         jQuery(function($) {
             $(function () {
@@ -63,6 +65,7 @@
                     var target = $(e.target).attr("href") // activated tab
                     $('#brand-tabs .nav-link').removeClass('active');
                     $(target +'-tab').addClass('active');
+                    $('.continue-btn').removeClass('active');
                 });
             });
         });

@@ -139,7 +139,7 @@
                     </div>
                 </div>
                 <div class="d-sm-flex align-items-center justify-content-end mb-4">
-                    <a class="btn btn-primary btn-user mb-3" data-toggle="tab" href="#assets" role="tab" aria-controls="assets" aria-selected="false">Continue</a>
+                    <a class="btn btn-primary btn-user mb-3 continue-btn" data-toggle="tab" href="#assets" role="tab" aria-controls="assets" aria-selected="false">Continue</a>
                 </div>
             </div>
 
@@ -160,6 +160,9 @@
                                     <button type="button" onclick="getElementById('primary-logo').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
+                            <div id="primary-logos" class="d-flex logos" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                                <!-- Preview Logos -->
+                            </div>
                             <div class="d-none logos">
                                 <input type="file" id="primary-logo" name="logos[]" class="form-control-file @error('logos') is-invalid @enderror" multiple >
                             </div>
@@ -179,6 +182,9 @@
                                 <button type="button" onclick="getElementById('secondary-logo').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                             </div>
                         </div>
+                        <div id="secondary-logos" class="d-flex logos" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                            <!-- Preview Logos -->
+                        </div>
                         <div class="d-none logos">
                             <input type="file" id="secondary-logo" name="logos_second[]" class="form-control-file" multiple >
                         </div>
@@ -196,23 +202,27 @@
                         <div class="py-4 border-bottom">
                             <h5 class="card-label text-dark">Primary Colors</h5>
                             <div id="primary-colors" class="colors">
-                                <div class="color-pick">
+                                <div class="d-flex color-pick">
                                     <input type="text" name="colors[]" class="form-control colorpicker col-md-3" >
+                                    <a class="primary-remove-btn btn btn-link" href="javascript:void(0)" onclick="removeColor(this);" style="display: none;"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
+                            <div class="pt-2">
+                                <button type="button" onclick="return addColor('primary');" class="btn btn-primary">Add Primary Color</button>
+                            </div>
                         </div>
-                        <div class="py-4">
+                        <div class="pt-4">
                             <h5 class="card-label text-dark">Secondary Colors</h5>
                             <div id="secondary-colors" class="colors">
-                                <div class="color-pick">
+                                <div class="d-flex color-pick">
                                     <input type="text" name="colors_second[]" class="form-control colorpicker col-md-3" >
+                                    <a class="secondary-remove-btn btn btn-link" href="javascript:void(0)" onclick="removeSecondaryColor(this);" style="display: none;"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
+                            <div class="pt-2">
+                                <button type="button" onclick="return addColor('secondary');" class="btn btn-primary">Add Secondary Color</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-footer bg-light-custom">
-                        <button type="button" onclick="return addColor('primary');" class="btn btn-primary">Add Primary Color</button>
-                        <button type="button" onclick="return addColor('secondary');" class="btn btn-primary">Add Secondary Color</button>
                     </div>
                 </div>
 
@@ -232,6 +242,9 @@
                                     <button type="button" onclick="getElementById('primary-fonts').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
+                            <div id="primary-fonts-preview" class="d-flex fonts" data-toggle="tooltip" data-placement="left" title="All fonts are in preview to replace select new sets of fonts">
+                                <!-- Preview Fonts -->
+                            </div>
                             <div class="d-none fonts">
                                 <input type="file" id="primary-fonts" name="fonts[]" class="form-control-file" multiple >
                             </div>
@@ -250,6 +263,9 @@
                             <div class="font-uploader">
                                 <button type="button" onclick="getElementById('secondary-fonts').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                             </div>
+                        </div>
+                        <div id="secondary-fonts-preview" class="d-flex fonts" data-toggle="tooltip" data-placement="left" title="All fonts are in preview to replace select new sets of fonts">
+                            <!-- Preview Fonts -->
                         </div>
                         <div class="d-none fonts">
                             <input type="file" id="secondary-fonts" name="fonts_second[]" class="form-control-file" multiple >
@@ -276,6 +292,9 @@
                                     <button type="button" onclick="getElementById('pictures').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
+                            <div id="preview-pictures" class="d-flex pictures" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                                <!-- Preview pictures -->
+                            </div>
                             <div class="d-none">
                                 <input type="file" id="pictures" name="pictures[]" class="form-control-file" multiple >
                             </div>
@@ -286,7 +305,7 @@
                     </div>
                 </div>
                 <div class="d-sm-flex align-items-center justify-content-end mb-4">
-                    <a class="btn btn-primary btn-user mb-3" data-toggle="tab" href="#guidelines" role="tab" aria-controls="guidelines" aria-selected="false">Continue</a>
+                    <a class="btn btn-primary btn-user mb-3 continue-btn" data-toggle="tab" href="#guidelines" role="tab" aria-controls="guidelines" aria-selected="false">Continue</a>
                 </div>
             </div>
 
@@ -301,14 +320,17 @@
                                 <div class="guideline-information">
                                     <h5 class="card-label text-dark">Brand Guidelines</h5>
                                     <p class="img-description mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                                    <p class="img-limit">Acceptable file, PNG, JPEG, PDF, DOC, PPT, max file size 150mb.</p>
+                                    <p class="img-limit">Acceptable file PDF max file size 150mb.</p>
                                 </div>
                                 <div class="guideline-uploader">
-                                    <button type="button" onclick="getElementById('guidelines').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
+                                    <button type="button" onclick="getElementById('guidelines-item').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
+                            <div id="guidelines-preview" class="d-flex guidelines" data-toggle="tooltip" data-placement="left" title="All pdf are in preview to replace select new sets of pdf files">
+                                <!-- Preview guidelines -->
+                            </div>
                             <div class="d-none">
-                                <input type="file" id="guidelines" name="guidelines[]" class="form-control-file" multiple >
+                                <input type="file" id="guidelines-item" name="guidelines[]" class="form-control-file" multiple >
                             </div>
                             @error('guidelines')
                                 <span class="text-danger">{{$message}}</span>
@@ -317,7 +339,7 @@
                     </div>
                 </div>
                 <div class="d-sm-flex align-items-center justify-content-end mb-4">
-                    <a class="btn btn-primary btn-user mb-3" data-toggle="tab" href="#templates" role="tab" aria-controls="templates" aria-selected="false">Continue</a>
+                    <a class="btn btn-primary btn-user mb-3 continue-btn" data-toggle="tab" href="#templates" role="tab" aria-controls="templates" aria-selected="false">Continue</a>
                 </div>
             </div>
 
@@ -335,11 +357,14 @@
                                     <p class="img-limit">Acceptable file, PNG, JPEG, PDF, PSD, AI, max file size 150mb.</p>
                                 </div>
                                 <div class="template-uploader">
-                                    <button type="button" onclick="getElementById('templates').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
+                                    <button type="button" onclick="getElementById('templates-item').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
+                            <div id="templates-preview" class="d-flex templates" data-toggle="tooltip" data-placement="left" title="All files are in preview to replace select new sets of files">
+                                <!-- Preview templates -->
+                            </div>
                             <div class="d-none">
-                                <input type="file" id="templates" name="templates[]" class="form-control-file" multiple >
+                                <input type="file" id="templates-item" name="templates[]" class="form-control-file" multiple >
                             </div>
                             @error('templates')
                                 <span class="text-danger">{{$message}}</span>
@@ -348,7 +373,7 @@
                     </div>
                 </div>
                 <div class="d-sm-flex align-items-center justify-content-end mb-4">
-                    <a class="btn btn-primary btn-user mb-3" data-toggle="tab" href="#inspirations" role="tab" aria-controls="inspirations" aria-selected="false">Continue</a>
+                    <a class="btn btn-primary btn-user mb-3 continue-btn" data-toggle="tab" href="#inspirations" role="tab" aria-controls="inspirations" aria-selected="false">Continue</a>
                 </div>
             </div>
 
@@ -363,11 +388,14 @@
                                 <div class="inspiration-information">
                                     <h5 class="card-label text-dark">Brand Inspiration</h5>
                                     <p class="img-description mb-0">Upload your brand inspiration, it helps us determine the direction you like</p>
-                                    <p class="img-limit">Acceptable file, PNG, JPEG, PDF, max file size 150mb.</p>
+                                    <p class="img-limit">Acceptable file, PNG, JPEG, max file size 150mb.</p>
                                 </div>
                                 <div class="inspiration-uploader">
                                     <button type="button" onclick="getElementById('inspiration-field').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
+                            </div>
+                            <div id="inspirations-preview" class="d-flex inspirations" data-toggle="tooltip" data-placement="left" title="All files are in preview to replace select new sets of files">
+                                <!-- Preview templates -->
                             </div>
                             <div class="d-none">
                                 <input type="file" id="inspiration-field" name="inspirations[]" class="form-control-file" multiple >
@@ -383,7 +411,7 @@
                     </div>
                 </div>
                 <div class="d-sm-flex align-items-center justify-content-end mb-4">
-                    <a class="btn btn-primary btn-user mb-3" data-toggle="tab" href="#social" role="tab" aria-controls="social" aria-selected="false">Continue</a>
+                    <a class="btn btn-primary btn-user mb-3 continue-btn" data-toggle="tab" href="#social" role="tab" aria-controls="social" aria-selected="false">Continue</a>
                 </div>
             </div>
 
@@ -468,8 +496,134 @@
 
     function addColor(color_type) {
         jQuery( "#"+ color_type +"-colors .color-pick:first-child" ).clone().appendTo( "#"+ color_type +"-colors" );
+        jQuery('#'+ color_type +'-colors').find('.'+ color_type +'-remove-btn').show();
 
         jQuery('.colorpicker').colorpicker();
+    }
+
+    jQuery(function($) {
+        // Primary logo previews
+        $('#primary-logo').on('change', function(e) {
+            var files = e.target.files;
+            $('#primary-logos').html('');
+            $.each( files, function( i, file ) {
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+
+                reader.onload = readerEvent => {
+                    var content = readerEvent.target.result; // this is the content!
+                    $('#primary-logos').append('<div class="mx-1 logo media-container"><img src="'+ content +'" class="logo-img primary-logo-preview" /></div>');
+                }
+            });
+        });
+        // Secondary logo previews
+        $('#secondary-logo').on('change', function(e) {
+            var files = e.target.files;
+            $('#secondary-logos').html('');
+            $.each( files, function( i, file ) {
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+
+                reader.onload = readerEvent => {
+                    var content = readerEvent.target.result; // this is the content!
+                    $('#secondary-logos').append('<div class="mx-1 logo media-container"><img src="'+ content +'" class="logo-img primary-logo-preview" /></div>');
+                }
+            });
+        });
+        // Primary fonts previews
+        $('#primary-fonts').on('change', function(e) {
+            var files = e.target.files;
+            $('#primary-fonts-preview').html('');
+            $.each( files, function( i, file ) {
+                var filename = file.name;
+                var fileExt = filename.split('.').pop();
+                $('#primary-fonts-preview').append('<div><div class="mx-1 font media-container media-documents"><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+            });
+        });
+        // Secondary fonts previews
+        $('#secondary-fonts').on('change', function(e) {
+            var files = e.target.files;
+            $('#secondary-fonts-preview').html('');
+            $.each( files, function( i, file ) {
+                var filename = file.name;
+                var fileExt = filename.split('.').pop();
+                $('#secondary-fonts-preview').append('<div><div class="mx-1 font media-container media-documents"><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+            });
+        });
+        // Pictures previews
+        $('#pictures').on('change', function(e) {
+            var files = e.target.files;
+            $('#preview-pictures').html('');
+            $.each( files, function( i, file ) {
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+
+                reader.onload = readerEvent => {
+                    var content = readerEvent.target.result; // this is the content!
+                    $('#preview-pictures').append('<div class="mx-1 picture media-container"><img src="'+ content +'" class="picture-img primary-logo-preview" /></div>');
+                }
+            });
+        });
+        // Guidelines previews
+        $('#guidelines-item').on('change', function(e) {
+            var files = e.target.files;
+            $('#guidelines-preview').html('');
+            $.each( files, function( i, file ) {
+                var filename = file.name;
+                var fileExt = filename.split('.').pop();
+                $('#guidelines-preview').append('<div><div class="mx-1 guideline media-container media-documents"><img src="<?php echo asset('images/guidelines-img-pdf.png'); ?>" class="guideline-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+            });
+        });
+        // Templates previews
+        $('#templates-item').on('change', function(e) {
+            var files = e.target.files;
+            $('#templates-preview').html('');
+            $.each( files, function( i, file ) {
+                var filename = file.name;
+                var fileExt = filename.split('.').pop();
+                $('#templates-preview').append('<div><div class="mx-1 template media-container media-documents"><img src="<?php echo asset('images/template-img-'); ?>'+ fileExt +'.png" class="template-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+            });
+        });
+        // Inspiration previews
+        $('#inspiration-field').on('change', function(e) {
+            var files = e.target.files;
+            $('#inspirations-preview').html('');
+            $.each( files, function( i, file ) {
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+
+                reader.onload = readerEvent => {
+                    var content = readerEvent.target.result; // this is the content!
+                    $('#inspirations-preview').append('<div class="mx-1 inspiration media-container"><img src="'+ content +'" class="inspiration-img primary-logo-preview" /></div>');
+                }
+            });
+        });
+    });
+
+    function removeColor(e)
+    {
+        if(jQuery('#primary-colors').find('.color-pick').length > 1) {
+            e.parentNode.parentNode.removeChild(e.parentNode);
+
+            if(jQuery('#primary-colors').find('.color-pick').length == 1) {
+               jQuery('#primary-colors').find('.primary-remove-btn').hide(); 
+            }
+        } else {
+            jQuery('#primary-colors').find('.primary-remove-btn').hide();
+        }
+    }
+
+    function removeSecondaryColor(e)
+    {
+        if(jQuery('#secondary-colors').find('.color-pick').length > 1) {
+            e.parentNode.parentNode.removeChild(e.parentNode);
+
+            if(jQuery('#secondary-colors').find('.color-pick').length == 1) {
+               jQuery('#secondary-colors').find('.secondary-remove-btn').hide(); 
+            }
+        } else {
+            jQuery('#secondary-colors').find('.secondary-remove-btn').hide();
+        }
     }
 </script>
 @stop

@@ -20,9 +20,9 @@
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 single-label">
                                     @if(!empty(auth()->user()->profile_img))
-                                        <img class="rounded-circle" width="130px" src="{{ url('storage/profiles') }}/{{ auth()->user()->profile_img }}">
+                                        <img class="rounded-circle" width="130px" src="{{ url('storage/profiles') }}/{{ auth()->user()->id }}/{{ auth()->user()->profile_img }}" id="profile-image">
                                     @else
-                                        <img class="rounded-circle" width="130px" src="{{ asset('admin/img/undraw_profile.svg') }}">
+                                        <img class="rounded-circle" width="130px" src="{{ asset('admin/img/undraw_profile.svg') }}" id="profile-image">
                                     @endif
                                 </div>
                                 <div class="col-md-10">
@@ -532,12 +532,11 @@
                         <div class="form-group">
                             <div class="text-dark pt-3">
                                 <label for="country">Country</label>
-                                <input 
-                                    type="text" 
-                                    class="form-control form-control-user" 
-                                    id="country" 
-                                    name="country" 
-                                    value="{{ (old('country')) ? old('country') : auth()->user()->country }}">
+                                <select class="form-control" name="country">
+                                    @foreach($countries as $country)
+                                        <option value="{{ $country->name }}" {{ auth()->user()->country == $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -790,6 +789,35 @@
                     dis.find(".msg").html('<p class="alert alert-success">'+ data.msg +'</p>');
                 }
                }
+            });
+        });
+
+        $('#profile_img').on('change', function(e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = readerEvent => {
+                var content = readerEvent.target.result; // this is the content!
+                $('#profile-image').attr('src', content);
+            }
+
+            var form_data = new FormData();
+            form_data.append("_token", $('#form-update-name-account').find("input[name=_token]").val());
+            form_data.append("file", file);
+            $.ajax({
+                url:'{{ route('profile.updateprofileimage') }}',
+                method:'POST',
+                data:form_data,
+                contentType:false,
+                cache:false,
+                processData:false,
+                beforeSend:function(){
+                    
+                },
+                success:function(data){
+                    
+                }
             });
         });
     });

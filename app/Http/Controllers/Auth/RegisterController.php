@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Lib\PaymentHelper;
 use App\Lib\SystemHelper;
+use App\Rules\IsValidPassword;
 use Redirect;
 use DB;
 
@@ -109,7 +110,7 @@ class RegisterController extends Controller
             'first_name' => ['required', 'string', 'alpha', 'max:255'],
             'last_name' => ['required', 'string', 'alpha', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', new isValidPassword()],
         ]);
     }
 
