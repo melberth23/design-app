@@ -77,7 +77,10 @@ class BrandController extends Controller
             $brands = Brand::where('user_id', $userid)->where('status', 0);
             $brands = $brands->paginate(10);
 
-            return view('brands.drafts', ['brands' => $brands]);
+            // Check limit
+            $limit = $this->helper->userActionRules($userid, 'brand');
+
+            return view('brands.drafts', ['brands' => $brands, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -98,7 +101,10 @@ class BrandController extends Controller
             $brands = Brand::where('user_id', $userid)->where('status', 2);
             $brands = $brands->paginate(10);
 
-            return view('brands.archived', ['brands' => $brands]);
+            // Check limit
+            $limit = $this->helper->userActionRules($userid, 'brand');
+
+            return view('brands.archived', ['brands' => $brands, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }

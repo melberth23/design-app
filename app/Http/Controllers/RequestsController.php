@@ -76,7 +76,7 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
             $all = Requests::where('user_id', $userid)->count();
-            $requests = Requests::where('user_id', $userid)->where('status', 2)->orderBy('created_at', 'DESC')->paginate(10);
+            $requests = Requests::where('user_id', $userid)->where('status', 2)->orderBy('priority', 'ASC')->get();
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
@@ -956,5 +956,16 @@ class RequestsController extends Controller
         }
 
         return redirect()->back()->with('success', 'Uploaded new files');
+    }
+
+    public function sort(Request $request)
+    {
+        $sortkeys = $request->sortkeys;
+        foreach($sortkeys as $sort => $id) {
+            $id = intval($id);
+            Requests::where('id', $id)->update(['priority' => $sort]);
+        }
+
+        return response()->json(array('sortkeys'=> $sortkeys), 200);
     }
 }

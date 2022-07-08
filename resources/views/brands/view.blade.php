@@ -28,6 +28,7 @@
                     <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 2]) }}"><img src="{{ asset('images/trash.svg') }}" class="action-icons"> Archive Brand Profile</a>
                 @elseif ($brand->status == 2)
                     <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 0]) }}"><img src="{{ asset('images/brand-icon.svg') }}" class="action-icons"> Restore Brand Profile</a>
+                    <a class="dropdown-item delete-action" href="#" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash" aria-hidden="true"></i> Delete Brand Profile</a>
                 @endif
               </div>
             </div>
@@ -63,6 +64,15 @@
                 <ul class="d-flex justify-content-start">
                     <li>{{ $brand->industry }}</li>
                     <li><a href="{{ $brand->website }}" target="_blank">{{ $brand->website }}</a></li>
+                    <li>
+                        @if ($brand->status == 0)
+                            <span class="badge badge-warning p-2">DRAFT</span>
+                        @elseif ($brand->status == 1)
+                            <span class="badge badge-success p-2">ACTIVE</span>
+                        @else
+                            <span class="badge badge-danger p-2">ARCHIVED</span>
+                        @endif
+                    </li>
                 </ul>
             </div>
         </div>
@@ -471,5 +481,37 @@
     </div>
 </div>
 
+<style type="text/css">
+    .delete-action i {
+        font-size: 18px;
+        width: 20px;
+        margin: 8px 0px 8px 5px;
+    }
+</style>
 
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalExample"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark" id="deleteModalExample">Delete?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body text-dark">Select "Delete" will permanently delete this brand profile.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger" href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('brand-delete-form').submit();">
+                    Delete
+                </a>
+                <form id="brand-delete-form" method="POST" action="{{ route('brand.destroy', ['brand' => $brand->id]) }}">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

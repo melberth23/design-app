@@ -119,6 +119,7 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
     Route::post('/delete-media', [App\Http\Controllers\RequestsController::class, 'deleteAsset'])->name('destroyassets');
     Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\RequestsController::class, 'updateStatus'])->name('status');
     Route::post('/fileupload', [App\Http\Controllers\RequestsController::class, 'fileupload'])->name('fileupload');
+    Route::post('/sort', [App\Http\Controllers\RequestsController::class, 'sort'])->name('sort');
 });
 
 /* Designer Dashboard */

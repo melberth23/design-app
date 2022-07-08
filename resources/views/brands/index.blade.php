@@ -25,9 +25,15 @@
                         <a class="dropdown-item" href="{{ route('brand.index.sort', ['type' => 'name', 'sort' => 'desc']) }}">Name (Z-A)</a>
                       </div>
                     </div>
+                    @if($limit)
                     <a href="{{ route('brand.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> <span class="d-none d-md-inline-block">New</span>
                     </a>
+                    @else
+                    <a href="#" data-toggle="modal" data-target="#limitModal" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> <span class="d-none d-md-inline-block">New</span>
+                    </a>
+                    @endif
                 </div>
             </div>
 
@@ -90,6 +96,15 @@
                                 <ul class="d-flex justify-content-start">
                                     <li>{{ $brand->industry }}</li>
                                     <li><a href="{{ $brand->website }}" target="_blank">{{ $brand->website }}</a></li>
+                                    <li>
+                                        @if ($brand->status == 0)
+                                            <span class="badge badge-warning p-2">DRAFT</span>
+                                        @elseif ($brand->status == 1)
+                                            <span class="badge badge-success p-2">ACTIVE</span>
+                                        @else
+                                            <span class="badge badge-danger p-2">ARCHIVED</span>
+                                        @endif
+                                    </li>
                                 </ul>
                                 <p>{{ Str::limit($brand->description, 200, $end='.......') }}</p>
                                 <div class="d-flex colors">

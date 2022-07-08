@@ -42,12 +42,14 @@
             </div>
             <div class="card-footer bg-light-custom p-0">
                 <div class="table-responsive">
-                    <table class="table table-bordered bg-white border-0 table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
+                    <table id="queue-request" class="table table-bordered bg-white border-0 table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th width="10%" class="border-left-0 border-right-0">REQUEST ID</th>
+                                <th width="2%" class="border-left-0 border-right-0"></th>
+                                <th width="8%" class="border-left-0 border-right-0">REQUEST ID</th>
                                 <th width="25%" class="border-left-0 border-right-0">REQUEST NAME</th>
-                                <th width="25%" class="border-left-0 border-right-0">CATEGORY</th>
+                                <th width="20%" class="border-left-0 border-right-0">CATEGORY</th>
+                                <th width="5%" class="border-left-0 border-right-0">PRIORITY</th>
                                 <th width="10%" class="border-left-0 border-right-0">STATUS</th>
                                 <th width="10%" class="border-left-0 border-right-0">DATE CREATED</th>
                                 <th width="20%" class="border-left-0 border-right-0"></th>
@@ -55,7 +57,8 @@
                         </thead>
                         <tbody>
                             @foreach ($requests as $request)
-                                <tr>
+                                <tr id="{{ $request->id }}">
+                                    <td class="border-left-0 border-right-0 text-primary"><img src="{{ asset('images/ellipses.svg') }}"></td>
                                     <td class="border-left-0 border-right-0 text-primary">#{{ $request->id }}</td>
                                     <td class="border-left-0 border-right-0 font-weight-bold"><a class="text-dark" href="{{ route('request.view', ['requests' => $request->id]) }}">{{ $request->title }}</a></td>
                                     @if(!empty($request->designtype->name))
@@ -63,6 +66,7 @@
                                     @else
                                     <td class="border-left-0 border-right-0"></td>
                                     @endif
+                                    <td id="priority" class="border-left-0 border-right-0 text-primary">{{ $request->priority+1 }}</td>
                                     <td class="border-left-0 border-right-0">
                                         <span class="badge badge-info">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                     </td>
@@ -100,7 +104,6 @@
                     <a class="text-decoration-none" href="{{ route('request.create') }}"><i class="fa fa-plus"></i> Add New</a>
                 </div>
                 
-                {{ $requests->links() }}
             </div>
         </div>
 
@@ -132,5 +135,37 @@
 @endsection
 
 @section('scripts')
-    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/TableDnD/0.9.1/jquery.tablednd.js" integrity="sha256-d3rtug+Hg1GZPB7Y/yTcRixO/wlI78+2m08tosoRn7A=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    // Initialise the table
+    jQuery("#queue-request").tableDnD({
+        onDragClass: "request-drag",
+        onDrop: function(table, row) {
+            var rows = table.tBodies[0].rows;
+            console.log(rows.length);
+            var sortkeys = [];
+            for (var i=0; i < rows.length; i++) {
+                sortkeys.push(rows[i].id);
+                jQuery('#'+ rows[i].id).find('#priority').html(i+1);
+            }
+            
+            jQuery.ajax({
+                type:'POST',
+                url:"{{ route('request.sort') }}",
+                data: {
+                    sortkeys:sortkeys,
+                    _token: jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success:function(data) {
+                    $('#dimensions').html(data.dimensions);
+                }
+            });
+        },
+        onDragStart: function(table, row) {
+            console.log(row.id);
+        }
+    });
+});
+</script> 
 @endsection

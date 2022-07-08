@@ -1,0 +1,8 @@
+<svg id="ellipses" xmlns="http://www.w3.org/2000/svg" width="11" height="18" viewBox="0 0 11 18">
+  <circle id="Ellipse_143" data-name="Ellipse 143" cx="2" cy="2" r="2" fill="#d4d2d7"/>
+  <circle id="Ellipse_145" data-name="Ellipse 145" cx="2" cy="2" r="2" transform="translate(0 7)" fill="#d4d2d7"/>
+  <circle id="Ellipse_147" data-name="Ellipse 147" cx="2" cy="2" r="2" transform="translate(0 14)" fill="#d4d2d7"/>
+  <circle id="Ellipse_144" data-name="Ellipse 144" cx="2" cy="2" r="2" transform="translate(7)" fill="#d4d2d7"/>
+  <circle id="Ellipse_146" data-name="Ellipse 146" cx="2" cy="2" r="2" transform="translate(7 7)" fill="#d4d2d7"/>
+  <circle id="Ellipse_148" data-name="Ellipse 148" cx="2" cy="2" r="2" transform="translate(7 14)" fill="#d4d2d7"/>
+</svg>
