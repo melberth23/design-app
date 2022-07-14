@@ -104,12 +104,12 @@
                 </div>
                 <div class="request-assets tab-text-label text-dark pt-3">
                     <label for="media">Upload any design assets or inspiration we should follow.</label>
-                    <input type="file" id="asset-requests" name="media[]" class="form-control-file" multiple data-multiple-caption="{count} files selected" >
+                    <input type="file" id="asset-requests" name="media[]" class="form-control-file" multiple data-multiple-caption="{count} files selected" accept=".png,.jpeg,.jpg">
                     <div class="asset-uploader rounded bg-light py-5 text-center">
                         <div class="py-1 upload-icon"><i class="fa fa-cloud-upload" aria-hidden="true"></i></div>
                         <p id="asset-label" class="img-limit mb-0"></p>
                         <p class="img-description mb-0">Drag and drop or <a href="javascript:void(0);" onclick="getElementById('asset-requests').click();">click here</a> to attach</p>
-                        <p class="img-limit">Acceptable file, PNG, JPEG, JPG, MP4 max file size 150mb.</p>
+                        <p class="img-limit">Acceptable file, PNG, JPEG, JPG max file size 150mb.</p>
                     </div>
                 </div>
                 <div class="tab-text-label text-dark pt-3">
