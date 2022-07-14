@@ -39,8 +39,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sedResetPasswordEmail'])->name('forgot.password');
 
 Route::get('/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadBrandFile'])->name('download');
+Route::get('/delete/{asset}', [App\Http\Controllers\DownloadFileController::class, 'deleteBrandFile'])->name('delete');
 Route::get('/request/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadRequestFile'])->name('request.download');
+Route::get('/request/delete/{asset}', [App\Http\Controllers\DownloadFileController::class, 'deleteRequestFile'])->name('request.delete');
 Route::get('/comment/download/{asset}', [App\Http\Controllers\DownloadFileController::class, 'downloadCommentFile'])->name('comment.download');
+Route::get('/comment/delete/{asset}', [App\Http\Controllers\DownloadFileController::class, 'deleteCommentFile'])->name('comment.delete');
 Route::get('/generate-invoice/{invoice}', [App\Http\Controllers\AccountController::class, 'generateInvoicePDF'])->name('generate.invoice');
 Route::get('/view-invoice/{invoice}', [App\Http\Controllers\AccountController::class, 'viewInvoicePDF'])->name('view.invoice');
 Route::post('/send-invoice', [App\Http\Controllers\AccountController::class, 'sendInvoicePDF'])->name('send.invoice');

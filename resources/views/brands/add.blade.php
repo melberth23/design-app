@@ -164,7 +164,7 @@
                                 <!-- Preview Logos -->
                             </div>
                             <div class="d-none logos">
-                                <input type="file" id="primary-logo" name="logos[]" class="form-control-file @error('logos') is-invalid @enderror" multiple >
+                                <input type="file" id="primary-logo" name="logos[]" class="form-control-file @error('logos') is-invalid @enderror" multiple accept=".jpg,.png,.svg">
                             </div>
                             @error('logos')
                                 <span class="text-danger">{{$message}}</span>
@@ -186,7 +186,7 @@
                             <!-- Preview Logos -->
                         </div>
                         <div class="d-none logos">
-                            <input type="file" id="secondary-logo" name="logos_second[]" class="form-control-file" multiple >
+                            <input type="file" id="secondary-logo" name="logos_second[]" class="form-control-file" multiple accept=".jpg,.png,.svg">
                         </div>
                         @error('logos_second')
                             <span class="text-danger">{{$message}}</span>
@@ -207,6 +207,9 @@
                                     <a class="primary-remove-btn btn btn-link" href="javascript:void(0)" onclick="removeColor(this);" style="display: none;"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
+                            @error('colors.*')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                             <div class="pt-2">
                                 <button type="button" onclick="return addColor('primary');" class="btn btn-primary">Add Primary Color</button>
                             </div>
@@ -219,6 +222,9 @@
                                     <a class="secondary-remove-btn btn btn-link" href="javascript:void(0)" onclick="removeSecondaryColor(this);" style="display: none;"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
+                            @error('colors_second.*')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                             <div class="pt-2">
                                 <button type="button" onclick="return addColor('secondary');" class="btn btn-primary">Add Secondary Color</button>
                             </div>
@@ -236,7 +242,7 @@
                                 <div class="font-information">
                                     <h5 class="card-label text-dark">Primary Font</h5>
                                     <p class="img-description mb-0">Set a primary font you use on your brand.</p>
-                                    <p class="img-limit">Acceptable file, TTF, EOT, WOFF, ZIP file, max file size 150mb.</p>
+                                    <p class="img-limit">Acceptable file, TTF, EOT, WOFF file, max file size 150mb.</p>
                                 </div>
                                 <div class="font-uploader">
                                     <button type="button" onclick="getElementById('primary-fonts').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
@@ -246,7 +252,7 @@
                                 <!-- Preview Fonts -->
                             </div>
                             <div class="d-none fonts">
-                                <input type="file" id="primary-fonts" name="fonts[]" class="form-control-file" multiple >
+                                <input type="file" id="primary-fonts" name="fonts[]" class="form-control-file" multiple accept=".ttf,.eot,.woof">
                             </div>
                             @error('fonts')
                                 <span class="text-danger">{{$message}}</span>
@@ -258,7 +264,7 @@
                             <div class="font-information">
                                 <h5 class="card-label text-dark">Secondary Font</h5>
                                 <p class="img-description mb-0">Set a secondary font to your brand.</p>
-                                <p class="img-limit">Acceptable file, TTF, EOT, WOFF, ZIP file, max file size 150mb.</p>
+                                <p class="img-limit">Acceptable file, TTF, EOT, WOFF file, max file size 150mb.</p>
                             </div>
                             <div class="font-uploader">
                                 <button type="button" onclick="getElementById('secondary-fonts').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
@@ -268,7 +274,7 @@
                             <!-- Preview Fonts -->
                         </div>
                         <div class="d-none fonts">
-                            <input type="file" id="secondary-fonts" name="fonts_second[]" class="form-control-file" multiple >
+                            <input type="file" id="secondary-fonts" name="fonts_second[]" class="form-control-file" multiple accept=".ttf,.eot,.woof">
                         </div>
                         @error('fonts_second')
                             <span class="text-danger">{{$message}}</span>
@@ -296,7 +302,7 @@
                                 <!-- Preview pictures -->
                             </div>
                             <div class="d-none">
-                                <input type="file" id="pictures" name="pictures[]" class="form-control-file" multiple >
+                                <input type="file" id="pictures" name="pictures[]" class="form-control-file" multiple accept=".png,.jpg,.jpeg">
                             </div>
                             @error('pictures')
                                 <span class="text-danger">{{$message}}</span>
@@ -330,7 +336,7 @@
                                 <!-- Preview guidelines -->
                             </div>
                             <div class="d-none">
-                                <input type="file" id="guidelines-item" name="guidelines[]" class="form-control-file" multiple >
+                                <input type="file" id="guidelines-item" name="guidelines[]" class="form-control-file" multiple accept=".pdf">
                             </div>
                             @error('guidelines')
                                 <span class="text-danger">{{$message}}</span>
@@ -364,7 +370,7 @@
                                 <!-- Preview templates -->
                             </div>
                             <div class="d-none">
-                                <input type="file" id="templates-item" name="templates[]" class="form-control-file" multiple >
+                                <input type="file" id="templates-item" name="templates[]" class="form-control-file" multiple accept=".doc,.docx,.indd,.pdf,.psd,.ai">
                             </div>
                             @error('templates')
                                 <span class="text-danger">{{$message}}</span>
@@ -398,7 +404,7 @@
                                 <!-- Preview templates -->
                             </div>
                             <div class="d-none">
-                                <input type="file" id="inspiration-field" name="inspirations[]" class="form-control-file" multiple >
+                                <input type="file" id="inspiration-field" name="inspirations[]" class="form-control-file" multiple accept=".png,.jpg">
                             </div>
                             @error('inspirations')
                                 <span class="text-danger">{{$message}}</span>

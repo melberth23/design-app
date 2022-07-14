@@ -68,7 +68,7 @@ class DesignersController extends Controller
     {
         $userid = Auth::id();
 
-        $requests = Requests::where('status', 2)->orderBy('updated_at', 'DESC')->paginate(10);
+        $requests = Requests::where('status', 2)->orderBy('priority', 'ASC')->paginate(10);
         $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
         $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
         $review = Requests::where('designer_id', $userid)->where('status', 4)->count();

@@ -200,7 +200,12 @@ class BrandController extends Controller
         $userid = $request->user()->id;
 
         // Validations
-        $request->validate([
+        $messages = [
+          'colors.*.required' => 'All primary color field is required.',
+          'colors.*.distinct' => 'Please make colors unique.',
+          'colors_second.*.distinct' => 'Please make colors unique.'
+        ];
+        $validate = Validator::make($request->all(), [
             'name'    => 'required',
             'target_audience'    => 'required',
             'description'     => 'required',
@@ -208,13 +213,21 @@ class BrandController extends Controller
             'services_provider'     => 'required',
             'website'     => 'required|url',
             'status'       =>  'required|numeric|in:0,1',
+            'colors'       =>  'required|distinct',
+            'colors.*'       =>  'required|distinct',
+            'colors_second.*' =>  'distinct',
             'logos.*' => 'mimes:jpg,png',
             'logos_second.*' => 'mimes:jpg,png',
             'pictures.*' => 'mimes:jpg,png',
             'templates.*' => 'mimes:psd,doc,docx,pdf,ai',
             'guidelines.*' => 'mimes:pdf',
             'inspirations.*' => 'mimes:jpg,png,gif'
-        ]);
+        ], $messages);
+
+        // If Validations Fails
+        if($validate->fails()){
+            return redirect()->back()->withErrors($validate);
+        }
 
         DB::beginTransaction();
         try {
@@ -423,7 +436,7 @@ class BrandController extends Controller
                         File::makeDirectory($requestinspirationspath, 0777, true, true);
                     }
 
-                    $allowedInspirationsExtension = ['jpg','png','mp4','gif'];
+                    $allowedInspirationsExtension = ['jpg','png','gif'];
                     $inspirations = $request->file('inspirations');
                     foreach($inspirations as $inspiration) {
                         $filename = $inspiration->getClientOriginalName();

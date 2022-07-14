@@ -12,6 +12,11 @@
     <div class="row justify-content-center mt-5 text-center">
         <div class="col-md-8">
             <h1 class="text-dark font-weight-bold">Upgrade to higher plan to unleash more features</h1>
+            @if(auth()->user()->payments->plan_status == 1)
+            <div class="alert alert-danger" role="alert">
+                Your current plan {{ ucfirst((new \App\Lib\SystemHelper)->getPlanName(auth()->user()->payments->plan, auth()->user()->payments->duration)) }} will be available until {{ date('j F, Y', strtotime(auth()->user()->payments->recurring_date)) }}.
+            </div>
+            @endif
         </div>
     </div>
 
@@ -110,8 +115,8 @@
                         <div class="card-body pt-5 pb-5 text-dark">
                             <h6 class="card-title">Premium</h6>
                             <p class="card-text">Ideal for marketing teams looking to increase their creative output while also refreshing their brand.</p>
-                            <h2 class="monthly-amount">$599</h2>
-                            <h2 class="yearly-amount hide-amount">$6470</h2>
+                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">$599</h2>
+                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">$6470</h2>
                             <p>USD / <span class="monthly-per-duration {{ ($durationlabel == 'yearly')?'hide-per-duration':'' }}">MONTH</span><span class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }}">YEAR</span></p>
                             @if(auth()->user()->payments->plan == 'premium')
                                 <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
@@ -183,8 +188,8 @@
                         <div class="card-body pt-5 pb-5 text-dark">
                             <h6 class="card-title">Enterprise</h6>
                             <p class="card-text">Ideal for businesses who want full-service creative and want to increase their productivity by a factor of two to help them grow their business.</p>
-                            <h2 class="monthly-amount">$2395</h2>
-                            <h2 class="yearly-amount hide-amount">$8795</h2>
+                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">$2395</h2>
+                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">$8795</h2>
                             <p>USD / <span class="monthly-per-duration {{ ($durationlabel == 'yearly')?'hide-per-duration':'' }}">MONTH</span><span class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }}">YEAR</span></p>
                             @if(auth()->user()->payments->plan == 'royal')
                                 <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
@@ -257,7 +262,14 @@
     </div>
     <div class="row justify-content-center mt-5 text-center">
         <div class="col-md-8">
-            <p>Have a question? Get in touch with our support team! <a href="#" class="text-danger text-decoration-none" data-toggle="modal" data-target="#cancelPlanModal">Cancel Subscription</a></p>
+            <p>
+            Have a question? Get in touch with our support team!
+            @if(auth()->user()->payments->plan_status == 0)
+            <a href="#" class="text-danger text-decoration-none" data-toggle="modal" data-target="#cancelPlanModal">Cancel Subscription</a>
+            @else
+            <a href="{{ route('profile.subscription') }}" class="text-danger text-decoration-none">Continue Subscription</a>
+            @endif
+            </p>
         </div>
     </div>
 </div>

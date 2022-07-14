@@ -186,9 +186,14 @@
                                         <div id="media-{{ $media->id }}" class="mx-1 media media-container">
                                             <img src="{{ url('storage/media') }}/{{ $requests->user_id }}/{{ $media->filename }}" class="picture-img">
                                             <div class="overlay">
-                                                <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="icon">
-                                                  <i class="fas fa-download"></i>
-                                                </a>
+                                                <div class="full-height d-flex align-items-center justify-content-center">
+                                                    <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                    <a href="{{ route('request.delete', ['asset' => $media->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach

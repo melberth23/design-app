@@ -20,7 +20,7 @@
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <!-- <a class="dropdown-item" href="#"><img src="{{ asset('images/downloiad.svg') }}" class="action-icons"> Download Brand Profile</a> -->
-                <a class="dropdown-item" href="#"><img src="{{ asset('images/create.svg') }}" class="action-icons"> Create Brand Request</a>
+                <!-- <a class="dropdown-item" href="#"><img src="{{ asset('images/create.svg') }}" class="action-icons"> Create Brand Request</a> -->
                 <a class="dropdown-item" href="{{ route('brand.edit', ['section' => 'all', 'brand' => $brand->id]) }}"><img src="{{ asset('images/edit.svg') }}" class="action-icons"> Edit Brand Profile</a>
                 @if ($brand->status == 0)
                     <a class="dropdown-item" href="{{ route('brand.status', ['brand_id' => $brand->id, 'status' => 1]) }}"><img src="{{ asset('images/brand-icon.svg') }}" class="action-icons"> Activate Brand Profile</a>
@@ -164,9 +164,14 @@
                                     <div id="media-{{ $logo->id }}" class="mx-1 logo media-container">
                                         <img src="{{ url('storage/logos') }}/{{ $brand->user_id }}/{{ $logo->filename }}" class="logo-img" />
                                         <div class="overlay">
-                                            <a href="{{ route('download', ['asset' => $logo->id]) }}" class="icon">
-                                              <i class="fas fa-download"></i>
-                                            </a>
+                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                                <a href="{{ route('download', ['asset' => $logo->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="{{ route('delete', ['asset' => $logo->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -183,9 +188,14 @@
                                     <div id="media-{{ $secondary_logo->id }}" class="mx-1 logo media-container">
                                         <img src="{{ url('storage/logos') }}/{{  $brand->user_id }}/{{ $secondary_logo->filename }}" class="logo-img" />
                                         <div class="overlay">
-                                            <a href="{{ route('download', ['asset' => $secondary_logo->id]) }}" class="icon">
-                                              <i class="fas fa-download"></i>
-                                            </a>
+                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                                <a href="{{ route('download', ['asset' => $secondary_logo->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="{{ route('delete', ['asset' => $secondary_logo->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -253,9 +263,14 @@
                                         <div class="mx-1 font media-container media-documents">
                                             <img src="{{ asset('images/font-img-') }}{{ $font->file_type }}.png" class="font-img">
                                             <div class="overlay">
-                                                <a href="{{ route('download', ['asset' => $font->id]) }}" class="icon">
-                                                  <i class="fas fa-download"></i>
-                                                </a>
+                                                <div class="full-height d-flex align-items-center justify-content-center">
+                                                    <a href="{{ route('download', ['asset' => $font->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                    <a href="{{ route('delete', ['asset' => $font->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                         <label class="mt-1">{{ $font->filename }}</label>
@@ -275,9 +290,14 @@
                                         <div class="mx-1 font media-container media-documents">
                                             <img src="{{ asset('images/font-img-') }}{{ $secondary_font->file_type }}.png" class="font-img">
                                             <div class="overlay">
-                                                <a href="{{ route('download', ['asset' => $secondary_font->id]) }}" class="icon">
-                                                  <i class="fas fa-download"></i>
-                                                </a>
+                                                <div class="full-height d-flex align-items-center justify-content-center">
+                                                    <a href="{{ route('download', ['asset' => $secondary_font->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                    <a href="{{ route('delete', ['asset' => $secondary_font->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                         <label class="mt-1">{{ $font->filename }}</label>
@@ -309,9 +329,14 @@
                                     <div id="media-{{ $image->id }}" class="mx-1 picture media-container">
                                         <img src="{{ url('storage/pictures') }}/{{ $brand->user_id }}/{{ $image->filename }}" class="picture-img">
                                         <div class="overlay">
-                                            <a href="{{ route('download', ['asset' => $image->id]) }}" class="icon">
-                                              <i class="fas fa-download"></i>
-                                            </a>
+                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                                <a href="{{ route('download', ['asset' => $image->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="{{ route('delete', ['asset' => $image->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -342,9 +367,14 @@
                                     <div class="mx-1 guideline media-container media-documents">
                                         <img src="{{ asset('images/guidelines-img-pdf.png') }}" class="guideline-img">
                                         <div class="overlay">
-                                            <a href="{{ route('download', ['asset' => $guideline->id]) }}" class="icon">
-                                              <i class="fas fa-download"></i>
-                                            </a>
+                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                                <a href="{{ route('download', ['asset' => $guideline->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="{{ route('delete', ['asset' => $guideline->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                     <label class="mt-1">{{ $guideline->filename }}</label>
@@ -375,9 +405,14 @@
                                     <div class="mx-1 template media-container media-documents">
                                         <img src="{{ asset('images/template-img-') }}{{ $template->file_type }}.png" class="template-img">
                                         <div class="overlay">
-                                            <a href="{{ route('download', ['asset' => $template->id]) }}" class="icon">
-                                              <i class="fas fa-download"></i>
-                                            </a>
+                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                                <a href="{{ route('download', ['asset' => $template->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="{{ route('delete', ['asset' => $template->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                     <label class="mt-1">{{ $template->filename }}</label>
@@ -407,9 +442,14 @@
                                 <div class="mx-1 inspiration media-container">
                                     <img src="{{ url('storage/inspirations') }}/{{ $brand->user_id }}/{{ $inspiration->filename }}" class="inspiration-img">
                                     <div class="overlay">
-                                        <a href="{{ route('download', ['asset' => $inspiration->id]) }}" class="icon">
-                                          <i class="fas fa-download"></i>
-                                        </a>
+                                        <div class="full-height d-flex align-items-center justify-content-center">
+                                            <a href="{{ route('download', ['asset' => $inspiration->id]) }}" class="action-icon">
+                                              <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                            </a>
+                                            <a href="{{ route('delete', ['asset' => $inspiration->id]) }}" class="action-icon">
+                                              <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach

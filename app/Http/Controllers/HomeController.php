@@ -24,6 +24,7 @@ use Infinitypaul\LaravelPasswordHistoryValidation\Rules\NotFromPasswordHistory;
 use Illuminate\Support\Carbon;
 use App\Lib\PaymentHelper;
 use App\Lib\SystemHelper;
+use App\Rules\IsValidPassword;
 use Redirect;
 use File;
 
@@ -61,19 +62,19 @@ class HomeController extends Controller
             $completed = Requests::where('user_id', $user->id)->where('status', 0);
             $inprogress = Requests::where('user_id', $user->id)->where('status', 3);
             $forreview = Requests::where('user_id', $user->id)->where('status', 4);
-            $queue = Requests::where('user_id', $user->id)->whereIn('status', [2, 3]);
+            $queue = Requests::where('user_id', $user->id)->where('status', 2);
         } elseif($user->hasRole('Designer')) {
             $overall = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC');
             $completed = Requests::where('designer_id', $user->id)->where('status', 0);
             $inprogress = Requests::where('designer_id', $user->id)->where('status', 3);
             $forreview = Requests::where('designer_id', $user->id)->where('status', 4);
-            $queue = Requests::where('designer_id', $user->id)->where('status', 2);
+            $queue = Requests::whereNull('designer_id')->where('status', 2);
         } else {
             $overall = Requests::where('user_id', '!=', $user->id);
             $completed = Requests::where('user_id', '!=', $user->id)->where('status', 0);
             $inprogress = Requests::where('user_id', '!=', $user->id)->where('status', 3);
             $forreview = Requests::where('user_id', '!=', $user->id)->where('status', 4);
-            $queue = Requests::where('user_id', '!=', $user->id)->whereIn('status', [2, 3]);
+            $queue = Requests::where('user_id', '!=', $user->id)->where('status', 2);
         }
 
         if($filter == 'today') {
@@ -149,11 +150,15 @@ class HomeController extends Controller
 
             $overdata = array();
             foreach($completeddata as $datav) {
-                $overdata[] = array(
+                $overdata[$datav->date] = array(
                     'date' => $datav->date,
                     'records' => $datav->records
                 );
             }
+
+            echo "<pre>";
+            print_r($overdata);
+            echo "</pre>";
 
             $numberofdays = date('t');
             if($filter == 'today') {
@@ -227,7 +232,7 @@ class HomeController extends Controller
      */
     public function subscription()
     {  
-        if(auth()->user()->payments->status == 'cancelled') {
+        if(auth()->user()->payments->status == 'cancelled' || auth()->user()->payments->plan_status == 1) {
             return view('account.subscription');
         } else {
             return redirect()->route('profile.upgrade');
@@ -311,7 +316,7 @@ class HomeController extends Controller
         } elseif($request->action == 'password') {
             $rules = [
                 'current_password' => ['required', new MatchOldPassword],
-                'new_password' => ['required', new NotFromPasswordHistory($request->user())],
+                'new_password' => ['required', new NotFromPasswordHistory($request->user()), new isValidPassword()],
                 'new_confirm_password' => ['same:new_password']
             ];
         }
@@ -675,7 +680,7 @@ class HomeController extends Controller
                 DB::commit();
 
                 #Redirect To Login page with success
-                return redirect()->route('profile.subscription')->with('message', 'Your subscription is successfully cancelled!');
+                return redirect()->route('profile.upgrade')->with('success', 'Your subscription is successfully cancelled!');
             } else {
                 DB::rollBack();
                 return back()->with('error', 'There was a problem cancelling subscription. Please try again.');

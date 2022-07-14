@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use App\Rules\IsValidPassword;
 
 class ResetPasswordController extends Controller
 {
@@ -31,9 +32,8 @@ class ResetPasswordController extends Controller
     protected function rules()
     {
         return [
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:4',
+            'token' => ['required'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', new isValidPassword()],
         ];
     }
 }

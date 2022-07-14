@@ -528,9 +528,17 @@ class RequestsController extends Controller
         if($review) {
             $reviewid = $review->id;
         }
-
         $media = CommentsAssets::where('comments_id', $reviewid)->whereIn('file_type', $media_ext)->get();
         $dobe = CommentsAssets::where('comments_id', $reviewid)->whereIn('file_type', $adobe_ext)->get();
+
+        // Get all manually uploaded files
+        $manual = Comments::where('request_id', $requests->id)->where('comment_type', 'manual')->first();
+        $manualid = 0;
+        if($manual) {
+            $manualid = $manual->id;
+        }
+        $manual_media = CommentsAssets::where('comments_id', $manualid)->whereIn('file_type', $media_ext)->get();
+        $manual_dobe = CommentsAssets::where('comments_id', $manualid)->whereIn('file_type', $adobe_ext)->get();
 
         // Get notifications
         $notifications = $this->getNotifications($requests->id, $userid);
@@ -551,7 +559,9 @@ class RequestsController extends Controller
             'previous' => $previous,
             'next' => $next,
             'medias'  => $media,
-            'adobes'  => $dobe
+            'adobes'  => $media,
+            'manualmedias'  => $manual_media,
+            'manualadobes'  => $manual_dobe
         ]);
     }
 
@@ -899,11 +909,13 @@ class RequestsController extends Controller
     {
         $userid = $request->user()->id;
 
-        $review = Comments::where('request_id', $request->id)->where('comment_type', 'review')->first();
-        $reviewid = 0;
-        if($review) {
-            $reviewid = $review->id;
-        }
+        // Store Data
+        $comment = Comments::create([
+            'comments'       => $request->user()->first_name .' added files. Please check.',
+            'user_id'       => $userid,
+            'request_id'    => $request->id,
+            'comment_type'  => 'manual'
+        ]);
 
         if($request->hasFile('media')) {
 
@@ -923,8 +935,8 @@ class RequestsController extends Controller
 
                 $assets = CommentsAssets::create([
                     'filename' => $attachmentpath,
-                    'comments_id' => $reviewid,
-                    'type' => 'review',
+                    'comments_id' => $comment->id,
+                    'type' => 'manual',
                     'file_type' => $extension
                 ]);
             }
@@ -948,8 +960,8 @@ class RequestsController extends Controller
 
                 $assets = CommentsAssets::create([
                     'filename' => $attachmentpath,
-                    'comments_id' => $reviewid,
-                    'type' => 'review',
+                    'comments_id' => $comment->id,
+                    'type' => 'manual',
                     'file_type' => $extension
                 ]);
             }

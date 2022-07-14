@@ -30,7 +30,7 @@
                                         @csrf
 
                                         <div class="d-none">
-                                            <input type="file" name="profile_img" id="profile_img" >
+                                            <input type="file" name="profile_img" id="profile_img" accept=".jpg,.png">
                                         </div>
                                         <button type="button" class="btn btn-primary" onclick="getElementById('profile_img').click();">Update Photo</button>
                                     </form>
@@ -800,6 +800,7 @@
             reader.onload = readerEvent => {
                 var content = readerEvent.target.result; // this is the content!
                 $('#profile-image').attr('src', content);
+                $('#profile-top-image').attr('src', content);
             }
 
             var form_data = new FormData();

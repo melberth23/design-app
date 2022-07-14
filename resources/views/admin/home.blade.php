@@ -175,19 +175,19 @@ for (let i = 1; i <= result; i++) {
 const data = {
   labels: dayslabels,
   datasets: [
-    {
-        label: 'Added Requests',
-        data: [20, 10, 0, 10, 20, 8],
-        borderColor: '#9672FB',
-        fill:false
-    },
-    {
-        label: 'Completed Requests',
-        data: [5, 23, 4, 50, 0, 10],
-        borderColor: '#388D3C',
-        fill:false
-    }
-  ]
+        {
+            label: 'Added Requests',
+            data: [20, 10, 0, 10, 20, 8],
+            borderColor: '#9672FB',
+            fill:false
+        },
+        {
+            label: 'Completed Requests',
+            data: [5, 23, 4, 50, 0, 10],
+            borderColor: '#388D3C',
+            fill:false
+        }
+    ]
 };
 const myChart = new Chart(ctx, {
     type: 'line',

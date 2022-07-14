@@ -113,7 +113,7 @@
             </div>
             <div class="card-body p4">
 
-                @if ($medias->count() > 0)
+                @if ($medias->count() > 0 || $manualmedias->count() > 0)
                     <h5 class="card-label text-dark">Media Files</h5>
 
                     <div class="d-flex pictures">
@@ -124,6 +124,18 @@
                                 </div>
                                 <label class="mt-1">{{ $media->filename }}</label>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $media->id]) }}">
+                                    <img src="{{ asset('images/download.svg') }}" class="action-icon">
+                                </a>
+                            </div>
+                        @endforeach
+
+                        @foreach ($manualmedias as $manualmedia)
+                            <div id="media-{{ $manualmedia->id }}">
+                                <div class="mx-1 media media-container">
+                                    <img src="{{ url('storage/comments') }}/{{ $manualmedia->comments->user_id }}/{{ $manualmedia->filename }}" class="picture-img">
+                                </div>
+                                <label class="mt-1">{{ $manualmedia->filename }}</label>
+                                <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $manualmedia->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
                             </div>
@@ -151,7 +163,7 @@
                         </div>
                         <div class="request-assets tab-text-label text-dark pt-3">
                             <label for="media">Upload media files here.</label>
-                            <input type="file" id="media-files" name="media[]" class="form-control-file" multiple data-multiple-caption="{count} files selected" >
+                            <input type="file" id="media-files" name="media[]" class="form-control-file" multiple data-multiple-caption="{count} files selected" accept=".jpg,.png,.jpeg">
                             <div id="media-uploader" class="asset-uploader rounded bg-light py-5 text-center">
                                 <div class="py-1 upload-icon"><i class="fa fa-cloud-upload" aria-hidden="true"></i></div>
                                 <p id="media-label" class="img-limit mb-0"></p>
@@ -166,7 +178,7 @@
             </div>
             <div class="card-footer bg-light-custom p4">
 
-                @if ($adobes->count() > 0)
+                @if ($adobes->count() > 0 || $manualadobes->count() > 0)
                     <h5 class="card-label text-dark">Adobe Files</h5>
 
                     <div class="d-flex templates">
@@ -177,6 +189,18 @@
                                 </div>
                                 <label class="mt-1">{{ $adobe->filename }}</label>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $adobe->id]) }}">
+                                    <img src="{{ asset('images/download.svg') }}" class="action-icon">
+                                </a>
+                            </div>
+                        @endforeach
+
+                        @foreach ($manualadobes as $manualadobe)
+                            <div id="media-{{ $manualadobe->id }}">
+                                <div class="mx-1 template media-container media-documents">
+                                    <img src="{{ asset('images/template-img-') }}{{ $manualadobe->file_type }}.png" class="template-img">
+                                </div>
+                                <label class="mt-1">{{ $manualadobe->filename }}</label>
+                                <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $manualadobe->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
                             </div>
@@ -204,7 +228,7 @@
                         </div>
                         <div class="request-assets tab-text-label text-dark pt-3">
                             <label for="media">Upload adobe files here.</label>
-                            <input type="file" id="adobe-files" name="documents[]" class="form-control-file" multiple data-multiple-caption="{count} files selected" >
+                            <input type="file" id="adobe-files" name="documents[]" class="form-control-file" multiple data-multiple-caption="{count} files selected" accept=".psd,.ai,.indd,.pdf">
                             <div id="adobe-uploader" class="asset-uploader rounded bg-light py-5 text-center">
                                 <div class="py-1 upload-icon"><i class="fa fa-cloud-upload" aria-hidden="true"></i></div>
                                 <p id="adobe-label" class="img-limit mb-0"></p>

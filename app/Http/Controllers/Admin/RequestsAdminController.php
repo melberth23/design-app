@@ -60,7 +60,7 @@ class RequestsAdminController extends Controller
      */
     public function queue()
     {
-        $requests = Requests::whereIn('status', array(2, 3))->paginate(10);
+        $requests = Requests::where('status', 2)->orderBy('priority', 'ASC')->paginate(10);
         return view('admin.requests.queue', ['requests' => $requests]);
     }
 

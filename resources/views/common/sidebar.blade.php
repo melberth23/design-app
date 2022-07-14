@@ -26,7 +26,7 @@
                 <span>Security and Log in</span></a>
         </li>
         @hasrole('User')
-            @if(auth()->user()->payments->status == 'active')
+            @if(auth()->user()->payments->status == 'active' && auth()->user()->payments->plan_status == 0)
             <li class="nav-item {{ (request()->is('profile/upgrade')) ? 'active' : '' }}">
                 <a class="nav-link text-dark" href="{{ route('profile.upgrade') }}">
                     <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">

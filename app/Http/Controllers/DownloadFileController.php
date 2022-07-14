@@ -36,6 +36,18 @@ class DownloadFileController extends Controller
         return Response::download($filepath);
     }
 
+    public function deleteBrandFile(BrandAssets $asset){
+        $brand = Brand::whereId($asset->brand_id)->first();
+        $directory = $this->helper->media_directories($asset->type);
+        $filepath = public_path('storage/'. $directory .'/'. $brand->user_id .'/'. $asset->filename);
+
+        // Delete file
+        File::delete($filepath);
+        BrandAssets::whereId($asset->id)->delete();
+
+        return redirect()->back()->with('error', 'File deleted successfully!');
+    }
+
     public function downloadRequestFile(RequestAssets $asset){
         $request = Requests::whereId($asset->request_id)->first();
         $directory = $this->helper->media_directories($asset->type);
@@ -44,11 +56,35 @@ class DownloadFileController extends Controller
         return Response::download($filepath);
     }
 
+    public function deleteRequestFile(RequestAssets $asset){
+        $request = Requests::whereId($asset->request_id)->first();
+        $directory = $this->helper->media_directories($asset->type);
+        $filepath = public_path('storage/'. $directory .'/'. $request->user_id .'/'. $asset->filename);
+
+        // Delete file
+        File::delete($filepath);
+        RequestAssets::whereId($asset->id)->delete();
+
+        return redirect()->back()->with('error', 'File deleted successfully!');
+    }
+
     public function downloadCommentFile(CommentsAssets $asset){
         $comments = Comments::whereId($asset->comments_id)->first();
         $directory = $this->helper->media_directories($asset->type);
         $filepath = public_path('storage/'. $directory .'/'. $comments->user_id .'/'. $asset->filename);
 
         return Response::download($filepath);
+    }
+    
+    public function deleteCommentFile(CommentsAssets $asset){
+        $comments = Comments::whereId($asset->comments_id)->first();
+        $directory = $this->helper->media_directories($asset->type);
+        $filepath = public_path('storage/'. $directory .'/'. $comments->user_id .'/'. $asset->filename);
+
+        // Delete file
+        File::delete($filepath);
+        CommentsAssets::whereId($asset->id)->delete();
+
+        return redirect()->back()->with('error', 'File deleted successfully!');
     }
 }

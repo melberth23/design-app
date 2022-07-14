@@ -17,9 +17,19 @@ class SystemHelper {
 
     /**
     * @param string plan
+    * @return array Plan Name
+    */
+    public function getPlanName($plan='basic', $duration='monthly')
+    {
+        return $this->getPlanInformation($plan, $duration)['label'];
+    }
+
+    /**
+    * @param string plan
     * @return array Plan information
     */
-    public function getPlanRules($plan='basic') {
+    public function getPlanRules($plan='basic')
+    {
         return $this->getPlanInformation($plan);
     }
 
@@ -48,7 +58,7 @@ class SystemHelper {
                     'brand' => 2
                 ),
                 'royal' => array(
-                    'label' => 'Royal',
+                    'label' => 'Enterprise',
                     'id' => '95d36a21-671d-48f9-909f-002d022c6b59',
                     'amount' => 2395,
                     'request' => 2,
@@ -74,7 +84,7 @@ class SystemHelper {
                     'brand' => 2
                 ),
                 'royal' => array(
-                    'label' => 'Royal',
+                    'label' => 'Enterprise',
                     'id' => '9699aa3b-6196-426b-ac73-7627b7d94780',
                     'amount' => 3795,
                     'request' => 2,
@@ -695,5 +705,22 @@ class SystemHelper {
     public function getCountries()
     {
         
+    }
+
+    public function getDatesFromRange($start, $end, $format = 'Y-m-d')
+    {
+        $array = array();
+        $interval = new DateInterval('P1D');
+      
+        $realEnd = new DateTime($end);
+        $realEnd->add($interval);
+      
+        $period = new DatePeriod(new DateTime($start), $interval, $realEnd);
+      
+        foreach($period as $date) {                 
+            $array[] = $date->format($format); 
+        }
+      
+        return $array;
     }
 }

@@ -25,7 +25,7 @@
                                 <div class="col-md-3">
                                     <span class="float-right text-primary">
                                         <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="verify_email">
+                                            <input type="checkbox" class="custom-control-input" id="verify_email" checked disabled>
                                             <label class="custom-control-label" for="verify_email"></label>
                                         </div>
                                     </span>

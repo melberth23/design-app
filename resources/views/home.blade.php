@@ -153,28 +153,32 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table bg-white" id="dataTable" width="100%" cellspacing="0">
+        <table class="table table-bordered bg-white border-0 table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th width="10%">REQUEST ID</th>
-                    <th width="25%">REQUEST NAME</th>
-                    <th width="25%">CATEGORY</th>
-                    <th width="15%">DATE CREATED</th>
-                    <th width="20%"></th>
+                    <th width="10%" class="border-left-0 border-right-0">REQUEST ID</th>
+                    <th width="25%" class="border-left-0 border-right-0">REQUEST NAME</th>
+                    <th width="25%" class="border-left-0 border-right-0">CATEGORY</th>
+                    <th width="10%" class="border-left-0 border-right-0">STATUS</th>
+                    <th width="10%" class="border-left-0 border-right-0">DATE CREATED</th>
+                    <th width="20%" class="border-left-0 border-right-0"></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($allinprogressreq as $progressreq)
                     <tr>
-                        <td>#{{ $progressreq->id }}</td>
-                        <td>{{ $progressreq->title }}</td>
+                        <td class="border-left-0 border-right-0 text-primary">#{{ $progressreq->id }}</td>
+                        <td class="border-left-0 border-right-0 font-weight-bold">{{ $progressreq->title }}</td>
                         @if(!empty($progressreq->designtype->name))
-                        <td>{{ $progressreq->designtype->name }}</td>
+                        <td class="border-left-0 border-right-0">{{ $progressreq->designtype->name }}</td>
                         @else
-                        <td></td>
+                        <td class="border-left-0 border-right-0"></td>
                         @endif
-                        <td>{{ $progressreq->created_at->format('d F, Y') }}</td>
-                        <td class="d-flex justify-content-end">
+                        <td class="border-left-0 border-right-0">
+                            <span class="badge badge-success">{{ (new \App\Lib\SystemHelper)->statusLabel($progressreq->status) }}</span>
+                        </td>
+                        <td class="border-left-0 border-right-0">{{ $progressreq->created_at->format('d F, Y') }}</td>
+                        <td class="d-flex justify-content-end border-left-0 border-right-0">
                             <a href="{{ route('request.view', ['requests' => $progressreq->id]) }}"
                                 class="m-2 default-link">
                                 <i class="fa fa-clock-o"></i>
@@ -196,7 +200,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="5"><a href="{{ route('request.create') }}"><i class="fa fa-plus"></i> Add New</a></td>
+                    <td class="border-0" colspan="5"><a href="{{ route('request.create') }}"><i class="fa fa-plus"></i> Add New</a></td>
                 </tr>
             </tfoot>
         </table>
