@@ -80,33 +80,33 @@ class HomeController extends Controller
         if($filter == 'today') {
             $today = Carbon::now();
             $overall->where('created_at', $today);
-            $completed->where('created_at', $today);
-            $inprogress->where('created_at', $today);
-            $forreview->where('created_at', $today);
-            $queue->where('created_at', $today);
+            $completed->where('updated_at', $today);
+            $inprogress->where('updated_at', $today);
+            $forreview->where('updated_at', $today);
+            $queue->where('updated_at', $today);
         }
         if($filter == 'yesterday') {
             $yesterday = Carbon::yesterday();
             $overall->where('created_at', $yesterday);
-            $completed->where('created_at', $yesterday);
-            $inprogress->where('created_at', $yesterday);
-            $forreview->where('created_at', $yesterday);
-            $queue->where('created_at', $yesterday);
+            $completed->where('updated_at', $yesterday);
+            $inprogress->where('updated_at', $yesterday);
+            $forreview->where('updated_at', $yesterday);
+            $queue->where('updated_at', $yesterday);
         }
         if($filter == 'last7') {
             $last7 = Carbon::now()->subDays(7);
             $overall->where('created_at', '>=', $last7);
-            $completed->where('created_at', '>=', $last7);
-            $inprogress->where('created_at', '>=', $last7);
-            $forreview->where('created_at', '>=', $last7);
-            $queue->where('created_at', '>=', $last7);
+            $completed->where('updated_at', '>=', $last7);
+            $inprogress->where('updated_at', '>=', $last7);
+            $forreview->where('updated_at', '>=', $last7);
+            $queue->where('updated_at', '>=', $last7);
         }
         if($filter == 'thismonth') {
             $overall->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
-            $completed->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
-            $inprogress->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
-            $forreview->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
-            $queue->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month);
+            $completed->whereYear('updated_at', Carbon::now()->year)->whereMonth('updated_at', Carbon::now()->month);
+            $inprogress->whereYear('updated_at', Carbon::now()->year)->whereMonth('updated_at', Carbon::now()->month);
+            $forreview->whereYear('updated_at', Carbon::now()->year)->whereMonth('updated_at', Carbon::now()->month);
+            $queue->whereYear('updated_at', Carbon::now()->year)->whereMonth('updated_at', Carbon::now()->month);
         }
         if($filter == 'custom') {
             $fromd = date('Y-m-d', strtotime($from));
@@ -115,10 +115,10 @@ class HomeController extends Controller
             $to = date('m/d/Y', strtotime($to));
 
             $overall->whereBetween('created_at', [$fromd, $tod]);
-            $completed->whereBetween('created_at', [$fromd, $tod]);
-            $inprogress->whereBetween('created_at', [$fromd, $tod]);
-            $forreview->whereBetween('created_at', [$fromd, $tod]);
-            $queue->whereBetween('created_at', [$fromd, $tod]);
+            $completed->whereBetween('updated_at', [$fromd, $tod]);
+            $inprogress->whereBetween('updated_at', [$fromd, $tod]);
+            $forreview->whereBetween('updated_at', [$fromd, $tod]);
+            $queue->whereBetween('updated_at', [$fromd, $tod]);
         }
 
         $total_requests = $overall->count();
@@ -144,45 +144,62 @@ class HomeController extends Controller
 
             $completeddata = $completed->groupBy('date')
                             ->get(array(
+                                DB::raw('Date(updated_at) as date'),
+                                DB::raw('COUNT(*) as "records"')
+                            ));
+            $queuedata = $queue->groupBy('date')
+                            ->get(array(
                                 DB::raw('Date(created_at) as date'),
                                 DB::raw('COUNT(*) as "records"')
                             ));
 
-            $overdata = array();
+            $overalldata = array();
             foreach($completeddata as $datav) {
-                $overdata[$datav->date] = array(
-                    'date' => $datav->date,
-                    'records' => $datav->records
+                $overalldata[] = array(
+                    'x' => $datav->date,
+                    'y' => $datav->records
                 );
             }
 
-            echo "<pre>";
-            print_r($overdata);
-            echo "</pre>";
+            $queuealldata = array();
+            foreach($queuedata as $datae) {
+                $queuealldata[] = array(
+                    'x' => $datae->date,
+                    'y' => $datae->records
+                );
+            }
 
-            $numberofdays = date('t');
             if($filter == 'today') {
                 $numberofdays = 1;
                 $today = Carbon::now();
-            }
-            if($filter == 'yesterday') {
+                $today = date('Y-m-d', strtotime($today));
+
+                $period = $this->helper->getDatesFromRange($today, $today);
+            } elseif($filter == 'yesterday') {
                 $numberofdays = 1;
                 $yesterday = Carbon::yesterday();
-            }
-            if($filter == 'last7') {
+                $yesterday = date('Y-m-d', strtotime($yesterday));
+
+                $period = $this->helper->getDatesFromRange($yesterday, $yesterday);
+            } elseif($filter == 'last7') {
                 $numberofdays = 7;
-                $last7 = Carbon::now()->subDays(7);
-                print_r($last7);
-            }
-            if($filter == 'custom') {
+                $firstdate = date('Y-m-d', strtotime('-7 days'));
+                $lastdate = date('Y-m-d');
+                $period = $this->helper->getDatesFromRange($firstdate, $lastdate);
+            } elseif($filter == 'custom') {
                 $fromn = strtotime($from);
                 $ton = strtotime($to);
-                $datediff = $ton - $fromn;
-
-                $numberofdays = round($datediff / (60 * 60 * 24));
+                
+                $firstdate = date('Y-m-d', $fromn);
+                $lastdate = date('Y-m-d', $ton);
+                $period = $this->helper->getDatesFromRange($firstdate, $lastdate);
+            } else {
+                $firstdate = date('Y-m-01');
+                $lastdate = date('Y-m-t');
+                $period = $this->helper->getDatesFromRange($firstdate, $lastdate);
             }
 
-            return view('admin.home', ['total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'filter' => $filter, 'from' => $from, 'to' => $to]);
+            return view('admin.home', ['total_requests' => $total_requests, 'completed_req' => $completedreq, 'inprogressreq' => $inprogressreq, 'reqforreview' => $reqforreview, 'reqqueue' => $reqqueue, 'filter' => $filter, 'from' => $from, 'to' => $to, 'chartlabels' => $period, 'queuealldata' => $queuealldata, 'overalldata' => $overalldata]);
         }
 
     }

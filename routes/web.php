@@ -48,6 +48,10 @@ Route::get('/generate-invoice/{invoice}', [App\Http\Controllers\AccountControlle
 Route::get('/view-invoice/{invoice}', [App\Http\Controllers\AccountController::class, 'viewInvoicePDF'])->name('view.invoice');
 Route::post('/send-invoice', [App\Http\Controllers\AccountController::class, 'sendInvoicePDF'])->name('send.invoice');
 
+// Upload Media
+Route::post('/tempfiles', [App\Http\Controllers\TempFilesController::class, 'uploadTempfiles'])->name('tempfiles');
+Route::post('/delete-tempfiles', [App\Http\Controllers\TempFilesController::class, 'deleteTempfiles'])->name('delete.tempfiles');
+
 Route::get('/search', [App\Http\Controllers\RequestsController::class, 'searchRequests'])->name('search');
 
 Route::get('/account/plan', [App\Http\Controllers\AccountController::class, 'plan'])->middleware(['auth'])->name('user.plan'); 
@@ -127,16 +131,17 @@ Route::middleware(['auth', 'is_verify_email'])->prefix('requests')->name('reques
 
 /* Designer Dashboard */
 Route::middleware(['auth'])->prefix('designers')->name('designer.')->group(function(){
-    Route::get('/', [App\Http\Controllers\Designer\DesignersController::class, 'index'])->name('index');
-    Route::get('/queue', [App\Http\Controllers\Designer\DesignersController::class, 'queue'])->name('queue');
-    Route::get('/progress', [App\Http\Controllers\Designer\DesignersController::class, 'progress'])->name('progress');
-    Route::get('/review', [App\Http\Controllers\Designer\DesignersController::class, 'review'])->name('review');
-    Route::get('/completed', [App\Http\Controllers\Designer\DesignersController::class, 'delivered'])->name('completed');
+    Route::get('/all/{customer_id}', [App\Http\Controllers\Designer\DesignersController::class, 'index'])->name('index');
+    Route::get('/queue/{customer_id}', [App\Http\Controllers\Designer\DesignersController::class, 'queue'])->name('queue');
+    Route::get('/progress/{customer_id}', [App\Http\Controllers\Designer\DesignersController::class, 'progress'])->name('progress');
+    Route::get('/review/{customer_id}', [App\Http\Controllers\Designer\DesignersController::class, 'review'])->name('review');
+    Route::get('/completed/{customer_id}', [App\Http\Controllers\Designer\DesignersController::class, 'delivered'])->name('completed');
     Route::get('/designer-view/{requests}', [App\Http\Controllers\Designer\DesignersController::class, 'view'])->name('view');
     Route::get('/designer-comment/{requests}', [App\Http\Controllers\Designer\DesignersController::class, 'comment'])->name('comment');
     Route::get('/designer-update/status/{request_id}/{status}', [App\Http\Controllers\Designer\DesignersController::class, 'updateStatus'])->name('status');
     Route::post('/add-comment', [App\Http\Controllers\Designer\DesignersController::class, 'addComment'])->name('addcomment');
     Route::post('/add-file-review', [App\Http\Controllers\Designer\DesignersController::class, 'addFileReview'])->name('addfilereview');
+    Route::get('/customers/{status}', [App\Http\Controllers\Designer\DesignersController::class, 'customerLists'])->name('customers');
 });
 
 /* Super Admin Dashboard */

@@ -13,6 +13,9 @@ use App\Models\CommentsAssets;
 use App\Models\CommentNotification;
 use App\Models\Reviews;
 use App\Models\Dimensions;
+use App\Models\StatusNotifications;
+use App\Models\FileNotifications;
+use App\Models\TempFile;
 use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -76,7 +79,7 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
             $all = Requests::where('user_id', $userid)->count();
-            $requests = Requests::where('user_id', $userid)->where('status', 2)->orderBy('priority', 'ASC')->get();
+            $requests = Requests::where('user_id', $userid)->where('status', 2)->orderByRaw('-priority DESC')->get();
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
@@ -194,6 +197,10 @@ class RequestsController extends Controller
         $next = Requests::where('user_id', $userid)->where('id', '>', $requests->id)->min('id');
 
         $notifications = $this->getNotifications($requests->id, $userid);
+        $filenotifications = $this->getFilesNotifications($requests->id, $userid);
+
+        // Update all file notifications to read
+        $this->updateStatusNotifications($requests->id, $userid);
 
         // Get url by role
         $backurl = route('request.index');
@@ -201,7 +208,7 @@ class RequestsController extends Controller
             $backurl = route('adminrequest.index');
         }
         if(auth()->user()->hasRole('Designer')) {
-            $backurl = route('designer.index');
+            $backurl = route('designer.customers', ['status' => 'all']);
         }
 
         return view('requests.view')->with([
@@ -212,7 +219,8 @@ class RequestsController extends Controller
             'brand' => $brand,
             'designtype' => $designtype,
             'medias' => $medias,
-            'notifications'  => $notifications
+            'notifications'  => $notifications,
+            'filenotifications'  => $filenotifications,
         ]);
     }
 
@@ -275,7 +283,7 @@ class RequestsController extends Controller
             'design_type'     => 'required',
             'dimensions'     => 'required',
             'description'     => 'required',
-            'reference_link'    => 'url',
+            'reference_link'    => 'nullable|url',
             'brand_id'     => 'required',
             'media.*' => 'required|mimes:jpg,png'
         ]);
@@ -301,36 +309,22 @@ class RequestsController extends Controller
                 'dimensions_additional_info'    => $request->dimensions_additional_info,
                 'brand_id'      => $request->brand_id,
                 'user_id'       => $userid,
-                'status'        => $status
+                'status'        => $status,
+                'priority'      => NULL
             ]);
 
             // Check upload medias
-            if($request->hasFile('media')) {
+            $tempmedias = TempFile::where('module', 'media')->where('code', $request->tempfile_code)->get();
+            if(!empty($tempmedias)) {
+                foreach($tempmedias as $tempmedia) {
+                    $assets = RequestAssets::create([
+                        'filename' => $tempmedia->file,
+                        'request_id' => $requests->id,
+                        'type' => 'media'
+                    ]);
 
-                $requestmediapath = public_path('storage/media') .'/'. $userid;
-                if(!File::isDirectory($requestmediapath)){
-                    // Create Path
-                    File::makeDirectory($requestmediapath, 0777, true, true);
-                }
-
-                $allowedMediasExtension = ['jpg','png'];
-                $medias = $request->file('media');
-                foreach($medias as $med) {
-                    $filename = $med->getClientOriginalName();
-                    $extension = $med->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedMediasExtension);
-
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $mediapath = $randomfilename .'.'. $extension;
-                        $med->move($requestmediapath, $mediapath);
-
-                        $assets = RequestAssets::create([
-                            'filename' => $mediapath,
-                            'request_id' => $requests->id,
-                            'type' => 'media'
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($tempmedia->id)->delete();
                 }
             }
 
@@ -482,9 +476,10 @@ class RequestsController extends Controller
 
         // Get notifications
         $notifications = $this->getNotifications($requests->id, $userid);
+        $filenotifications = $this->getFilesNotifications($requests->id, $userid);
 
         // Update all notifications to read
-        $this->updateNotifications($requests->id, $userid);
+        $this->updateCommentNotifications($requests->id, $userid);
 
         $comments = Comments::where('request_id', $requests->id)->latest()->get();
 
@@ -494,7 +489,7 @@ class RequestsController extends Controller
             $backurl = route('adminrequest.index');
         }
         if(auth()->user()->hasRole('Designer')) {
-            $backurl = route('designer.index');
+            $backurl = route('designer.customers', ['status' => 'all']);
         }
 
         return view('requests.comment')->with([
@@ -503,7 +498,8 @@ class RequestsController extends Controller
             'previous' => $previous,
             'next' => $next,
             'comments'  => $comments,
-            'notifications' => $notifications
+            'notifications' => $notifications,
+            'filenotifications' => $filenotifications,
         ]);
     }
 
@@ -532,16 +528,24 @@ class RequestsController extends Controller
         $dobe = CommentsAssets::where('comments_id', $reviewid)->whereIn('file_type', $adobe_ext)->get();
 
         // Get all manually uploaded files
-        $manual = Comments::where('request_id', $requests->id)->where('comment_type', 'manual')->first();
-        $manualid = 0;
-        if($manual) {
-            $manualid = $manual->id;
+        $manuals = Comments::where('request_id', $requests->id)->where('comment_type', 'manual')->get();
+        $manual_media = [];
+        $manual_dobe = [];
+        if(!empty($manuals)) {
+            $manualids = [];
+            foreach($manuals as $manual) {
+                $manualids[] = $manual->id;
+            }
+            $manual_media = CommentsAssets::whereIn('comments_id', $manualids)->whereIn('file_type', $media_ext)->get();
+            $manual_dobe = CommentsAssets::whereIn('comments_id', $manualids)->whereIn('file_type', $adobe_ext)->get();
         }
-        $manual_media = CommentsAssets::where('comments_id', $manualid)->whereIn('file_type', $media_ext)->get();
-        $manual_dobe = CommentsAssets::where('comments_id', $manualid)->whereIn('file_type', $adobe_ext)->get();
 
         // Get notifications
         $notifications = $this->getNotifications($requests->id, $userid);
+        $filenotifications = $this->getFilesNotifications($requests->id, $userid);
+
+        // Update all file notifications to read
+        $this->updateFilesNotifications($requests->id, $userid);
 
         // Get url by role
         $backurl = route('request.index');
@@ -549,17 +553,18 @@ class RequestsController extends Controller
             $backurl = route('adminrequest.index');
         }
         if(auth()->user()->hasRole('Designer')) {
-            $backurl = route('designer.index');
+            $backurl = route('designer.customers', ['status' => 'all']);
         }
 
         return view('requests.files')->with([
             'requests'  => $requests,
             'notifications'  => $notifications,
+            'filenotifications'  => $filenotifications,
             'backurl' => $backurl,
             'previous' => $previous,
             'next' => $next,
             'medias'  => $media,
-            'adobes'  => $media,
+            'adobes'  => $dobe,
             'manualmedias'  => $manual_media,
             'manualadobes'  => $manual_dobe
         ]);
@@ -885,11 +890,28 @@ class RequestsController extends Controller
         return $notifications;
     }
 
-    public function updateNotifications($request_id, $userid)
+    public function getFilesNotifications($request_id, $userid)
+    {
+        $notifications = FileNotifications::where('request_id', $request_id)->where('user_id', $userid)->where('read', 0)->get();
+
+        return $notifications;
+    }
+
+    public function updateCommentNotifications($request_id, $userid)
     {
         CommentNotification::whereHas('comment', function($query) use($request_id) {
             $query->where('request_id', $request_id);  
         })->where('user_id', $userid)->where('read', 0)->update(['read' => 1]);
+    }
+
+    public function updateStatusNotifications($request_id, $userid)
+    {
+        StatusNotifications::where('request_id', $request_id)->where('user_id', $userid)->where('read', 0)->update(['read' => 1]);
+    }
+
+    public function updateFilesNotifications($request_id, $userid)
+    {
+        FileNotifications::where('request_id', $request_id)->where('user_id', $userid)->where('read', 0)->update(['read' => 1]);
     }
 
     public function getDimensions(Request $request)
@@ -908,6 +930,7 @@ class RequestsController extends Controller
     public function fileupload(Request $request)
     {
         $userid = $request->user()->id;
+        $requests = Requests::whereId($request->id)->first();
 
         // Store Data
         $comment = Comments::create([
@@ -917,55 +940,41 @@ class RequestsController extends Controller
             'comment_type'  => 'manual'
         ]);
 
-        if($request->hasFile('media')) {
-
-            $mediapath = public_path('storage/comments') .'/'. $userid;
-            if(!File::isDirectory($mediapath)){
-                // Create Path
-                File::makeDirectory($mediapath, 0777, true, true);
-            }
-
-            $mediafiles = $request->file('media');
-            foreach($mediafiles as $mediafile) {
-                $filename = $mediafile->getClientOriginalName();
-                $extension = $mediafile->getClientOriginalExtension();
-                $randomfilename = $this->helper->generateRandomString(15);
-                $attachmentpath = $randomfilename .'.'. $extension;
-                $mediafile->move($mediapath, $attachmentpath);
-
+        $tempmedias = TempFile::where('module', 'comment_media')->where('code', $request->tempfile_code)->get();
+        if(!empty($tempmedias)) {
+            foreach($tempmedias as $tempmedia) {
                 $assets = CommentsAssets::create([
-                    'filename' => $attachmentpath,
+                    'filename' => $tempmedia->file,
                     'comments_id' => $comment->id,
                     'type' => 'manual',
-                    'file_type' => $extension
+                    'file_type' => $tempmedia->file_type
                 ]);
+
+                // remove tempfile
+                TempFile::whereId($tempmedia->id)->delete();
             }
         }
 
-        if($request->hasFile('documents')) {
-
-            $documentspath = public_path('storage/comments') .'/'. $userid;
-            if(!File::isDirectory($documentspath)){
-                // Create Path
-                File::makeDirectory($documentspath, 0777, true, true);
-            }
-
-            $documentsfiles = $request->file('documents');
-            foreach($documentsfiles as $documentsfile) {
-                $filename = $documentsfile->getClientOriginalName();
-                $extension = $documentsfile->getClientOriginalExtension();
-                $randomfilename = $this->helper->generateRandomString(15);
-                $attachmentpath = $randomfilename .'.'. $extension;
-                $documentsfile->move($documentspath, $attachmentpath);
-
+        $tempdocuments = TempFile::where('module', 'comment_document')->where('code', $request->tempfile_code)->get();
+        if(!empty($tempdocuments)) {
+            foreach($tempdocuments as $tempdocument) {
                 $assets = CommentsAssets::create([
-                    'filename' => $attachmentpath,
+                    'filename' => $tempdocument->file,
                     'comments_id' => $comment->id,
                     'type' => 'manual',
-                    'file_type' => $extension
+                    'file_type' => $tempdocument->file_type
                 ]);
+
+                // remove tempfile
+                TempFile::whereId($tempdocument->id)->delete();
             }
         }
+
+        // Save Notification to User
+        FileNotifications::create([
+            'request_id' => $request->id,
+            'user_id' => $requests->user_id
+        ]);
 
         return redirect()->back()->with('success', 'Uploaded new files');
     }

@@ -158,7 +158,7 @@
                 <div class="card-body py-0">
                     <div class="py-4 border-bottom">
                         <h5 class="card-label text-dark">Primary Logo</h5>
-                        <div class="d-flex logos">
+                        <div class="d-flex flex-wrap logos">
                             @if ($logos->count() > 0)
                                 @foreach ($logos as $logo)
                                     <div id="media-{{ $logo->id }}" class="mx-1 logo media-container">
@@ -182,7 +182,7 @@
                     </div>
                     <div class="py-4">
                         <h5 class="card-label text-dark">Secondary Logo</h5>
-                        <div class="d-flex logos">
+                        <div class="d-flex flex-wrap logos">
                             @if ($secondary_logos->count() > 0)
                                 @foreach ($secondary_logos as $secondary_logo)
                                     <div id="media-{{ $secondary_logo->id }}" class="mx-1 logo media-container">
@@ -256,7 +256,7 @@
                 <div class="card-body py-0">
                     <div class="py-4 border-bottom">
                         <h5 class="card-label text-dark">Primary Fonts</h5>
-                        <div class="d-flex fonts">
+                        <div class="d-flex flex-wrap fonts">
                             @if ($fonts->count() > 0)
                                 @foreach ($fonts as $font)
                                     <div id="media-{{ $font->id }}">
@@ -283,7 +283,7 @@
                     </div>
                     <div class="py-4">
                         <h5 class="card-label text-dark">Secondary Fonts</h5>
-                        <div class="d-flex fonts">
+                        <div class="d-flex flex-wrap fonts">
                             @if ($secondary_fonts->count() > 0)
                                 @foreach ($secondary_fonts as $secondary_font)
                                     <div id="media-{{ $secondary_font->id }}">
@@ -323,7 +323,7 @@
                 <div class="card-body py-0">
                     <div class="py-4">
                         <h5 class="card-label text-dark">Images</h5>
-                        <div class="d-flex pictures">
+                        <div class="d-flex flex-wrap pictures">
                             @if ($images->count() > 0)
                                 @foreach ($images as $image)
                                     <div id="media-{{ $image->id }}" class="mx-1 picture media-container">
@@ -360,7 +360,7 @@
                     <h3 class="text-dark mb-0">Brand Guidelines</h3>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex guidelines">
+                    <div class="d-flex flex-wrap guidelines">
                         @if ($guidelines->count() > 0)
                             @foreach ($guidelines as $guideline)
                                 <div id="media-{{ $guideline->id }}">
@@ -398,7 +398,7 @@
                     <h3 class="text-dark mb-0">Templates</h3>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex templates">
+                    <div class="d-flex flex-wrap templates">
                         @if ($templates->count() > 0)
                             @foreach ($templates as $template)
                                 <div id="media-{{ $template->id }}">
@@ -436,7 +436,7 @@
                     <h3 class="text-dark mb-0">Brand Inspiration</h3>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex inspirations">
+                    <div class="d-flex flex-wrap inspirations">
                         @if ($inspirations->count() > 0)
                             @foreach ($inspirations as $inspiration)
                                 <div class="mx-1 inspiration media-container">

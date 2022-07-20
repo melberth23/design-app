@@ -11,6 +11,8 @@ use App\Models\BrandAssets;
 use App\Models\UserSettings;
 use App\Models\Comments;
 use App\Models\CommentNotification;
+use App\Models\StatusNotifications;
+use App\Models\FileNotifications;
 use App\Models\User;
 
 class SystemHelper {
@@ -221,6 +223,7 @@ class SystemHelper {
             'guideline' => 'guidelines',
             'media' => 'media',
             'comment' => 'comments',
+            'manual' => 'comments',
         );
 
         return $directories[$type];
@@ -678,23 +681,57 @@ class SystemHelper {
 
     public function getNotifications()
     {
-        $notifications = CommentNotification::where('user_id', auth()->user()->id)->where('read', 0)->get();
+        $notifications = $this->getNotificationInformation();
         return array(
-            'counter' => ($notifications->count()>100)?'999+':$notifications->count(),
-            'lists' => $this->getNotificationInformation($notifications)
+            'counter' => (count($notifications)>100)?'999+':count($notifications),
+            'lists' => $notifications
         );
     }
 
-    public function getNotificationInformation($notifications)
+    public function getNotificationInformation()
     {
+        $commentnotifications = CommentNotification::where('user_id', auth()->user()->id)->where('read', 0)->get();
+        $statusnotifications = StatusNotifications::where('user_id', auth()->user()->id)->where('read', 0)->get();
+        $filenotifications = FileNotifications::where('user_id', auth()->user()->id)->where('read', 0)->get();
+
         $lists = [];
-        if($notifications->count() > 0) {
-            foreach($notifications as $notification) {
-                $comment = Comments::whereId($notification->comment_id)->first();
+        if($commentnotifications->count() > 0) {
+            foreach($commentnotifications as $commentnotification) {
+                $comment = Comments::whereId($commentnotification->comment_id)->first();
                 $lists[] = array(
                     'request_id' => $comment->request_id,
-                    'request_title' => $comment->request->title,
-                    'user_name' => $comment->user->first_name
+                    'text_message' => 'New comment in <strong>'. $comment->request->title .'</strong>'
+                );
+            }
+        }
+
+        if($statusnotifications->count() > 0) {
+            foreach($statusnotifications as $statusnotification) {
+                $requests = Requests::whereId($statusnotification->request_id)->first();
+
+                $statuslabel = 'Draft to Progress';
+                if($statusnotification->status == 3) {
+                    $statuslabel = 'Queue to Progress';
+                } elseif($statusnotification->status == 4) {
+                    $statuslabel = 'Progress to Review';
+                } elseif($statusnotification->status == 0) {
+                    $statuslabel = 'Review to Completed';
+                }
+
+                $lists[] = array(
+                    'request_id' => $requests->id,
+                    'text_message' => 'Status changed in <strong>'. $requests->title .'</strong> from <strong>'. $statuslabel .'</strong>'
+                );
+            }
+        }
+
+        if($filenotifications->count() > 0) {
+            foreach($filenotifications as $filenotification) {
+                $requests = Requests::whereId($filenotification->request_id)->first();
+
+                $lists[] = array(
+                    'request_id' => $requests->id,
+                    'text_message' => 'New file uploaded to <strong>'. $requests->title .'</strong>'
                 );
             }
         }
@@ -707,20 +744,17 @@ class SystemHelper {
         
     }
 
-    public function getDatesFromRange($start, $end, $format = 'Y-m-d')
+    public function getDatesFromRange($first, $last, $step = '+1 day', $output_format = 'Y-m-d')
     {
-        $array = array();
-        $interval = new DateInterval('P1D');
-      
-        $realEnd = new DateTime($end);
-        $realEnd->add($interval);
-      
-        $period = new DatePeriod(new DateTime($start), $interval, $realEnd);
-      
-        foreach($period as $date) {                 
-            $array[] = $date->format($format); 
+        $dates = array();
+        $current = strtotime($first);
+        $last = strtotime($last);
+
+        while( $current <= $last ) {
+            $dates[] = date($output_format, $current);
+            $current = strtotime($step, $current);
         }
-      
-        return $array;
+
+        return $dates;
     }
 }

@@ -18,6 +18,7 @@
         @csrf
 
         <input type="hidden" name="design_type" value="{{ $designtype->id }}">
+        <input type="hidden" id="tempfile_code" name="tempfile_code" value="<?php echo time(); ?>">
 
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center justify-content-between bg-light-custom">
@@ -99,7 +100,7 @@
                 <div class="tab-text-label text-dark pt-3">
                     <span class="text-dark font-weight-bold">Assets</span>
                 </div>
-                <div id="pictures-preview" class="d-flex pictures" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                <div id="pictures-preview" class="d-flex pictures">
                     <!-- Preview Images -->
                 </div>
                 <div class="request-assets tab-text-label text-dark pt-3">
@@ -130,23 +131,19 @@
                 </div>
                 <div class="tab-text-label text-dark pt-3">
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="jpg" value="jpg">
+                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="jpg" value="jpg" {{ (old('file_type'))?(in_array("jpg", old('file_type')))?'checked':'':'' }}>
                         <label class="custom-control-label" for="jpg">.jpg</label>
                     </div>
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="png" value="png">
+                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="png" value="png" {{ (old('file_type'))?(in_array("png", old('file_type')))?'checked':'':'' }}>
                         <label class="custom-control-label" for="png">.png</label>
                     </div>
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="gif" value="gif">
-                        <label class="custom-control-label" for="gif">.gif</label>
-                    </div>
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="pdf" value="pdf">
+                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="pdf" value="pdf" {{ (old('file_type'))?(in_array("pdf", old('file_type')))?'checked':'':'' }}>
                         <label class="custom-control-label" for="pdf">.pdf</label>
                     </div>
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="any" value="any">
+                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="any" value="any" {{ (old('file_type'))?(in_array("any", old('file_type')))?'checked':'':'' }}>
                         <label class="custom-control-label" for="any">any</label>
                     </div>
                 </div>
@@ -155,15 +152,15 @@
                 </div>
                 <div class="tab-text-label text-dark pt-3">
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="adobe_type[]" id="psd" value="psd">
+                        <input type="checkbox" class="custom-control-input" name="adobe_type[]" id="psd" value="psd" {{ (old('adobe_type'))?(in_array("psd", old('adobe_type')))?'checked':'':'' }}>
                         <label class="custom-control-label" for="psd">psd</label>
                     </div>
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="adobe_type[]" id="ai" value="ai">
+                        <input type="checkbox" class="custom-control-input" name="adobe_type[]" id="ai" value="ai" {{ (old('adobe_type'))?(in_array("ai", old('adobe_type')))?'checked':'':'' }}>
                         <label class="custom-control-label" for="ai">ai</label>
                     </div>
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="adobe_type[]" id="indd" value="indd">
+                        <input type="checkbox" class="custom-control-input" name="adobe_type[]" id="indd" value="indd" {{ (old('adobe_type'))?(in_array("indd", old('adobe_type')))?'checked':'':'' }}>
                         <label class="custom-control-label" for="indd">indd</label>
                     </div>
                 </div>
@@ -187,6 +184,13 @@
 
 <script type="text/javascript">
     jQuery(function($) {
+        $("html").on("dragover", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        $("html").on("drop", function(e) { e.preventDefault(); e.stopPropagation(); });
+
         var $parent    = $('.asset-uploader'),
             $input    = $('#asset-requests'),
             $label    = $('#asset-label'),
@@ -197,6 +201,7 @@
         $parent.on('drop', function(e) {
           droppedFiles = e.originalEvent.dataTransfer.files; // the files that were dropped
           showFiles( droppedFiles );
+          showPreview(droppedFiles);
         });
 
         $input.on('change', function(e) {
@@ -223,14 +228,42 @@
 
     function showPreview(files)
     {
-        $('#pictures-preview').html('');
         $.each( files, function( i, file ) {
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
+            var form_data = new FormData();
+            form_data.append("_token", $('.form-brand-request').find("input[name=_token]").val());
+            form_data.append("request", file);
+            form_data.append("tempfile_code", $('#tempfile_code').val());
+            form_data.append("module", "media");
 
-            reader.onload = readerEvent => {
-                var content = readerEvent.target.result; // this is the content!
-                $('#pictures-preview').append('<div class="mx-1 media media-container"><img src="'+ content +'" class="picture-img" /></div>');
+            $.ajax({
+                url:'{{ route('tempfiles') }}',
+                method:'POST',
+                data:form_data,
+                contentType:false,
+                cache:false,
+                processData:false,
+                success: function(data) {
+                    $('#pictures-preview').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/media'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="picture-img" /></div>');
+                }
+            });
+        });
+    }
+
+    function removeTempFile(id)
+    {
+        var form_data = new FormData();
+        form_data.append("_token", jQuery('.form-brand-request').find("input[name=_token]").val());
+        form_data.append("fid", id);
+
+        jQuery.ajax({
+            url:'{{ route('delete.tempfiles') }}',
+            method:'POST',
+            data:form_data,
+            contentType:false,
+            cache:false,
+            processData:false,
+            success: function(data) {
+                jQuery('#media-preview-'+ data.fid).remove();
             }
         });
     }

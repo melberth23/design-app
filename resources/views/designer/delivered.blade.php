@@ -11,26 +11,26 @@
         @if ($requests->count() > 0)
 
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800 page-heading">Completed requests</h1>
+            <h1 class="h3 mb-0 text-gray-800 page-heading"><a href="{{route('designer.customers', ['status' => 0])}}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <em>{{ $customer->first_name }}</em> - Completed requests</h1>
         </div>
 
         <div class="card">
             <div class="card-body py-0 px-1">
                 <ul class="nav nav-tabs" id="brand-tabs" role="tablist">
-                    <li class="nav-item {{ (request()->is('designers')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designers')) ? 'active' : '' }}" id="allreq-tab" href="{{ route('designer.index') }}">All {{ $all }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link py-3" id="allreq-tab" href="{{ route('designer.index', ['customer_id' => $customer->id]) }}">All {{ $all }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('designers/queue')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designers/queue')) ? 'active' : '' }}" id="queue-tab" href="{{ route('designer.queue') }}">Queue {{ $queue }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link py-3" id="queue-tab" href="{{ route('designer.queue', ['customer_id' => $customer->id]) }}">Queue {{ $queue }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('designers/progress')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designers/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('designer.progress') }}">Progress {{ $progress }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link py-3" id="progress-tab" href="{{ route('designer.progress', ['customer_id' => $customer->id]) }}">Progress {{ $progress }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('designers/review')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designers/review')) ? 'active' : '' }}" id="review-tab" href="{{ route('designer.review') }}">Review {{ $review }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link py-3" id="review-tab" href="{{ route('designer.review', ['customer_id' => $customer->id]) }}">Review {{ $review }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('designers/completed')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('designers/completed')) ? 'active' : '' }}" id="completed-tab" href="{{ route('designer.completed') }}">Completed {{ $requests->count() }}</a>
+                    <li class="nav-item {{ (str_contains(url()->current(), 'designers/completed')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (str_contains(url()->current(), 'designers/completed')) ? 'active' : '' }}" id="completed-tab" href="{{ route('designer.completed', ['customer_id' => $customer->id]) }}">Completed {{ $requests->count() }}</a>
                     </li>
                 </ul>
             </div>

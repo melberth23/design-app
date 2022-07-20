@@ -25,7 +25,8 @@ class Requests extends Model
         'include_text',
         'included_text_description',
         'reference_link',
-        'status'
+        'status',
+        'priority'
     ];
 
     public function comments()

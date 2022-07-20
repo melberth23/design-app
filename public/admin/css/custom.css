@@ -572,3 +572,22 @@ fieldset.rating.star > label:before {
     width: 120px;
     height: 120px;
 }
+.pictures > div, .logos > div , .inspirations > div {
+    max-width: 150px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+.d-flex .media-container label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+a.preview-remove {
+  position: absolute;
+  padding: 3px 10px;
+  background-color: #fff;
+  border-radius: 22px;
+  margin: 5px;
+  right: 0;
+  top: 0;
+}

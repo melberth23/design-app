@@ -9,6 +9,7 @@
     <form method="POST" action="{{route('brand.store')}}" enctype="multipart/form-data" class="form-brand-profile">
         @csrf
 
+        <input type="hidden" id="tempfile_code" name="tempfile_code" value="<?php echo time(); ?>">
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="brand-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between"><a href="{{route('brand.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">Create brand profile</span></h1>
@@ -160,7 +161,7 @@
                                     <button type="button" onclick="getElementById('primary-logo').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="primary-logos" class="d-flex logos" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                            <div id="primary-logos" class="d-flex logos">
                                 <!-- Preview Logos -->
                             </div>
                             <div class="d-none logos">
@@ -182,7 +183,7 @@
                                 <button type="button" onclick="getElementById('secondary-logo').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                             </div>
                         </div>
-                        <div id="secondary-logos" class="d-flex logos" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                        <div id="secondary-logos" class="d-flex logos">
                             <!-- Preview Logos -->
                         </div>
                         <div class="d-none logos">
@@ -248,7 +249,7 @@
                                     <button type="button" onclick="getElementById('primary-fonts').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="primary-fonts-preview" class="d-flex fonts" data-toggle="tooltip" data-placement="left" title="All fonts are in preview to replace select new sets of fonts">
+                            <div id="primary-fonts-preview" class="d-flex fonts">
                                 <!-- Preview Fonts -->
                             </div>
                             <div class="d-none fonts">
@@ -270,7 +271,7 @@
                                 <button type="button" onclick="getElementById('secondary-fonts').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                             </div>
                         </div>
-                        <div id="secondary-fonts-preview" class="d-flex fonts" data-toggle="tooltip" data-placement="left" title="All fonts are in preview to replace select new sets of fonts">
+                        <div id="secondary-fonts-preview" class="d-flex fonts">
                             <!-- Preview Fonts -->
                         </div>
                         <div class="d-none fonts">
@@ -298,7 +299,7 @@
                                     <button type="button" onclick="getElementById('pictures').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="preview-pictures" class="d-flex pictures" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                            <div id="preview-pictures" class="d-flex pictures">
                                 <!-- Preview pictures -->
                             </div>
                             <div class="d-none">
@@ -332,7 +333,7 @@
                                     <button type="button" onclick="getElementById('guidelines-item').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="guidelines-preview" class="d-flex guidelines" data-toggle="tooltip" data-placement="left" title="All pdf are in preview to replace select new sets of pdf files">
+                            <div id="guidelines-preview" class="d-flex guidelines">
                                 <!-- Preview guidelines -->
                             </div>
                             <div class="d-none">
@@ -366,7 +367,7 @@
                                     <button type="button" onclick="getElementById('templates-item').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="templates-preview" class="d-flex templates" data-toggle="tooltip" data-placement="left" title="All files are in preview to replace select new sets of files">
+                            <div id="templates-preview" class="d-flex templates">
                                 <!-- Preview templates -->
                             </div>
                             <div class="d-none">
@@ -400,7 +401,7 @@
                                     <button type="button" onclick="getElementById('inspiration-field').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="inspirations-preview" class="d-flex inspirations" data-toggle="tooltip" data-placement="left" title="All files are in preview to replace select new sets of files">
+                            <div id="inspirations-preview" class="d-flex inspirations">
                                 <!-- Preview templates -->
                             </div>
                             <div class="d-none">
@@ -501,7 +502,7 @@
     jQuery('.colorpicker').colorpicker();
 
     function addColor(color_type) {
-        jQuery( "#"+ color_type +"-colors .color-pick:first-child" ).clone().appendTo( "#"+ color_type +"-colors" );
+        jQuery( "#"+ color_type +"-colors .color-pick:first-child" ).clone().find("input").val("").appendTo( "#"+ color_type +"-colors" );
         jQuery('#'+ color_type +'-colors').find('.'+ color_type +'-remove-btn').show();
 
         jQuery('.colorpicker').colorpicker();
@@ -511,97 +512,199 @@
         // Primary logo previews
         $('#primary-logo').on('change', function(e) {
             var files = e.target.files;
-            $('#primary-logos').html('');
+            // $('#primary-logos').html('');
             $.each( files, function( i, file ) {
-                var reader = new FileReader();
-                reader.readAsDataURL(file);
+                var form_data = new FormData();
+                form_data.append("_token", $('.form-brand-profile').find("input[name=_token]").val());
+                form_data.append("logos", file);
+                form_data.append("tempfile_code", $('#tempfile_code').val());
+                form_data.append("module", "logo");
 
-                reader.onload = readerEvent => {
-                    var content = readerEvent.target.result; // this is the content!
-                    $('#primary-logos').append('<div class="mx-1 logo media-container"><img src="'+ content +'" class="logo-img primary-logo-preview" /></div>');
-                }
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        $('#primary-logos').append('<div id="media-preview-'+ data.file.logo_id +'" class="mx-1 logo media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.logo_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/logos'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="logo-img" /></div>');
+                    }
+                });
             });
+
         });
         // Secondary logo previews
         $('#secondary-logo').on('change', function(e) {
             var files = e.target.files;
-            $('#secondary-logos').html('');
             $.each( files, function( i, file ) {
-                var reader = new FileReader();
-                reader.readAsDataURL(file);
+                var form_data = new FormData();
+                form_data.append("_token", $('.form-brand-profile').find("input[name=_token]").val());
+                form_data.append("logos_second", file);
+                form_data.append("tempfile_code", $('#tempfile_code').val());
+                form_data.append("module", "logo_second");
 
-                reader.onload = readerEvent => {
-                    var content = readerEvent.target.result; // this is the content!
-                    $('#secondary-logos').append('<div class="mx-1 logo media-container"><img src="'+ content +'" class="logo-img primary-logo-preview" /></div>');
-                }
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        $('#secondary-logos').append('<div id="media-preview-'+ data.file.logo_id +'" class="mx-1 logo media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.logo_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/logos'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="logo-img" /></div>');
+                    }
+                });
             });
         });
         // Primary fonts previews
         $('#primary-fonts').on('change', function(e) {
             var files = e.target.files;
-            $('#primary-fonts-preview').html('');
             $.each( files, function( i, file ) {
-                var filename = file.name;
-                var fileExt = filename.split('.').pop();
-                $('#primary-fonts-preview').append('<div><div class="mx-1 font media-container media-documents"><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                var form_data = new FormData();
+                form_data.append("_token", $('.form-brand-profile').find("input[name=_token]").val());
+                form_data.append("fonts", file);
+                form_data.append("tempfile_code", $('#tempfile_code').val());
+                form_data.append("module", "font");
+
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        var filename = data.file.path;
+                        var fileExt = filename.split('.').pop();
+
+                        $('#primary-fonts-preview').append('<div id="media-preview-'+ data.file.font_id +'"><div class="mx-1 font media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.font_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                    }
+                });
             });
         });
         // Secondary fonts previews
         $('#secondary-fonts').on('change', function(e) {
             var files = e.target.files;
-            $('#secondary-fonts-preview').html('');
             $.each( files, function( i, file ) {
-                var filename = file.name;
-                var fileExt = filename.split('.').pop();
-                $('#secondary-fonts-preview').append('<div><div class="mx-1 font media-container media-documents"><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                var form_data = new FormData();
+                form_data.append("_token", $('.form-brand-profile').find("input[name=_token]").val());
+                form_data.append("fonts", file);
+                form_data.append("tempfile_code", $('#tempfile_code').val());
+                form_data.append("module", "font_second");
+
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        var filename = data.file.path;
+                        var fileExt = filename.split('.').pop();
+
+                        $('#secondary-fonts-preview').append('<div id="media-preview-'+ data.file.font_id +'"><div class="mx-1 font media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.font_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                    }
+                });
             });
         });
         // Pictures previews
         $('#pictures').on('change', function(e) {
             var files = e.target.files;
-            $('#preview-pictures').html('');
             $.each( files, function( i, file ) {
-                var reader = new FileReader();
-                reader.readAsDataURL(file);
+                var form_data = new FormData();
+                form_data.append("_token", $('.form-brand-profile').find("input[name=_token]").val());
+                form_data.append("pictures", file);
+                form_data.append("tempfile_code", $('#tempfile_code').val());
+                form_data.append("module", "picture");
 
-                reader.onload = readerEvent => {
-                    var content = readerEvent.target.result; // this is the content!
-                    $('#preview-pictures').append('<div class="mx-1 picture media-container"><img src="'+ content +'" class="picture-img primary-logo-preview" /></div>');
-                }
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        $('#preview-pictures').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/pictures'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="picture-img" /></div>');
+                    }
+                });
             });
         });
         // Guidelines previews
         $('#guidelines-item').on('change', function(e) {
             var files = e.target.files;
-            $('#guidelines-preview').html('');
             $.each( files, function( i, file ) {
-                var filename = file.name;
-                var fileExt = filename.split('.').pop();
-                $('#guidelines-preview').append('<div><div class="mx-1 guideline media-container media-documents"><img src="<?php echo asset('images/guidelines-img-pdf.png'); ?>" class="guideline-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                var form_data = new FormData();
+                form_data.append("_token", $('.form-brand-profile').find("input[name=_token]").val());
+                form_data.append("guidelines", file);
+                form_data.append("tempfile_code", $('#tempfile_code').val());
+                form_data.append("module", "guideline");
+
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        var filename = data.file.path;
+                        var fileExt = filename.split('.').pop();
+
+                        $('#guidelines-preview').append('<div id="media-preview-'+ data.file.guideline_id +'"><div class="mx-1 guideline media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.guideline_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/guidelines-img-pdf.png'); ?>" class="guideline-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                    }
+                });
             });
         });
         // Templates previews
         $('#templates-item').on('change', function(e) {
             var files = e.target.files;
-            $('#templates-preview').html('');
             $.each( files, function( i, file ) {
-                var filename = file.name;
-                var fileExt = filename.split('.').pop();
-                $('#templates-preview').append('<div><div class="mx-1 template media-container media-documents"><img src="<?php echo asset('images/template-img-'); ?>'+ fileExt +'.png" class="template-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                var form_data = new FormData();
+                form_data.append("_token", $('.form-brand-profile').find("input[name=_token]").val());
+                form_data.append("templates", file);
+                form_data.append("tempfile_code", $('#tempfile_code').val());
+                form_data.append("module", "template");
+
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        var filename = data.file.path;
+                        var fileExt = filename.split('.').pop();
+
+                        $('#templates-preview').append('<div id="media-preview-'+ data.file.template_id +'"><div class="mx-1 template media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.template_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/template-img-'); ?>'+ fileExt +'.png" class="template-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                    }
+                });
             });
         });
         // Inspiration previews
         $('#inspiration-field').on('change', function(e) {
             var files = e.target.files;
-            $('#inspirations-preview').html('');
             $.each( files, function( i, file ) {
-                var reader = new FileReader();
-                reader.readAsDataURL(file);
+                var form_data = new FormData();
+                form_data.append("_token", $('.form-brand-profile').find("input[name=_token]").val());
+                form_data.append("inspirations", file);
+                form_data.append("tempfile_code", $('#tempfile_code').val());
+                form_data.append("module", "inspiration");
 
-                reader.onload = readerEvent => {
-                    var content = readerEvent.target.result; // this is the content!
-                    $('#inspirations-preview').append('<div class="mx-1 inspiration media-container"><img src="'+ content +'" class="inspiration-img primary-logo-preview" /></div>');
-                }
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        $('#inspirations-preview').append('<div id="media-preview-'+ data.file.inspiration_id +'" class="mx-1 inspiration media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.inspiration_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/inspirations'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="inspiration-img" /></div>');
+                    }
+                });
             });
         });
     });
@@ -630,6 +733,25 @@
         } else {
             jQuery('#secondary-colors').find('.secondary-remove-btn').hide();
         }
+    }
+
+    function removeTempFile(id)
+    {
+        var form_data = new FormData();
+        form_data.append("_token", jQuery('.form-brand-profile').find("input[name=_token]").val());
+        form_data.append("fid", id);
+
+        jQuery.ajax({
+            url:'{{ route('delete.tempfiles') }}',
+            method:'POST',
+            data:form_data,
+            contentType:false,
+            cache:false,
+            processData:false,
+            success: function(data) {
+                jQuery('#media-preview-'+ data.fid).remove();
+            }
+        });
     }
 </script>
 @stop

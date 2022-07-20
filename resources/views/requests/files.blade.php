@@ -97,7 +97,7 @@
                     <a class="nav-link py-3 {{ (str_contains(url()->current(), 'requests/view/')) ? 'active' : '' }}" id="details-tab" href="{{ route('request.view', ['requests' => $requests->id]) }}">Request Details</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link py-3 {{ (str_contains(url()->current(), 'requests/files/')) ? 'active' : '' }}" id="files-tab" href="{{ route('request.files', ['requests' => $requests->id]) }}">Files</a>
+                    <a class="nav-link py-3 {{ (str_contains(url()->current(), 'requests/files/')) ? 'active' : '' }}" id="files-tab" href="{{ route('request.files', ['requests' => $requests->id]) }}"><span class="d-inline-block">Files</span><span class="counter counter-lg bg-primary">{{ $filenotifications->count() }}</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link py-3 {{ (str_contains(url()->current(), 'requests/comment/')) ? 'active' : '' }}" id="comments-tab" href="{{ route('request.comment', ['requests' => $requests->id]) }}"><span class="d-inline-block">Comments</span><span class="counter counter-lg bg-primary">{{ $notifications->count() }}</span></a>
@@ -116,7 +116,7 @@
                 @if ($medias->count() > 0 || $manualmedias->count() > 0)
                     <h5 class="card-label text-dark">Media Files</h5>
 
-                    <div class="d-flex pictures">
+                    <div class="d-flex flex-wrap pictures">
                         @foreach ($medias as $media)
                             <div id="media-{{ $media->id }}">
                                 <div class="mx-1 media media-container">
@@ -153,12 +153,14 @@
                 @endif
 
                 @if(auth()->user()->hasRole('Designer'))
-                <form method="POST" action="{{route('request.fileupload')}}" enctype="multipart/form-data" class="form-brand-request">
+                <form method="POST" action="{{route('request.fileupload')}}" enctype="multipart/form-data" class="form-files-request">
                     @csrf
 
                     <input type="hidden" name="id" value="{{ $requests->id }}">
+                    <input type="hidden" id="tempfile_media_code" name="tempfile_code" value="<?php echo time(); ?>">
+
                     <div class="file-uploader pt-4">
-                        <div id="pictures-preview" class="d-flex pictures" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
+                        <div id="pictures-preview" class="d-flex flex-wrap pictures">
                             <!-- Preview Images -->
                         </div>
                         <div class="request-assets tab-text-label text-dark pt-3">
@@ -181,7 +183,7 @@
                 @if ($adobes->count() > 0 || $manualadobes->count() > 0)
                     <h5 class="card-label text-dark">Adobe Files</h5>
 
-                    <div class="d-flex templates">
+                    <div class="d-flex flex-wrap templates">
                         @foreach ($adobes as $adobe)
                             <div id="media-{{ $adobe->id }}">
                                 <div class="mx-1 template media-container media-documents">
@@ -218,12 +220,14 @@
                 @endif
 
                 @if(auth()->user()->hasRole('Designer'))
-                <form method="POST" action="{{route('request.fileupload')}}" enctype="multipart/form-data" class="form-brand-request">
+                <form method="POST" action="{{route('request.fileupload')}}" enctype="multipart/form-data" class="form-adobe-request">
                     @csrf
 
                     <input type="hidden" name="id" value="{{ $requests->id }}">
+                    <input type="hidden" id="tempfile_adobe_code" name="tempfile_code" value="<?php echo time(); ?>">
+
                     <div class="file-uploader pt-4">
-                        <div id="adobe-previews" class="d-flex templates" data-toggle="tooltip" data-placement="left" title="All adobe files are in preview to replace select new sets of files">
+                        <div id="adobe-previews" class="d-flex flex-wrap templates">
                             <!-- Preview files -->
                         </div>
                         <div class="request-assets tab-text-label text-dark pt-3">
@@ -292,6 +296,13 @@
 
 <script type="text/javascript">
     jQuery(function($) {
+        $("html").on("dragover", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        $("html").on("drop", function(e) { e.preventDefault(); e.stopPropagation(); });
+
         // Media
         var $parent    = $('#media-uploader'),
             $input    = $('#media-files'),
@@ -303,6 +314,7 @@
         $parent.on('drop', function(e) {
           droppedFiles = e.originalEvent.dataTransfer.files; // the files that were dropped
           showFiles( droppedFiles );
+          showPreview(droppedFiles);
         });
 
         $input.on('change', function(e) {
@@ -321,6 +333,7 @@
         $adobeparent.on('drop', function(e) {
           droppedFiles = e.originalEvent.dataTransfer.files; // the files that were dropped
           showAdobeFiles( droppedFiles );
+          showAdobePreview(droppedFiles);
         });
 
         $adobeinput.on('change', function(e) {
@@ -331,25 +344,69 @@
 
     function showPreview(files)
     {
-        $('#pictures-preview').html('');
         $.each( files, function( i, file ) {
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
+            var form_data = new FormData();
+            form_data.append("_token", $('.form-files-request').find("input[name=_token]").val());
+            form_data.append("comment_media", file);
+            form_data.append("tempfile_code", $('#tempfile_adobe_code').val());
+            form_data.append("module", "comment_media");
 
-            reader.onload = readerEvent => {
-                var content = readerEvent.target.result; // this is the content!
-                $('#pictures-preview').append('<div class="mx-1 media media-container"><img src="'+ content +'" class="picture-img" /></div>');
-            }
+            $.ajax({
+                url:'{{ route('tempfiles') }}',
+                method:'POST',
+                data:form_data,
+                contentType:false,
+                cache:false,
+                processData:false,
+                success: function(data) {
+                    $('#pictures-preview').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/comments'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="picture-img" /></div>');
+                }
+            });
         });
     }
 
     function showAdobePreview(files)
     {
-        $('#adobe-previews').html('');
         $.each( files, function( i, file ) {
-            var filename = file.name;
-            var fileExt = filename.split('.').pop();
-            $('#adobe-previews').append('<div><div class="mx-1 font media-container media-documents"><img src="<?php echo asset('images/template-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+            var form_data = new FormData();
+                form_data.append("_token", $('.form-adobe-request').find("input[name=_token]").val());
+                form_data.append("comment_document", file);
+                form_data.append("tempfile_code", $('#tempfile_adobe_code').val());
+                form_data.append("module", "comment_document");
+
+                $.ajax({
+                    url:'{{ route('tempfiles') }}',
+                    method:'POST',
+                    data:form_data,
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success: function(data) {
+                        var filename = data.file.path;
+                        var fileExt = filename.split('.').pop();
+
+                        $('#adobe-previews').append('<div id="media-preview-'+ data.file.adobe_id +'"><div class="mx-1 template media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.adobe_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/template-img-'); ?>'+ fileExt +'.png" class="template-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                    }
+                });
+        });
+    }
+
+    function removeTempFile(id)
+    {
+        var form_data = new FormData();
+        form_data.append("_token", jQuery('.form-files-request').find("input[name=_token]").val());
+        form_data.append("fid", id);
+
+        jQuery.ajax({
+            url:'{{ route('delete.tempfiles') }}',
+            method:'POST',
+            data:form_data,
+            contentType:false,
+            cache:false,
+            processData:false,
+            success: function(data) {
+                jQuery('#media-preview-'+ data.fid).remove();
+            }
         });
     }
 </script>

@@ -166,24 +166,19 @@
 @section('scripts')
 
 <script>
-const result = getDaysInCurrentMonth();
 const ctx = document.getElementById('dashboard-chart').getContext('2d');
-let dayslabels = [];
-for (let i = 1; i <= result; i++) {
-    dayslabels.push(i);
-}
 const data = {
-  labels: dayslabels,
-  datasets: [
+    labels: <?php echo json_encode($chartlabels); ?>,
+    datasets: [
         {
             label: 'Added Requests',
-            data: [20, 10, 0, 10, 20, 8],
+            data: <?php echo json_encode($queuealldata); ?>,
             borderColor: '#9672FB',
             fill:false
         },
         {
             label: 'Completed Requests',
-            data: [5, 23, 4, 50, 0, 10],
+            data: <?php echo json_encode($overalldata); ?>,
             borderColor: '#388D3C',
             fill:false
         }
@@ -205,16 +200,6 @@ const myChart = new Chart(ctx, {
         }
     },
 });
-
-function getDaysInCurrentMonth() {
-    const date = new Date();
-
-    return new Date(
-        date.getFullYear(),
-        date.getMonth() + 1,
-        0
-    ).getDate();
-}
 </script>
 <script type="text/javascript">
     jQuery(function($) {

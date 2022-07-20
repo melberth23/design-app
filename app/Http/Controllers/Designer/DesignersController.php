@@ -11,6 +11,8 @@ use App\Models\RequestAssets;
 use App\Models\Comments;
 use App\Models\CommentsAssets;
 use App\Models\CommentNotification;
+use App\Models\StatusNotifications;
+use App\Models\FileNotifications;
 use App\Models\Admin\RequestTypes;
 use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
@@ -46,35 +48,45 @@ class DesignersController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function index()
+    public function index($customer_id)
     {
-        $userid = Auth::id();
+        $customer = User::whereId($customer_id)->first();
+        if(!empty($customer) && $customer->count() > 0) {
+            $userid = Auth::id();
 
-        $requests = Requests::where('status', '!=', 1)->orderBy('created_at', 'DESC')->paginate(10);
-        $queue = Requests::where('status',2)->count();
-        $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
-        $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
-        $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
+            $requests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('updated_at', 'DESC')->paginate(10);
+            $queue = Requests::where('status',2)->where('user_id', $customer_id)->count();
+            $progress = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->count();
+            $review = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->count();
+            $completed = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->count();
 
-        return view('designer.index', ['requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+            return view('designer.index', ['customer' => $customer, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+        } else {
+            return redirect()->route('dashboard')->with('error', 'You are trying to access user that is not in the system!');
+        }
     }
-    
+
     /**
      * Queue requests 
      * @param Nill
      * @return Array $requests
      */
-    public function queue()
+    public function queue($customer_id)
     {
-        $userid = Auth::id();
+        $customer = User::whereId($customer_id)->first();
+        if(!empty($customer) && $customer->count() > 0) {
+            $userid = Auth::id();
 
-        $requests = Requests::where('status', 2)->orderBy('priority', 'ASC')->paginate(10);
-        $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
-        $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
-        $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
-        $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
+            $requests = Requests::where('status', 2)->where('user_id', $customer_id)->orderByRaw('-priority DESC')->paginate(10);
+            $allrequests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
+            $progress = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->count();
+            $review = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->count();
+            $completed = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->count();
 
-        return view('designer.queue', ['requests' => $requests, 'all' => $allrequests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+            return view('designer.queue', ['customer' => $customer, 'requests' => $requests, 'all' => $allrequests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+        } else {
+            return redirect()->route('dashboard')->with('error', 'You are trying to access user that is not in the system!');
+        }
     }
 
     /**
@@ -82,16 +94,22 @@ class DesignersController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function progress()
+    public function progress($customer_id)
     {
-        $userid = Auth::id();
+        $customer = User::whereId($customer_id)->first();
+        if(!empty($customer) && $customer->count() > 0) {
+            $userid = Auth::id();
 
-        $requests = Requests::where('designer_id', $userid)->where('status', 3)->orderBy('updated_at', 'DESC')->paginate(10);
-        $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
-        $queue = Requests::where('status',2)->count();
-        $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
-        $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
-        return view('designer.progress', ['requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
+            $requests = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->orderBy('updated_at', 'DESC')->paginate(10);
+            $allrequests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
+            $queue = Requests::where('status',2)->where('user_id', $customer_id)->count();
+            $review = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->count();
+            $completed = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->count();
+
+            return view('designer.progress', ['customer' => $customer, 'requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
+        } else {
+            return redirect()->route('dashboard')->with('error', 'You are trying to access user that is not in the system!');
+        }
     }
 
     /**
@@ -99,17 +117,22 @@ class DesignersController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function review()
+    public function review($customer_id)
     {
-        $userid = Auth::id();
+        $customer = User::whereId($customer_id)->first();
+        if(!empty($customer) && $customer->count() > 0) {
+            $userid = Auth::id();
 
-        $requests = Requests::where('designer_id', $userid)->where('status', 4)->orderBy('updated_at', 'DESC')->paginate(10);
-        $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
-        $queue = Requests::where('status',2)->count();
-        $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
-        $completed = Requests::where('designer_id', $userid)->where('status', 0)->count();
+            $requests = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->orderBy('updated_at', 'DESC')->paginate(10);
+            $allrequests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
+            $queue = Requests::where('status',2)->where('user_id', $customer_id)->count();
+            $progress = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->count();
+            $completed = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->count();
 
-        return view('designer.review', ['requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
+            return view('designer.review', ['customer' => $customer, 'requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
+        } else {
+            return redirect()->route('dashboard')->with('error', 'You are trying to access user that is not in the system!');
+        }
     }
 
     /**
@@ -117,17 +140,75 @@ class DesignersController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function delivered()
+    public function delivered($customer_id)
+    {
+        $customer = User::whereId($customer_id)->first();
+        if(!empty($customer) && $customer->count() > 0) {
+            $userid = Auth::id();
+
+            $requests = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->orderBy('updated_at', 'DESC')->paginate(10);
+            $allrequests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
+            $queue = Requests::where('status',2)->where('user_id', $customer_id)->count();
+            $progress = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->count();
+            $review = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->count();
+
+            return view('designer.delivered', ['customer' => $customer, 'requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
+        } else {
+            return redirect()->route('dashboard')->with('error', 'You are trying to access user that is not in the system!');
+        }
+    }
+
+    /**
+     * Customers requests 
+     * @param $status
+     * @return Array $customers
+     */
+    public function customerLists($status)
     {
         $userid = Auth::id();
+        $userrequest = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    });
 
-        $requests = Requests::where('designer_id', $userid)->where('status', 0)->orderBy('updated_at', 'DESC')->paginate(10);
-        $allrequests = Requests::where('status', '!=', 1)->orderBy('user_id', 'ASC')->count();
-        $queue = Requests::where('status',2)->count();
-        $progress = Requests::where('designer_id', $userid)->where('status', 3)->count();
-        $review = Requests::where('designer_id', $userid)->where('status', 4)->count();
+        if($status == 'all') {
+            $users = $userrequest->select('users.id as uid','users.first_name', 'users.last_name', 'requests.status as rstatus')->where('requests.user_id', '!=', 1)->groupBy('users.id')->paginate(10);
+        } else {
+            $users = $userrequest->select('users.id as uid','users.first_name', 'users.last_name', 'requests.status as rstatus')->where('requests.user_id', '!=', 1)->where('requests.status', $status)->groupBy('users.id')->paginate(10);
+        }
 
-        return view('designer.delivered', ['requests' => $requests, 'all' => $allrequests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
+        $requests = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.user_id', '!=', 1)->groupBy('users.id')->get();
+        $queue = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.status', 2)->groupBy('users.id')->get();
+        $progress = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.designer_id', $userid)->where('requests.status', 3)->groupBy('users.id')->get();
+        $review = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.designer_id', $userid)->where('requests.status', 4)->groupBy('users.id')->get();
+        $completed = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.designer_id', $userid)->where('requests.status', 0)->groupBy('users.id')->get();
+
+        $templatebystatus = 'index';
+        $labelStatus = 'All requests';
+        if($status == 0) {
+            $templatebystatus = 'delivered';
+            $labelStatus = 'Delivered requests';
+        } elseif($status == 2) {
+            $templatebystatus = 'queue';
+            $labelStatus = 'Queue requests';
+        } elseif($status == 3) {
+            $templatebystatus = 'progress';
+            $labelStatus = 'Progress requests';
+        } elseif($status == 4) {
+            $templatebystatus = 'review';
+            $labelStatus = 'Review requests';
+        }
+
+        return view('designer.customer-'. $templatebystatus, ['users' => $users, 'status' => $labelStatus, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
     }
 
     public function view(Requests $requests) {
@@ -274,7 +355,7 @@ class DesignersController extends Controller
 
         // If Validations Fails
         if($validate->fails()){
-            return redirect()->route('designer.index')->with('error', $validate->errors()->first());
+            return redirect()->back()->with('error', $validate->errors()->first());
         }
 
         try {
@@ -294,6 +375,13 @@ class DesignersController extends Controller
             $user = User::where('id', $request->user_id)->first();
             $customerfullname = $user->first_name .' '. $user->last_name;
 
+            // Save Notification to User
+            StatusNotifications::create([
+                'request_id' => $request_id,
+                'user_id' => $user->id,
+                'status' => $status
+            ]);
+
             // Send email
             $details = array(
                 'subject' => 'Request status changed',
@@ -306,7 +394,7 @@ class DesignersController extends Controller
 
             // Commit And Redirect on index with Success Message
             DB::commit();
-            return redirect()->route('designer.index')->with('success','Requests Status Updated Successfully!');
+            return redirect()->back()->with('success','Requests Status Updated Successfully!');
         } catch (\Throwable $th) {
 
             // Rollback & Return Error Message
@@ -403,6 +491,19 @@ class DesignersController extends Controller
                     'title'    => route('request.view', ['requests' => $request_data->id])
                 ]);
 
+                // Save Notification to User
+                StatusNotifications::create([
+                    'request_id' => $request_data->id,
+                    'user_id' => $owner_info->id,
+                    'status' => 4
+                ]);
+
+                // Save Notification to User
+                FileNotifications::create([
+                    'request_id' => $request_data->id,
+                    'user_id' => $owner_info->id
+                ]);
+
                 // Send email for notification
                 $details = array(
                     'subject' => 'Request notification',
@@ -422,6 +523,19 @@ class DesignersController extends Controller
                         'comment_id'       => $comment->id,
                         'user_id'       => $admin->id,
                         'title'    => route('request.view', ['requests' => $request_data->id])
+                    ]);
+
+                    // Save Notification to User
+                    StatusNotifications::create([
+                        'request_id' => $request_data->id,
+                        'user_id' => $admin->id,
+                        'status' => 4
+                    ]);
+
+                    // Save Notification to User
+                    FileNotifications::create([
+                        'request_id' => $request_data->id,
+                        'user_id' => $admin->id
                     ]);
 
                     // Send email for notification

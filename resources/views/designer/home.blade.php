@@ -5,6 +5,9 @@
 @section('content')
 <div class="container-fluid">
 
+    {{-- Alert Messages --}}
+    @include('common.alert')
+        
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="dashboard-welcome-label">Hello {{ Auth()->user()->first_name }}, here's your requests activity.</h1>

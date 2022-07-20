@@ -66,7 +66,7 @@
                                     @else
                                     <td class="border-left-0 border-right-0"></td>
                                     @endif
-                                    <td id="priority" class="border-left-0 border-right-0 text-primary">{{ $request->priority+1 }}</td>
+                                    <td id="priority" class="border-left-0 border-right-0 text-primary">{{ (!is_null($request->priority) ? $request->priority+1 : '') }}</td>
                                     <td class="border-left-0 border-right-0">
                                         <span class="badge badge-info">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                     </td>
@@ -100,7 +100,13 @@
                     </table>
                 </div>
 
-                <div class="px-2 py-3">
+                <div class="px-2 pt-3">
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                        You can sort your Queue request per priority.
+                    </div>
+                </div>
+
+                <div class="px-3 py-3">
                     <a class="text-decoration-none" href="{{ route('request.create') }}"><i class="fa fa-plus"></i> Add New</a>
                 </div>
                 

@@ -34,7 +34,7 @@
                     @if(!empty($notifications['lists']))
                         <div class="dropdown-menu dropdown-menu-right p-2" aria-labelledby="notificationDropdown">
                         @foreach($notifications['lists'] as $list)
-                            <a class="dropdown-item" href="{{ route('request.view', ['requests' => $list['request_id']]) }}">New comment in <strong>{{ $list['request_title'] }}</strong> from <strong>{{ $list['user_name'] }}</strong></a>
+                            <a class="dropdown-item" href="{{ route('request.view', ['requests' => $list['request_id']]) }}"><?php echo $list['text_message']; ?></a>
                         @endforeach
                         </div>
                     @endif

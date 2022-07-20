@@ -28,6 +28,12 @@
             @endif
         </h1>
         <div class="actions d-sm-flex align-items-center justify-content-between">
+            @if (auth()->user()->hasRole('Designer') && $requests->status == 2)
+                <a href="{{ route('designer.status', ['request_id' => $requests->id, 'status' => 3]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fa fa-list"></i> Move to progress</a>
+            @endif
+            @if (auth()->user()->hasRole('Designer') && $requests->status == 3)
+                <a href="#" data-toggle="modal" data-target="#movereviewModal" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-dark"><i class="fas fa-check" aria-hidden="true"></i> Move to review</a>
+            @endif
             <div class="dropdown m-1">
                 <button class="btn btn-outline-light text-dark border" id="dropdownUpdate{{ $requests->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-clock-o"></i>
@@ -80,17 +86,6 @@
                     <a href="javascript:void(0);" class="btn btn-outline-light text-dark border disabled"><i class="fas fa-angle-right fa-sm"></i></a>
                 @endif
             </div>
-            @else
-                @if ($requests->status == 3)
-                    <div class="dropdown m-1">
-                      <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#movereviewModal"><i class="fa fa-check"></i> Move to review</a>
-                      </div>
-                    </div>
-                @endif
             @endif
         </div>
     </div>
@@ -102,7 +97,7 @@
                     <a class="nav-link py-3 {{ (str_contains(url()->current(), 'requests/view/')) ? 'active' : '' }}" id="details-tab" href="{{ route('request.view', ['requests' => $requests->id]) }}">Request Details</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link py-3 {{ (str_contains(url()->current(), 'requests/files/')) ? 'active' : '' }}" id="files-tab" href="{{ route('request.files', ['requests' => $requests->id]) }}">Files</a>
+                    <a class="nav-link py-3 {{ (str_contains(url()->current(), 'requests/files/')) ? 'active' : '' }}" id="files-tab" href="{{ route('request.files', ['requests' => $requests->id]) }}"><span class="d-inline-block">Files</span><span class="counter counter-lg bg-primary">{{ $filenotifications->count() }}</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link py-3 {{ (str_contains(url()->current(), 'requests/comment/')) ? 'active' : '' }}" id="comments-tab" href="{{ route('request.comment', ['requests' => $requests->id]) }}"><span class="d-inline-block">Comments</span><span class="counter counter-lg bg-primary">{{ $notifications->count() }}</span></a>

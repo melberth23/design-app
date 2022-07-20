@@ -179,21 +179,20 @@
                         </td>
                         <td class="border-left-0 border-right-0">{{ $progressreq->created_at->format('d F, Y') }}</td>
                         <td class="d-flex justify-content-end border-left-0 border-right-0">
-                            <a href="{{ route('request.view', ['requests' => $progressreq->id]) }}"
-                                class="m-2 default-link">
-                                <i class="fa fa-clock-o"></i>
+                            <div class="dropdown mx-2">
+                                <a href="javascript:void(0);"class="text-dark" id="dropdownUpdate{{ $progressreq->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-clock-o"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right p-2" aria-labelledby="dropdownUpdate{{ $progressreq->id }}">
+                                    <span>Last Updated: {{ $progressreq->updated_at->format('d F, Y, h:i:s A') }}</span>
+                                </div>
+                            </div>
+                            <a href="{{ route('request.view', ['requests' => $progressreq->id]) }}" class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="View Request">
+                                <i class="fa fa-eye"></i>
                             </a>
-                            @if ($progressreq->status == 1)
-                                <a href="{{ route('request.status', ['request_id' => $progressreq->id, 'status' => 2]) }}"
-                                    class="btn btn-success m-2">
-                                    <i class="fa fa-check"></i>
-                                </a>
-                            @elseif ($progressreq->status == 2)
-                                <a href="{{ route('request.status', ['request_id' => $progressreq->id, 'status' => 1]) }}"
-                                    class="btn btn-danger m-2">
-                                    <i class="fa fa-ban"></i>
-                                </a>
-                            @endif
+                            <a href="{{ route('request.comment', ['requests' => $progressreq->id]) }}" class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Messages">
+                                <i class="fa fa-comments"></i>
+                            </a>
                         </td>
                     </tr>
                 @endforeach

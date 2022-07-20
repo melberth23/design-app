@@ -110,36 +110,36 @@
 
         @hasrole('Designer')
 
-            <li class="nav-item {{ (request()->is('designers')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('designer.index') }}">
+            <li class="nav-item {{ (str_contains(url()->current(), 'designers/all') || str_contains(url()->current(), 'designers/customers/all')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('designer.customers', ['status' => 'all']) }}">
                     <i class="fa fa-tags"></i>
                     <span>All Requests</span>
                 </a>
             </li>
 
-            <li class="nav-item {{ (request()->is('designers/queue')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('designer.queue') }}">
+            <li class="nav-item {{ (str_contains(url()->current(), 'designers/queue') || str_contains(url()->current(), 'designers/customers/2')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('designer.customers', ['status' => 2]) }}">
                     <i class="fa fa-tags"></i>
                     <span>On Queue</span>
                 </a>
             </li>
 
-            <li class="nav-item {{ (request()->is('designers/progress')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('designer.progress') }}">
+            <li class="nav-item {{ (str_contains(url()->current(), 'designers/progress') || str_contains(url()->current(), 'designers/customers/3')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('designer.customers', ['status' => 3]) }}">
                     <i class="fa fa-tags"></i>
                     <span>In Progress</span>
                 </a>
             </li>
 
-            <li class="nav-item {{ (request()->is('designers/review')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('designer.review') }}">
+            <li class="nav-item {{ (str_contains(url()->current(), 'designers/review') || str_contains(url()->current(), 'designers/customers/4')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('designer.customers', ['status' => 4]) }}">
                     <i class="fa fa-tags"></i>
                     <span>For Review</span>
                 </a>
             </li>
 
-            <li class="nav-item {{ (request()->is('designers/completed')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('designer.completed') }}">
+            <li class="nav-item {{ (str_contains(url()->current(), 'designers/completed') || str_contains(url()->current(), 'designers/customers/0')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('designer.customers', ['status' => 0]) }}">
                     <i class="fa fa-tags"></i>
                     <span>Completed</span>
                 </a>
