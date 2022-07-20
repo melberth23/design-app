@@ -346,7 +346,7 @@ class BrandController extends Controller
                 }
 
                 // Check upload secondary fonts
-                $tempsecondfonts = TempFile::where('module', 'font')->where('code', $request->tempfile_code)->get();
+                $tempsecondfonts = TempFile::where('module', 'font_second')->where('code', $request->tempfile_code)->get();
                 if(!empty($tempsecondfonts)) {
                     foreach($tempsecondfonts as $tempsecondfont) {
                         $assets = BrandAssets::create([
