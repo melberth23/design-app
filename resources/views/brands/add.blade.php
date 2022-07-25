@@ -161,7 +161,7 @@
                                     <button type="button" onclick="getElementById('primary-logo').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="primary-logos" class="d-flex logos">
+                            <div id="primary-logos" class="d-flex flex-wrap logos">
                                 <!-- Preview Logos -->
                             </div>
                             <div class="d-none logos">
@@ -183,7 +183,7 @@
                                 <button type="button" onclick="getElementById('secondary-logo').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                             </div>
                         </div>
-                        <div id="secondary-logos" class="d-flex logos">
+                        <div id="secondary-logos" class="d-flex flex-wrap logos">
                             <!-- Preview Logos -->
                         </div>
                         <div class="d-none logos">
@@ -249,7 +249,7 @@
                                     <button type="button" onclick="getElementById('primary-fonts').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="primary-fonts-preview" class="d-flex fonts">
+                            <div id="primary-fonts-preview" class="d-flex flex-wrap fonts">
                                 <!-- Preview Fonts -->
                             </div>
                             <div class="d-none fonts">
@@ -271,7 +271,7 @@
                                 <button type="button" onclick="getElementById('secondary-fonts').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                             </div>
                         </div>
-                        <div id="secondary-fonts-preview" class="d-flex fonts">
+                        <div id="secondary-fonts-preview" class="d-flex flex-wrap fonts">
                             <!-- Preview Fonts -->
                         </div>
                         <div class="d-none fonts">
@@ -299,7 +299,7 @@
                                     <button type="button" onclick="getElementById('pictures').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="preview-pictures" class="d-flex pictures">
+                            <div id="preview-pictures" class="d-flex flex-wrap pictures">
                                 <!-- Preview pictures -->
                             </div>
                             <div class="d-none">
@@ -327,17 +327,17 @@
                                 <div class="guideline-information">
                                     <h5 class="card-label text-dark">Brand Guidelines</h5>
                                     <p class="img-description mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                                    <p class="img-limit">Acceptable file PDF max file size 150mb.</p>
+                                    <p class="img-limit">Acceptable file DOC, DOCX, PDF, JPG, PNG max file size 150mb.</p>
                                 </div>
                                 <div class="guideline-uploader">
                                     <button type="button" onclick="getElementById('guidelines-item').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="guidelines-preview" class="d-flex guidelines">
+                            <div id="guidelines-preview" class="d-flex flex-wrap guidelines">
                                 <!-- Preview guidelines -->
                             </div>
                             <div class="d-none">
-                                <input type="file" id="guidelines-item" name="guidelines[]" class="form-control-file" multiple accept=".pdf">
+                                <input type="file" id="guidelines-item" name="guidelines[]" class="form-control-file" multiple accept=".pdf,.doc,.docx,.jpg,.png">
                             </div>
                             @error('guidelines')
                                 <span class="text-danger">{{$message}}</span>
@@ -361,17 +361,17 @@
                                 <div class="template-information">
                                     <h5 class="card-label text-dark">Templates</h5>
                                     <p class="img-description mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                                    <p class="img-limit">Acceptable file, PNG, JPEG, PDF, PSD, AI, max file size 150mb.</p>
+                                    <p class="img-limit">Acceptable file PNG, JPG, PDF, PSD, AI, INDD, DOC, DOCX max file size 150mb.</p>
                                 </div>
                                 <div class="template-uploader">
                                     <button type="button" onclick="getElementById('templates-item').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="templates-preview" class="d-flex templates">
+                            <div id="templates-preview" class="d-flex flex-wrap templates">
                                 <!-- Preview templates -->
                             </div>
                             <div class="d-none">
-                                <input type="file" id="templates-item" name="templates[]" class="form-control-file" multiple accept=".doc,.docx,.indd,.pdf,.psd,.ai">
+                                <input type="file" id="templates-item" name="templates[]" class="form-control-file" multiple accept=".doc,.docx,.indd,.pdf,.psd,.ai,.jpg,.png">
                             </div>
                             @error('templates')
                                 <span class="text-danger">{{$message}}</span>
@@ -401,7 +401,7 @@
                                     <button type="button" onclick="getElementById('inspiration-field').click();" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Upload</button>
                                 </div>
                             </div>
-                            <div id="inspirations-preview" class="d-flex inspirations">
+                            <div id="inspirations-preview" class="d-flex flex-wrap inspirations">
                                 <!-- Preview templates -->
                             </div>
                             <div class="d-none">
@@ -652,8 +652,14 @@
                     success: function(data) {
                         var filename = data.file.path;
                         var fileExt = filename.split('.').pop();
+                        var previewpath = "<?php echo asset('images/guidelines-img-'); ?>"+ fileExt +".png";
+                        var withimage = '';
+                        if(fileExt == 'jpg' || fileExt == 'png') {
+                            previewpath = "<?php echo url('storage/guidelines'); ?>/"+ data.file.ref_id +"/"+ filename;
+                            withimage = 'guide-with-image';
+                        }
 
-                        $('#guidelines-preview').append('<div id="media-preview-'+ data.file.guideline_id +'"><div class="mx-1 guideline media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.guideline_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/guidelines-img-pdf.png'); ?>" class="guideline-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                        $('#guidelines-preview').append('<div id="media-preview-'+ data.file.guideline_id +'"><div class="mx-1 guideline '+ withimage +' media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.guideline_id +');"><i class="fas fa-times"></i></a><img src="'+ previewpath +'" class="guideline-img" /></div><label class="mt-1">'+ filename +'</label></div>');
                     }
                 });
             });
@@ -678,8 +684,14 @@
                     success: function(data) {
                         var filename = data.file.path;
                         var fileExt = filename.split('.').pop();
+                        var previewpath = "<?php echo asset('images/template-img-'); ?>"+ fileExt +".png";
+                        var withimage = '';
+                        if(fileExt == 'jpg' || fileExt == 'png') {
+                            previewpath = "<?php echo url('storage/templates'); ?>/"+ data.file.ref_id +"/"+ filename;
+                            withimage = 'template-with-image';
+                        }
 
-                        $('#templates-preview').append('<div id="media-preview-'+ data.file.template_id +'"><div class="mx-1 template media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.template_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/template-img-'); ?>'+ fileExt +'.png" class="template-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                        $('#templates-preview').append('<div id="media-preview-'+ data.file.template_id +'"><div class="mx-1 template '+ withimage +' media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.template_id +');"><i class="fas fa-times"></i></a><img src="'+ previewpath +'" class="template-img" /></div><label class="mt-1">'+ filename +'</label></div>');
                     }
                 });
             });

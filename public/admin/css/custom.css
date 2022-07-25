@@ -591,3 +591,42 @@ a.preview-remove {
   right: 0;
   top: 0;
 }
+.guide-with-image.media-container.media-documents, .template-with-image.media-container.media-documents {
+  padding: 0;
+}
+.guide-with-image.media-container.media-documents img.guideline-img, .template-with-image.media-container.media-documents img.template-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+.color {
+    position: relative;
+}
+.hover-item {
+    margin-top: 5px;
+}
+a.remove-color-item {
+  position: absolute;
+  top: -5px;
+  right: 0;
+}
+.color-label {
+  font-size: 9px;
+  color: #fff;
+  background-color: #000;
+  padding: 2px;
+  border-radius: 5px;
+}
+.remove-color-item i.fa {
+  border-radius: 50%;
+  background-color: #fff;
+  color: #000;
+  padding: 2px;
+  font-size: 13px;
+  height: 16px;
+  width: 16px;
+  text-align: center;
+  box-shadow: -1px 1px 10px -1px rgba(0,0,0,1);
+  -webkit-box-shadow: -1px 1px 10px -1px rgba(0,0,0,1);
+  -moz-box-shadow: -1px 1px 10px -1px rgba(0,0,0,1);
+}

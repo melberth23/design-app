@@ -203,8 +203,7 @@ class TempFilesController extends Controller
                 File::makeDirectory($requestguidelinespath, 0777, true, true);
             }
 
-            // $allowedGuidelinesExtension = ['psd', 'ai', 'doc', 'pdf', 'png', 'jpg', 'ppt'];
-            $allowedGuidelinesExtension = ['pdf'];
+            $allowedGuidelinesExtension = ['doc', 'docx', 'pdf', 'png', 'jpg',];
             $guideline = $request->file('guidelines');
             $filename = $guideline->getClientOriginalName();
             $extension = $guideline->getClientOriginalExtension();
@@ -238,7 +237,7 @@ class TempFilesController extends Controller
                 File::makeDirectory($requesttemplatespath, 0777, true, true);
             }
 
-            $allowedTemplatesExtension = ['psd', 'ai', 'doc', 'docx', 'pdf', 'png', 'jpg'];
+            $allowedTemplatesExtension = ['psd', 'ai', 'indd', 'doc', 'docx', 'pdf', 'png', 'jpg'];
             $template = $request->file('templates');
             $filename = $template->getClientOriginalName();
             $extension = $template->getClientOriginalExtension();

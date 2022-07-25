@@ -55,13 +55,14 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $brands = Brand::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->orderBy('created_at', 'DESC')->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.index', ['requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+            return view('requests.index', ['brands' => $brands, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -78,13 +79,14 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 2)->orderByRaw('-priority DESC')->get();
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.queue', ['all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+            return view('requests.queue', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -101,13 +103,14 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 3)->orderBy('created_at', 'DESC')->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.progress', ['all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
+            return view('requests.progress', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -124,13 +127,14 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 4)->orderBy('created_at', 'DESC')->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.review', ['all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
+            return view('requests.review', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -147,13 +151,14 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 0)->orderBy('created_at', 'DESC')->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
 
-            return view('requests.delivered', ['all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
+            return view('requests.delivered', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -170,8 +175,9 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $brands = Brand::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 1)->orderBy('created_at', 'DESC')->paginate(10);
-            return view('requests.draft', ['requests' => $requests]);
+            return view('requests.draft', ['brands' => $brands, 'requests' => $requests]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -283,7 +289,7 @@ class RequestsController extends Controller
             'design_type'     => 'required',
             'dimensions'     => 'required',
             'description'     => 'required',
-            'reference_link'    => 'nullable|url',
+            'reference_link'    => 'nullable|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',
             'brand_id'     => 'required',
             'media.*' => 'required|mimes:jpg,png'
         ]);
@@ -727,7 +733,7 @@ class RequestsController extends Controller
             'design_type'     => 'required',
             'dimensions'     => 'required',
             'description'     => 'required',
-            'reference_link'    => 'url',
+            'reference_link'    => 'nullable|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',
             'brand_id'     => 'required',
             'media.*' => 'mimes:jpg,png'
         ]);
@@ -756,32 +762,17 @@ class RequestsController extends Controller
             ]);
 
             // Check upload medias
-            if($request->hasFile('media')) {
+            $tempmedias = TempFile::where('module', 'media')->where('code', $request->tempfile_code)->get();
+            if(!empty($tempmedias)) {
+                foreach($tempmedias as $tempmedia) {
+                    $assets = RequestAssets::create([
+                        'filename' => $tempmedia->file,
+                        'request_id' => $requests->id,
+                        'type' => 'media'
+                    ]);
 
-                $requestmediapath = public_path('storage/media') .'/'. $userid;
-                if(!File::isDirectory($requestmediapath)){
-                    // Create Path
-                    File::makeDirectory($requestmediapath, 0777, true, true);
-                }
-
-                $allowedMediasExtension = ['jpg','png'];
-                $medias = $request->file('media');
-                foreach($medias as $med) {
-                    $filename = $med->getClientOriginalName();
-                    $extension = $med->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedMediasExtension);
-
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $mediapath = $randomfilename .'.'. $extension;
-                        $med->move($requestmediapath, $mediapath);
-
-                        $assets = RequestAssets::create([
-                            'filename' => $mediapath,
-                            'request_id' => $requests->id,
-                            'type' => 'media'
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($tempmedia->id)->delete();
                 }
             }
 

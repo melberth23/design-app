@@ -92,26 +92,45 @@
 
         @include('requests.delete-modal')  
         @else
-
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <div class="min-height-600 d-flex align-items-center justify-content-center">
-                        <div class="no-record py-4 text-center">
-                            <img src="{{ asset('images/requests-empty.svg') }}">
-                            <div class="pt-4">
-                                <h2>You have no requests.</h2>
-                            </div>
-                            <div class="pt-4">
-                                <h5>Create your request now.</h5>
-                            </div>
-                            <div class="pt-4">
-                                <a href="{{ route('request.create') }}" class="btn btn-primary">Create New Request</a>
+            @if($brands == 0)
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="min-height-600 d-flex align-items-center justify-content-center">
+                            <div class="no-record py-4 text-center">
+                                <img src="{{ asset('images/designer-life-pana.svg') }}">
+                                <div class="pt-4">
+                                    <h2>You have no brand profile</h2>
+                                </div>
+                                <div class="pt-4">
+                                    <h5>Please create a brand profile before creating a request. Brand profile will help our designer to deliver your request accurately.</h5>
+                                </div>
+                                <div class="pt-4">
+                                    <a href="{{ route('brand.create') }}" class="btn btn-primary">Create Brand Profile</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
+            @else
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="min-height-600 d-flex align-items-center justify-content-center">
+                            <div class="no-record py-4 text-center">
+                                <img src="{{ asset('images/requests-empty.svg') }}">
+                                <div class="pt-4">
+                                    <h2>You have no requests.</h2>
+                                </div>
+                                <div class="pt-4">
+                                    <h5>Create your request now.</h5>
+                                </div>
+                                <div class="pt-4">
+                                    <a href="{{ route('request.create') }}" class="btn btn-primary">Create New Request</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif  
         @endif  
     </div>
 

@@ -49,9 +49,9 @@
               </button>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                 @if ($requests->status == 1)
-                    <a class="dropdown-item" href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 2]) }}"><i class="fa fa-check"></i> Activate Request</a>
+                    <a class="dropdown-item" href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 2]) }}"><i class="fa fa-check"></i> Submit Request</a>
                 @elseif ($requests->status == 2)
-                    <a class="dropdown-item" href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 1]) }}"><i class="fa fa-ban"></i> Pending Request</a>
+                    <a class="dropdown-item" href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 1]) }}"><i class="fa fa-ban"></i> Move to draft</a>
                 @endif
                 @if ($requests->status == 1 || $requests->status == 2)
                     <a class="dropdown-item" href="{{ route('request.edit', ['requests' => $requests->id]) }}"><i class="fa fa-pen"></i> Edit Request</a>
@@ -151,7 +151,7 @@
                 <div class="tab-text-label text-dark py-3">
                     <div class="row">
                         <div class="col-md-3 single-label">Text to include on the design</div>
-                        <div class="col-md-9">{{ $requests->included_text_description }}</div>
+                        <div class="col-md-9"><?php echo nl2br($requests->included_text_description); ?></div>
                     </div>
                 </div>
                 <div class="tab-text-label text-dark py-3">
@@ -175,7 +175,7 @@
                     <div class="row">
                         <div class="col-md-3 single-label">Design assets</div>
                         <div class="col-md-9">
-                            <div class="d-flex pictures">
+                            <div class="d-flex flex-wrap pictures">
                                 @if ($medias->count() > 0)
                                     @foreach ($medias as $media)
                                         <div id="media-{{ $media->id }}" class="mx-1 media media-container">
@@ -202,7 +202,13 @@
                 <div class="tab-text-label text-dark py-3">
                     <div class="row">
                         <div class="col-md-3 single-label">Reference Links</div>
-                        <div class="col-md-9"><a href="{{ $requests->reference_link }}" target="_blank">{{ $requests->reference_link }}</a></div>
+                        <?php 
+                        $reference_link = $requests->reference_link;
+                        if (strpos($reference_link, "http") === false){
+                            $reference_link = 'http://'. $requests->reference_link;
+                        }
+                        ?>
+                        <div class="col-md-9"><a href="{{ $reference_link }}" target="_blank">{{ $requests->reference_link }}</a></div>
                     </div>
                 </div>
                 <div class="tab-text-label text-dark py-3">

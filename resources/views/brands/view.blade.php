@@ -63,7 +63,15 @@
             <div class="extra-information">
                 <ul class="d-flex justify-content-start">
                     <li>{{ $brand->industry }}</li>
-                    <li><a href="{{ $brand->website }}" target="_blank">{{ $brand->website }}</a></li>
+                    <li>
+                        <?php 
+                            $website = $brand->website;
+                            if (strpos($website, "http") === false){
+                                $website = 'http://'. $brand->website;
+                            }
+                        ?>
+                        <a href="{{ $website }}" target="_blank">{{ $brand->website }}</a>
+                    </li>
                     <li>
                         @if ($brand->status == 0)
                             <span class="badge badge-warning p-2">DRAFT</span>
@@ -139,7 +147,7 @@
                     <div class="tab-text-label text-dark py-3">
                         <div class="row">
                             <div class="col-md-3 single-label">Website</div>
-                            <div class="col-md-9">{{ $brand->website }}</div>
+                            <div class="col-md-9"><a href="{{ $website }}" target="_blank">{{ $brand->website }}</a></div>
                         </div>
                     </div>
                 </div>
@@ -222,7 +230,13 @@
                         <div class="d-flex colors">
                             @if ($colors->count() > 0)
                                 @foreach ($colors as $color)
-                                    <div class="mx-1 color" style="background-color: {{ $color->filename }};border-radius: 50px; width: 40px; height: 40px;"></div>
+                                    <div id="media-{{ $color->id }}" class="mx-1 color">
+                                        <div style="background-color: {{ $color->filename }};border-radius: 50px; width: 40px; height: 40px;"></div>
+                                        <div class="hover-item">
+                                            <a href="javascript:void(0)" class="remove-color-item" onclick="deleteAsset({{ $color->id }});"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                            <div class="color-label"><span>{{ $color->filename }}</span></div>
+                                        </div>
+                                    </div>
                                 @endforeach
                             @else
                                 <p><em>-No primary colors available</em></p>
@@ -234,7 +248,13 @@
                         <div class="d-flex colors">
                             @if ($secondary_colors->count() > 0)
                                 @foreach ($secondary_colors as $secondary_color)
-                                    <div class="mx-1 color" style="background-color: {{ $secondary_color->filename }};border-radius: 50px; width: 40px; height: 40px;"></div>
+                                    <div id="media-{{ $secondary_color->id }}" class="mx-1 color">
+                                        <div style="background-color: {{ $secondary_color->filename }};border-radius: 50px; width: 40px; height: 40px;"></div>
+                                        <div class="hover-item">
+                                            <a href="javascript:void(0)" class="remove-color-item" onclick="deleteAsset({{ $secondary_color->id }});"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                            <div class="color-label"><span>{{ $secondary_color->filename }}</span></div>
+                                        </div>
+                                    </div>
                                 @endforeach
                             @else
                                 <p><em>-No secondary colors available</em></p>
@@ -363,9 +383,17 @@
                     <div class="d-flex flex-wrap guidelines">
                         @if ($guidelines->count() > 0)
                             @foreach ($guidelines as $guideline)
+                                <?php
+                                    $previewimage = asset('images/guidelines-img-') . $guideline->file_type .'.png';
+                                    $withguideimg = '';
+                                    if($guideline->file_type == 'jpg' || $guideline->file_type == 'png') {
+                                        $previewimage = url('storage/guidelines') .'/'. $brand->user_id .'/'. $guideline->filename;
+                                        $withguideimg = 'guide-with-image';
+                                    }
+                                ?>
                                 <div id="media-{{ $guideline->id }}">
-                                    <div class="mx-1 guideline media-container media-documents">
-                                        <img src="{{ asset('images/guidelines-img-pdf.png') }}" class="guideline-img">
+                                    <div class="mx-1 guideline {{ $withguideimg }} media-container media-documents">
+                                        <img src="{{ $previewimage }}" class="guideline-img">
                                         <div class="overlay">
                                             <div class="full-height d-flex align-items-center justify-content-center">
                                                 <a href="{{ route('download', ['asset' => $guideline->id]) }}" class="action-icon">
@@ -401,9 +429,17 @@
                     <div class="d-flex flex-wrap templates">
                         @if ($templates->count() > 0)
                             @foreach ($templates as $template)
+                                <?php
+                                    $previewtemimage = asset('images/template-img-') . $template->file_type .'.png';
+                                    $withtemimg = '';
+                                    if($template->file_type == 'jpg' || $template->file_type == 'png') {
+                                        $previewtemimage = url('storage/templates') .'/'. $brand->user_id .'/'. $template->filename;
+                                        $withtemimg = 'template-with-image';
+                                    }
+                                ?>
                                 <div id="media-{{ $template->id }}">
-                                    <div class="mx-1 template media-container media-documents">
-                                        <img src="{{ asset('images/template-img-') }}{{ $template->file_type }}.png" class="template-img">
+                                    <div class="mx-1 template {{ $withtemimg }} media-container media-documents">
+                                        <img src="{{ $previewtemimage }}" class="template-img">
                                         <div class="overlay">
                                             <div class="full-height d-flex align-items-center justify-content-center">
                                                 <a href="{{ route('download', ['asset' => $template->id]) }}" class="action-icon">
@@ -554,4 +590,24 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+    function deleteAsset(assetid) {
+        if(confirm("Deleting this asset cannot be undone. Continue?")) {
+            jQuery.ajax({
+                url: "{{ route('brand.destroyassets') }}",
+                type:"POST",
+                data:{
+                    asset:assetid,
+                    _token: jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success:function(response){
+                    jQuery('#media-'+ assetid).remove();
+                }
+            });
+        }
+    }
+</script>
 @endsection

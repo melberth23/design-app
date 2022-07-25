@@ -18,6 +18,8 @@
         @csrf
         @method('PUT')
 
+        <input type="hidden" id="tempfile_code" name="tempfile_code" value="<?php echo time(); ?>">
+
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center justify-content-between bg-light-custom">
                 <h3 class="text-dark mb-0">Describe your request</h3>
@@ -111,30 +113,34 @@
                 <div class="tab-text-label text-dark pt-3">
                     <span class="text-dark font-weight-bold">Assets</span>
                 </div>
-                <div id="pictures-preview" class="d-flex pictures" data-toggle="tooltip" data-placement="left" title="All images are in preview to replace select new sets of images">
-                    <!-- Preview Images -->
-                </div>
                 <div class="tab-text-label text-dark pt-3">
                     <p class="img-description">Upload any design assets or inspiration we should follow.</p>
-                    <div class="d-flex pictures">
+                    <div class="d-flex flex-wrap pictures">
                         @if ($medias->count() > 0)
                             @foreach ($medias as $media)
                                 <div id="media-{{ $media->id }}">
                                     <div class="mx-1 media media-container">
                                         <img src="{{ url('storage/media') }}/{{ $requests->user_id }}/{{ $media->filename }}" class="picture-img">
                                         <div class="overlay">
-                                            <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="icon">
-                                              <i class="fas fa-download"></i>
-                                            </a>
+                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                                <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="{{ route('request.delete', ['asset' => $media->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                    <p class="img-limit mb-0">{{ $media->filename }}</p>
                                 </div>
                             @endforeach
                         @else
                             <p><em>-No images available</em></p>
                         @endif
                     </div>
+                </div>
+                <div id="pictures-preview" class="d-flex flex-wrap pictures">
+                    <!-- Preview Images -->
                 </div>
                 <div class="request-assets tab-text-label text-dark pt-3">
                     <input type="file" id="asset-requests" name="media[]" class="form-control-file" multiple data-multiple-caption="{count} files selected" accept=".png,.jpeg,.jpg">
@@ -172,10 +178,6 @@
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" name="file_type[]" id="png" value="png" {{ (in_array('png', $file_types)) ? 'checked' : '' }}>
                         <label class="custom-control-label" for="png">.png</label>
-                    </div>
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="file_type[]" id="gif" value="gif" {{ (in_array('gif', $file_types)) ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="gif">.gif</label>
                     </div>
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" name="file_type[]" id="pdf" value="pdf" {{ (in_array('pdf', $file_types)) ? 'checked' : '' }}>
@@ -224,6 +226,13 @@
 @section('scripts')
 <script>
     jQuery(function($) {
+        $("html").on("dragover", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        $("html").on("drop", function(e) { e.preventDefault(); e.stopPropagation(); });
+
         var $parent    = $('.asset-uploader'),
             $input    = $('#asset-requests'),
             $label    = $('#asset-label'),
@@ -234,6 +243,7 @@
         $parent.on('drop', function(e) {
           droppedFiles = e.originalEvent.dataTransfer.files; // the files that were dropped
           showFiles( droppedFiles );
+          showPreview( droppedFiles );
         });
 
         $input.on('change', function(e) {
@@ -292,14 +302,42 @@
 
     function showPreview(files)
     {
-        $('#pictures-preview').html('');
         $.each( files, function( i, file ) {
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
+            var form_data = new FormData();
+            form_data.append("_token", $('.form-brand-request').find("input[name=_token]").val());
+            form_data.append("request", file);
+            form_data.append("tempfile_code", $('#tempfile_code').val());
+            form_data.append("module", "media");
 
-            reader.onload = readerEvent => {
-                var content = readerEvent.target.result; // this is the content!
-                $('#pictures-preview').append('<div class="mx-1 media media-container"><img src="'+ content +'" class="picture-img" /></div>');
+            $.ajax({
+                url:'{{ route('tempfiles') }}',
+                method:'POST',
+                data:form_data,
+                contentType:false,
+                cache:false,
+                processData:false,
+                success: function(data) {
+                    $('#pictures-preview').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/media'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="picture-img" /></div>');
+                }
+            });
+        });
+    }
+
+    function removeTempFile(id)
+    {
+        var form_data = new FormData();
+        form_data.append("_token", jQuery('.form-brand-request').find("input[name=_token]").val());
+        form_data.append("fid", id);
+
+        jQuery.ajax({
+            url:'{{ route('delete.tempfiles') }}',
+            method:'POST',
+            data:form_data,
+            contentType:false,
+            cache:false,
+            processData:false,
+            success: function(data) {
+                jQuery('#media-preview-'+ data.fid).remove();
             }
         });
     }

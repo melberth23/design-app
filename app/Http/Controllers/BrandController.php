@@ -202,7 +202,6 @@ class BrandController extends Controller
 
         // Validations
         $messages = [
-          'colors.*.required' => 'All primary color field is required.',
           'colors.*.distinct' => 'Please make colors unique.',
           'colors_second.*.distinct' => 'Please make colors unique.'
         ];
@@ -212,22 +211,16 @@ class BrandController extends Controller
             'description'     => 'required',
             'industry'     => 'required',
             'services_provider'     => 'required',
-            'website'     => 'required|url',
+            'website'     => 'required|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',
             'status'       =>  'required|numeric|in:0,1',
-            'colors'       =>  'required|distinct',
-            'colors.*'       =>  'required|distinct',
-            'colors_second.*' =>  'nullable|distinct',
-            'logos.*' => 'mimes:jpg,png',
-            'logos_second.*' => 'mimes:jpg,png',
-            'pictures.*' => 'mimes:jpg,png',
-            'templates.*' => 'mimes:psd,doc,docx,pdf,ai',
-            'guidelines.*' => 'mimes:pdf',
-            'inspirations.*' => 'mimes:jpg,png,gif'
+            'colors'       =>  'nullable|distinct',
+            'colors.*'       =>  'nullable|distinct',
+            'colors_second.*' =>  'nullable|distinct'
         ], $messages);
 
         // If Validations Fails
         if($validate->fails()){
-            return redirect()->back()->withErrors($validate);
+            return redirect()->back()->withInput()->withErrors($validate);
         }
 
         DB::beginTransaction();
@@ -519,21 +512,27 @@ class BrandController extends Controller
         $userid = $request->user()->id;
 
         // Validations
-        $request->validate([
+        $messages = [
+          'colors.*.distinct' => 'Please make colors unique.',
+          'colors_second.*.distinct' => 'Please make colors unique.'
+        ];
+        $validate = Validator::make($request->all(), [
             'name'    => 'required',
             'target_audience'    => 'required',
             'description'     => 'required',
             'industry'     => 'required',
             'services_provider'     => 'required',
-            'website'     => 'required',
+            'website'     => 'required|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',
             'status'       =>  'required|numeric|in:0,1',
-            'logos.*' => 'mimes:jpg,png',
-            'logos_second.*' => 'mimes:jpg,png',
-            'pictures.*' => 'mimes:jpg,png',
-            'templates.*' => 'mimes:psd,doc,docx,pdf,ai',
-            'guidelines.*' => 'mimes:pdf',
-            'inspirations.*' => 'mimes:jpg,png,gif'
-        ]);
+            'colors'       =>  'nullable|distinct',
+            'colors.*'       =>  'nullable|distinct',
+            'colors_second.*' =>  'nullable|distinct'
+        ], $messages);
+
+        // If Validations Fails
+        if($validate->fails()){
+            return redirect()->back()->withInput()->withErrors($validate);
+        }
 
         DB::beginTransaction();
         try {
@@ -557,99 +556,55 @@ class BrandController extends Controller
             ]);
 
             // Check upload logos
-            if($request->hasFile('logos')) {
-                $requestlogospath = public_path('storage/logos') .'/'. $userid;
-                if(!File::isDirectory($requestlogospath)){
-                    // Create Path
-                    File::makeDirectory($requestlogospath, 0777, true, true);
-                }
+            $templogos = TempFile::where('module', 'logo')->where('code', $request->tempfile_code)->get();
+            if(!empty($templogos)) {
+                foreach($templogos as $templogo) {
+                    $assets = BrandAssets::create([
+                        'filename' => $templogo->file,
+                        'brand_id' => $brand->id,
+                        'type' => 'logo',
+                        'file_type' => $templogo->file_type
+                    ]);
 
-                $allowedLogosExtension = ['jpg','png'];
-                $logos = $request->file('logos');
-                foreach($logos as $logo) {
-                    $filename = $logo->getClientOriginalName();
-                    $extension = $logo->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedLogosExtension);
-
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $logopath = $randomfilename .'.'. $extension;
-                        $logo->move($requestlogospath, $logopath);
-
-                        $assets = BrandAssets::create([
-                            'filename' => $logopath,
-                            'brand_id' => $brand->id,
-                            'type' => 'logo',
-                            'file_type' => $extension
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($templogo->id)->delete();
                 }
             }
 
             // Check upload secondary logos
-            if($request->hasFile('logos_second')) {
-                $requestlogosSecondpath = public_path('storage/logos') .'/'. $userid;
-                if(!File::isDirectory($requestlogosSecondpath)){
-                    // Create Path
-                    File::makeDirectory($requestlogosSecondpath, 0777, true, true);
-                }
+            $tempsecondlogos = TempFile::where('module', 'logo_second')->where('code', $request->tempfile_code)->get();
+            if(!empty($tempsecondlogos)) {
+                foreach($tempsecondlogos as $tempsecondlogo) {
+                    $assets = BrandAssets::create([
+                        'filename' => $tempsecondlogo->file,
+                        'brand_id' => $brand->id,
+                        'type' => 'logo_second',
+                        'file_type' => $tempsecondlogo->file_type
+                    ]);
 
-                $allowedLogosSecondExtension = ['jpg','png'];
-                $logos_second = $request->file('logos_second');
-                foreach($logos_second as $logo_second) {
-                    $filename = $logo_second->getClientOriginalName();
-                    $extension = $logo_second->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedLogosSecondExtension);
-
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $logo_secondpath = $randomfilename .'.'. $extension;
-                        $logo_second->move($requestlogosSecondpath, $logo_secondpath);
-
-                        $assets = BrandAssets::create([
-                            'filename' => $logo_secondpath,
-                            'brand_id' => $brand->id,
-                            'type' => 'logo_second',
-                            'file_type' => $extension
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($tempsecondlogo->id)->delete();
                 }
             }
 
             // Check upload pictures
-            if($request->hasFile('pictures')) {
-                $requestpicturespath = public_path('storage/pictures') .'/'. $userid;
-                if(!File::isDirectory($requestpicturespath)){
-                    // Create Path
-                    File::makeDirectory($requestpicturespath, 0777, true, true);
-                }
+            $temppictures = TempFile::where('module', 'picture')->where('code', $request->tempfile_code)->get();
+            if(!empty($temppictures)) {
+                foreach($temppictures as $temppicture) {
+                    $assets = BrandAssets::create([
+                        'filename' => $temppicture->file,
+                        'brand_id' => $brand->id,
+                        'type' => 'picture',
+                        'file_type' => $temppicture->file_type
+                    ]);
 
-                $allowedPicturesExtension = ['jpg','png'];
-                $pictures = $request->file('pictures');
-                foreach($pictures as $picture) {
-                    $filename = $picture->getClientOriginalName();
-                    $extension = $picture->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedPicturesExtension);
-
-                    if($check) { 
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $picturepath = $randomfilename .'.'. $extension;
-                        $picture->move($requestpicturespath, $picturepath);
-
-                        $assets = BrandAssets::create([
-                            'filename' => $picturepath,
-                            'brand_id' => $brand->id,
-                            'type' => 'picture',
-                            'file_type' => $extension
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($temppicture->id)->delete();
                 }
             }
 
             // Check upload colors
             if(!empty($request->colors) && !empty($request->colors[0])) {
-                BrandAssets::where('brand_id', $brand->id)->where('type', 'color')->delete();
-
                 foreach($request->colors as $color) {
                     if(!empty($color)) {
                         $assets = BrandAssets::create([
@@ -664,8 +619,6 @@ class BrandController extends Controller
 
             // Check upload secondary colors
             if(!empty($request->colors_second) && !empty($request->colors_second[0])) {
-                BrandAssets::where('brand_id', $brand->id)->where('type', 'color_second')->delete();
-
                 foreach($request->colors_second as $color_second) {
                     if(!empty($color_second)) {
                         $assets = BrandAssets::create([
@@ -679,150 +632,82 @@ class BrandController extends Controller
             }
 
             // Check upload fonts
-            if($request->hasFile('fonts')) {
-                $requestfontspath = public_path('storage/fonts') .'/'. $userid;
-                if(!File::isDirectory($requestfontspath)){
-                    // Create Path
-                    File::makeDirectory($requestfontspath, 0777, true, true);
-                }
+            $tempfonts = TempFile::where('module', 'font')->where('code', $request->tempfile_code)->get();
+            if(!empty($tempfonts)) {
+                foreach($tempfonts as $tempfont) {
+                    $assets = BrandAssets::create([
+                        'filename' => $tempfont->file,
+                        'brand_id' => $brand->id,
+                        'type' => 'font',
+                        'file_type' => $tempfont->file_type
+                    ]);
 
-                $allowedFontsExtension = ['ttf', 'eot', 'woff'];
-                $fonts = $request->file('fonts');
-                foreach($fonts as $font) {
-                    $filename = $font->getClientOriginalName();
-                    $extension = $font->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedFontsExtension);
-
-                    if($check) {
-                        $fontpath = $filename;
-                        $font->move($requestfontspath, $fontpath);
-
-                        $assets = BrandAssets::create([
-                            'filename' => $fontpath,
-                            'brand_id' => $brand->id,
-                            'type' => 'font',
-                            'file_type' => $extension
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($tempfont->id)->delete();
                 }
             }
 
             // Check upload secondary fonts
-            if($request->hasFile('fonts_second')) {
-                $requestfontsSecondarypath = public_path('storage/fonts') .'/'. $userid;
-                if(!File::isDirectory($requestfontsSecondarypath)){
-                    // Create Path
-                    File::makeDirectory($requestfontsSecondarypath, 0777, true, true);
-                }
+            $tempsecondfonts = TempFile::where('module', 'font_second')->where('code', $request->tempfile_code)->get();
+            if(!empty($tempsecondfonts)) {
+                foreach($tempsecondfonts as $tempsecondfont) {
+                    $assets = BrandAssets::create([
+                        'filename' => $tempsecondfont->file,
+                        'brand_id' => $brand->id,
+                        'type' => 'font_second',
+                        'file_type' => $tempsecondfont->file_type
+                    ]);
 
-                $allowedFontsSecondaryExtension = ['ttf', 'eot', 'woff'];
-                $fonts_second = $request->file('fonts_second');
-                foreach($fonts_second as $font_second) {
-                    $filename = $font_second->getClientOriginalName();
-                    $extension = $font_second->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedFontsSecondaryExtension);
-
-                    if($check) {
-                        $fontpath = $filename;
-                        $font_second->move($requestfontsSecondarypath, $fontpath);
-
-                        $assets = BrandAssets::create([
-                            'filename' => $fontpath,
-                            'brand_id' => $brand->id,
-                            'type' => 'font_second',
-                            'file_type' => $extension
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($tempsecondfont->id)->delete();
                 }
             }
 
             // Check upload inspirations
-            if($request->hasFile('inspirations')) {
-                $requestinspirationspath = public_path('storage/inspirations') .'/'. $userid;
-                if(!File::isDirectory($requestinspirationspath)){
-                    // Create Path
-                    File::makeDirectory($requestinspirationspath, 0777, true, true);
-                }
+            $tempinspirations = TempFile::where('module', 'inspiration')->where('code', $request->tempfile_code)->get();
+            if(!empty($tempinspirations)) {
+                foreach($tempinspirations as $tempinspiration) {
+                    $assets = BrandAssets::create([
+                        'filename' => $tempinspiration->file,
+                        'brand_id' => $brand->id,
+                        'type' => 'inspiration',
+                        'file_type' => $tempinspiration->file_type
+                    ]);
 
-                $allowedInspirationsExtension = ['jpg','png','mp4','gif'];
-                $inspirations = $request->file('inspirations');
-                foreach($inspirations as $inspiration) {
-                    $filename = $inspiration->getClientOriginalName();
-                    $extension = $inspiration->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedInspirationsExtension);
-
-                    if($check) {
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $inspirationpath = $randomfilename .'.'. $extension;
-                        $inspiration->move($requestinspirationspath, $inspirationpath);
-
-                        $assets = BrandAssets::create([
-                            'filename' => $inspirationpath,
-                            'brand_id' => $brand->id,
-                            'type' => 'inspiration',
-                            'file_type' => $extension
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($tempinspiration->id)->delete();
                 }
             }
 
             // Check upload templates
-            if($request->hasFile('templates')) {
-                $requesttemplatespath = public_path('storage/templates') .'/'. $userid;
-                if(!File::isDirectory($requesttemplatespath)){
-                    // Create Path
-                    File::makeDirectory($requesttemplatespath, 0777, true, true);
-                }
+            $temptemplates = TempFile::where('module', 'template')->where('code', $request->tempfile_code)->get();
+            if(!empty($temptemplates)) {
+                foreach($temptemplates as $temptemplate) {
+                    $assets = BrandAssets::create([
+                        'filename' => $temptemplate->file,
+                        'brand_id' => $brand->id,
+                        'type' => 'template',
+                        'file_type' => $temptemplate->file_type
+                    ]);
 
-                $allowedTemplatesExtension = ['psd', 'ai', 'doc', 'docx', 'pdf'];
-                $templates = $request->file('templates');
-                foreach($templates as $template) {
-                    $filename = $template->getClientOriginalName();
-                    $extension = $template->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedTemplatesExtension);
-
-                    if($check) {
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $templatepath = $randomfilename .'.'. $extension;
-                        $template->move($requesttemplatespath, $templatepath);
-
-                        $assets = BrandAssets::create([
-                            'filename' => $templatepath,
-                            'brand_id' => $brand->id,
-                            'type' => 'template',
-                            'file_type' => $extension
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($temptemplate->id)->delete();
                 }
             }
 
             // Check upload guidelines
-            if($request->hasFile('guidelines')) {
-                $requestguidelinespath = public_path('storage/guidelines') .'/'. $userid;
-                if(!File::isDirectory($requestguidelinespath)){
-                    // Create Path
-                    File::makeDirectory($requestguidelinespath, 0777, true, true);
-                }
+            $tempguidelines = TempFile::where('module', 'guideline')->where('code', $request->tempfile_code)->get();
+            if(!empty($tempguidelines)) {
+                foreach($tempguidelines as $tempguideline) {
+                    $assets = BrandAssets::create([
+                        'filename' => $tempguideline->file,
+                        'brand_id' => $brand->id,
+                        'type' => 'guideline',
+                        'file_type' => $tempguideline->file_type
+                    ]);
 
-                $allowedGuidelinesExtension = ['psd', 'ai', 'doc', 'pdf'];
-                $guidelines = $request->file('guidelines');
-                foreach($guidelines as $guideline) {
-                    $filename = $guideline->getClientOriginalName();
-                    $extension = $guideline->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedGuidelinesExtension);
-
-                    if($check) {
-                        $randomfilename = $this->helper->generateRandomString(15);
-                        $guidelinepath = $randomfilename .'.'. $extension;
-                        $guideline->move($requestguidelinespath, $guidelinepath);
-
-                        $assets = BrandAssets::create([
-                            'filename' => $guidelinepath,
-                            'brand_id' => $brand->id,
-                            'type' => 'guideline',
-                            'file_type' => $extension
-                        ]);
-                    }
+                    // remove tempfile
+                    TempFile::whereId($tempguideline->id)->delete();
                 }
             }
 
@@ -865,18 +750,9 @@ class BrandController extends Controller
      */
     public function deleteAsset(Request $request)
     {
-        $data = $request->all();
-
         DB::beginTransaction();
         try {
-            $asset = BrandAssets::whereId($data['asset'])->first();
-
-            // Delete Asset
-            if($data['ftype'] == 'color' || $data['ftype'] == 'color_second') {
-                BrandAssets::where('brand_id', $data['brand'])->where('type', $data['ftype'])->delete();
-            } else {
-                BrandAssets::whereId($asset->id)->delete();
-            }
+            BrandAssets::whereId($request->asset)->delete();
 
             DB::commit();
             return response()->json(['success' => 'Brand Asset Deleted Successfully!.']);

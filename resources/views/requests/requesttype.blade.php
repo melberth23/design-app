@@ -100,7 +100,7 @@
                 <div class="tab-text-label text-dark pt-3">
                     <span class="text-dark font-weight-bold">Assets</span>
                 </div>
-                <div id="pictures-preview" class="d-flex pictures">
+                <div id="pictures-preview" class="d-flex flex-wrap pictures">
                     <!-- Preview Images -->
                 </div>
                 <div class="request-assets tab-text-label text-dark pt-3">
