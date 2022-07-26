@@ -736,7 +736,7 @@ class HomeController extends Controller
                 'plan_id'    =>  $planInfo['id'],
                 'customer_email'  =>  auth()->user()->email,
                 'customer_name'  =>  auth()->user()->first_name .' '. auth()->user()->last_name,
-                'start_date'  =>  date('Y-m-d', strtotime($startdate)),
+                'start_date'  =>  date('Y-m-d'),
                 'redirect_url'  =>  url("change-payment-success"),
                 'reference'  =>  time()
             ));
