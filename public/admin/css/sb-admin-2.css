@@ -11316,6 +11316,7 @@ body.sidebar-toggled footer.sticky-footer {
   font-size: 65px;
   font-weight: 800;
   color: #000;
+  text-align: center;
 }
 .brand-title {
   font-size: 18px;
@@ -11365,7 +11366,7 @@ h5.card-label {
 .media-container {
   position: relative;
   width: 100%;
-  max-width: 150px;
+  max-width: 140px;
 }
 .media-container.media-documents {
   max-width: 120px;

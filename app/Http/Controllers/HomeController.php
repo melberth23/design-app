@@ -273,6 +273,7 @@ class HomeController extends Controller
     public function paymentmethods()
     {
         $data = [
+            'countries' => Country::all(),
             'billing_fname' => $this->helper->getUserSetting(auth()->user()->id, 'billing_fname'),
             'billing_lname' => $this->helper->getUserSetting(auth()->user()->id, 'billing_lname'),
             'billing_address1' => $this->helper->getUserSetting(auth()->user()->id, 'billing_address1'),

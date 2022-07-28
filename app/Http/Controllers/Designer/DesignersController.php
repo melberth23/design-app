@@ -362,39 +362,45 @@ class DesignersController extends Controller
             DB::beginTransaction();
 
             $request = Requests::whereId($request_id)->first();
-
-            $data = ['status' => $status];
-            if($status == 3) {
-                $data['designer_id'] = $userid;
-            }
-
-            // Update Status
-            Requests::whereId($request_id)->update($data);
-
             // Get User Information
             $user = User::where('id', $request->user_id)->first();
             $customerfullname = $user->first_name .' '. $user->last_name;
 
-            // Save Notification to User
-            StatusNotifications::create([
-                'request_id' => $request_id,
-                'user_id' => $user->id,
-                'status' => $status
-            ]);
+            $allowed = $this->helper->userActionRules($request->user_id, 'request', $status);
+            if($allowed['allowed']) {
+                $data = ['status' => $status];
+                if($status == 3) {
+                    $data['designer_id'] = $userid;
+                }
 
-            // Send email
-            $details = array(
-                'subject' => 'Request status changed',
-                'heading' => 'Hi '. $customerfullname,
-                'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel($status),
-                'sub_message' => 'Please login using your login information to check. Thank you!',
-                'template' => 'status'
-            );
-            Mail::to($user->email)->send(new DigitalMail($details));
+                // Update Status
+                Requests::whereId($request_id)->update($data);
 
-            // Commit And Redirect on index with Success Message
-            DB::commit();
-            return redirect()->back()->with('success','Requests Status Updated Successfully!');
+                // Save Notification to User
+                StatusNotifications::create([
+                    'request_id' => $request_id,
+                    'user_id' => $user->id,
+                    'status' => $status
+                ]);
+
+                // Send email
+                $details = array(
+                    'subject' => 'Request status changed',
+                    'heading' => 'Hi '. $customerfullname,
+                    'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel($status),
+                    'sub_message' => 'Please login using your login information to check. Thank you!',
+                    'template' => 'status'
+                );
+                Mail::to($user->email)->send(new DigitalMail($details));
+
+                // Commit And Redirect on index with Success Message
+                DB::commit();
+                return redirect()->back()->with('success','Requests Status Updated Successfully!');
+            } else {
+                // Rollback & Return Error Message
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Account limit: '. $customerfullname .' has a limit of '. $allowed['allowedrequest'] .' requests to move in progress.');
+            }
         } catch (\Throwable $th) {
 
             // Rollback & Return Error Message

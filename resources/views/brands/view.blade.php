@@ -169,14 +169,26 @@
                         <div class="d-flex flex-wrap logos">
                             @if ($logos->count() > 0)
                                 @foreach ($logos as $logo)
-                                    <div id="media-{{ $logo->id }}" class="mx-1 logo media-container">
-                                        <img src="{{ url('storage/logos') }}/{{ $brand->user_id }}/{{ $logo->filename }}" class="logo-img" />
-                                        <div class="overlay">
-                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                    <div id="media-{{ $logo->id }}">
+                                        <div class="mx-1 logo media-container">
+                                            <img src="{{ url('storage/logos') }}/{{ $brand->user_id }}/{{ $logo->filename }}" class="logo-img" />
+                                            <div class="overlay">
+                                                <div class="full-height d-flex align-items-center justify-content-center">
+                                                    <a href="{{ route('download', ['asset' => $logo->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="deleteAsset({{ $logo->id }});" class="action-icon">
+                                                      <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-block d-sm-none">
+                                            <div class="full-height d-flex align-items-center justify-content-start">
                                                 <a href="{{ route('download', ['asset' => $logo->id]) }}" class="action-icon">
                                                   <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
-                                                <a href="{{ route('delete', ['asset' => $logo->id]) }}" class="action-icon">
+                                                <a href="javascript:void(0);" onclick="deleteAsset({{ $logo->id }});" class="action-icon">
                                                   <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
                                             </div>
@@ -193,14 +205,26 @@
                         <div class="d-flex flex-wrap logos">
                             @if ($secondary_logos->count() > 0)
                                 @foreach ($secondary_logos as $secondary_logo)
-                                    <div id="media-{{ $secondary_logo->id }}" class="mx-1 logo media-container">
-                                        <img src="{{ url('storage/logos') }}/{{  $brand->user_id }}/{{ $secondary_logo->filename }}" class="logo-img" />
-                                        <div class="overlay">
-                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                    <div id="media-{{ $secondary_logo->id }}">
+                                        <div class="mx-1 logo media-container">
+                                            <img src="{{ url('storage/logos') }}/{{  $brand->user_id }}/{{ $secondary_logo->filename }}" class="logo-img" />
+                                            <div class="overlay">
+                                                <div class="full-height d-flex align-items-center justify-content-center">
+                                                    <a href="{{ route('download', ['asset' => $secondary_logo->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="deleteAsset({{ $secondary_logo->id }});" class="action-icon">
+                                                      <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-block d-sm-none">
+                                            <div class="full-height d-flex align-items-center justify-content-start">
                                                 <a href="{{ route('download', ['asset' => $secondary_logo->id]) }}" class="action-icon">
                                                   <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
-                                                <a href="{{ route('delete', ['asset' => $secondary_logo->id]) }}" class="action-icon">
+                                                <a href="javascript:void(0);" onclick="deleteAsset({{ $secondary_logo->id }});" class="action-icon">
                                                   <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
                                             </div>
@@ -287,13 +311,23 @@
                                                     <a href="{{ route('download', ['asset' => $font->id]) }}" class="action-icon">
                                                       <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                     </a>
-                                                    <a href="{{ route('delete', ['asset' => $font->id]) }}" class="action-icon">
+                                                    <a href="javascript:void(0);" onclick="deleteAsset({{ $font->id }});" class="action-icon">
                                                       <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                                     </a>
                                                 </div>
                                             </div>
                                         </div>
                                         <label class="mt-1">{{ $font->filename }}</label>
+                                        <div class="d-block d-sm-none">
+                                            <div class="full-height d-flex align-items-center justify-content-start">
+                                                <a href="{{ route('download', ['asset' => $font->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="javascript:void(0);" onclick="deleteAsset({{ $font->id }});" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 @endforeach
                             @else
@@ -314,13 +348,23 @@
                                                     <a href="{{ route('download', ['asset' => $secondary_font->id]) }}" class="action-icon">
                                                       <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                     </a>
-                                                    <a href="{{ route('delete', ['asset' => $secondary_font->id]) }}" class="action-icon">
+                                                    <a href="javascript:void(0);" onclick="deleteAsset({{ $secondary_font->id }});" class="action-icon">
                                                       <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                                     </a>
                                                 </div>
                                             </div>
                                         </div>
                                         <label class="mt-1">{{ $font->filename }}</label>
+                                        <div class="d-block d-sm-none">
+                                            <div class="full-height d-flex align-items-center justify-content-start">
+                                                <a href="{{ route('download', ['asset' => $secondary_font->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="javascript:void(0);" onclick="deleteAsset({{ $secondary_font->id }});" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 @endforeach
                             @else
@@ -346,14 +390,26 @@
                         <div class="d-flex flex-wrap pictures">
                             @if ($images->count() > 0)
                                 @foreach ($images as $image)
-                                    <div id="media-{{ $image->id }}" class="mx-1 picture media-container">
-                                        <img src="{{ url('storage/pictures') }}/{{ $brand->user_id }}/{{ $image->filename }}" class="picture-img">
-                                        <div class="overlay">
-                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                    <div id="media-{{ $image->id }}">
+                                        <div class="mx-1 picture media-container">
+                                            <img src="{{ url('storage/pictures') }}/{{ $brand->user_id }}/{{ $image->filename }}" class="picture-img">
+                                            <div class="overlay">
+                                                <div class="full-height d-flex align-items-center justify-content-center">
+                                                    <a href="{{ route('download', ['asset' => $image->id]) }}" class="action-icon">
+                                                      <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="deleteAsset({{ $image->id }});" class="action-icon">
+                                                      <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-block d-sm-none">
+                                            <div class="full-height d-flex align-items-center justify-content-start">
                                                 <a href="{{ route('download', ['asset' => $image->id]) }}" class="action-icon">
                                                   <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
-                                                <a href="{{ route('delete', ['asset' => $image->id]) }}" class="action-icon">
+                                                <a href="javascript:void(0);" onclick="deleteAsset({{ $image->id }});" class="action-icon">
                                                   <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
                                             </div>
@@ -399,13 +455,23 @@
                                                 <a href="{{ route('download', ['asset' => $guideline->id]) }}" class="action-icon">
                                                   <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
-                                                <a href="{{ route('delete', ['asset' => $guideline->id]) }}" class="action-icon">
+                                                <a href="javascript:void(0);" onclick="deleteAsset({{ $guideline->id }});" class="action-icon">
                                                   <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                     <label class="mt-1">{{ $guideline->filename }}</label>
+                                    <div class="d-block d-sm-none">
+                                        <div class="full-height d-flex align-items-center justify-content-start">
+                                            <a href="{{ route('download', ['asset' => $guideline->id]) }}" class="action-icon">
+                                              <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                            </a>
+                                            <a href="javascript:void(0);" onclick="deleteAsset({{ $guideline->id }});" class="action-icon">
+                                              <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             @endforeach
                         @else
@@ -445,13 +511,23 @@
                                                 <a href="{{ route('download', ['asset' => $template->id]) }}" class="action-icon">
                                                   <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
-                                                <a href="{{ route('delete', ['asset' => $template->id]) }}" class="action-icon">
+                                                <a href="javascript:void(0);" onclick="deleteAsset({{ $template->id }});" class="action-icon">
                                                   <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                     <label class="mt-1">{{ $template->filename }}</label>
+                                    <div class="d-block d-sm-none">
+                                        <div class="full-height d-flex align-items-center justify-content-start">
+                                            <a href="{{ route('download', ['asset' => $template->id]) }}" class="action-icon">
+                                              <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                            </a>
+                                            <a href="javascript:void(0);" onclick="deleteAsset({{ $template->id }});" class="action-icon">
+                                              <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             @endforeach
                         @else
@@ -475,14 +551,26 @@
                     <div class="d-flex flex-wrap inspirations">
                         @if ($inspirations->count() > 0)
                             @foreach ($inspirations as $inspiration)
-                                <div class="mx-1 inspiration media-container">
-                                    <img src="{{ url('storage/inspirations') }}/{{ $brand->user_id }}/{{ $inspiration->filename }}" class="inspiration-img">
-                                    <div class="overlay">
-                                        <div class="full-height d-flex align-items-center justify-content-center">
+                                <div id="media-{{ $inspiration->id }}">
+                                    <div class="mx-1 inspiration media-container">
+                                        <img src="{{ url('storage/inspirations') }}/{{ $brand->user_id }}/{{ $inspiration->filename }}" class="inspiration-img">
+                                        <div class="overlay">
+                                            <div class="full-height d-flex align-items-center justify-content-center">
+                                                <a href="{{ route('download', ['asset' => $inspiration->id]) }}" class="action-icon">
+                                                  <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                                <a href="javascript:void(0);" onclick="deleteAsset({{ $inspiration->id }});" class="action-icon">
+                                                  <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-block d-sm-none">
+                                        <div class="full-height d-flex align-items-center justify-content-start">
                                             <a href="{{ route('download', ['asset' => $inspiration->id]) }}" class="action-icon">
                                               <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                             </a>
-                                            <a href="{{ route('delete', ['asset' => $inspiration->id]) }}" class="action-icon">
+                                            <a href="javascript:void(0);" onclick="deleteAsset({{ $inspiration->id }});" class="action-icon">
                                               <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                             </a>
                                         </div>
@@ -513,37 +601,73 @@
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
                             <div class="col-md-3 single-label">Facebook</div>
-                            <div class="col-md-9">{{ $brand->facebook }}</div>
+                            <?php 
+                                $facebook = $brand->facebook;
+                                if (strpos($facebook, "http") === false){
+                                    $facebook = 'https://'. $brand->facebook;
+                                }
+                            ?>
+                            <div class="col-md-9"><a href="{{ $facebook }}" target="_blank">{{ $brand->facebook }}</a></div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
                             <div class="col-md-3 single-label">Linkedin</div>
-                            <div class="col-md-9">{{ $brand->linkedin }}</div>
+                            <?php 
+                                $linkedin = $brand->linkedin;
+                                if (strpos($linkedin, "http") === false){
+                                    $linkedin = 'https://'. $brand->linkedin;
+                                }
+                            ?>
+                            <div class="col-md-9"><a href="{{ $linkedin }}" target="_blank">{{ $brand->linkedin }}</a></div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
                             <div class="col-md-3 single-label">Instagram</div>
-                            <div class="col-md-9">{{ $brand->instagram }}</div>
+                            <?php 
+                                $instagram = $brand->instagram;
+                                if (strpos($instagram, "http") === false){
+                                    $instagram = 'https://'. $brand->instagram;
+                                }
+                            ?>
+                            <div class="col-md-9"><a href="{{ $instagram }}" target="_blank">{{ $brand->instagram }}</a></div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
                             <div class="col-md-3 single-label">Twitter</div>
-                            <div class="col-md-9">{{ $brand->twitter }}</div>
+                            <?php 
+                                $twitter = $brand->twitter;
+                                if (strpos($twitter, "http") === false){
+                                    $twitter = 'https://'. $brand->twitter;
+                                }
+                            ?>
+                            <div class="col-md-9"><a href="{{ $twitter }}" target="_blank">{{ $brand->twitter }}</a></div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
                             <div class="col-md-3 single-label">Youtube</div>
-                            <div class="col-md-9">{{ $brand->youtube }}</div>
+                            <?php 
+                                $youtube = $brand->youtube;
+                                if (strpos($youtube, "http") === false){
+                                    $youtube = 'https://'. $brand->youtube;
+                                }
+                            ?>
+                            <div class="col-md-9"><a href="{{ $youtube }}" target="_blank">{{ $brand->youtube }}</a></div>
                         </div>
                     </div>
                     <div class="tab-text-label text-dark py-3">
                         <div class="row">
                             <div class="col-md-3 single-label">Tiktok</div>
-                            <div class="col-md-9">{{ $brand->tiktok }}</div>
+                            <?php 
+                                $tiktok = $brand->tiktok;
+                                if (strpos($tiktok, "http") === false){
+                                    $tiktok = 'https://'. $brand->tiktok;
+                                }
+                            ?>
+                            <div class="col-md-9"><a href="{{ $tiktok }}" target="_blank">{{ $brand->tiktok }}</a></div>
                         </div>
                     </div>
                 </div>

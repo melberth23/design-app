@@ -60,10 +60,13 @@
                         <i class="fas fa-cog fa-fw mr-2 text-dark" aria-hidden="true"></i>
                         Settings
                     </a>
-                    <a class="dropdown-item py-2" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <a class="dropdown-item py-2" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fas fa-arrow-circle-right fa-fw mr-2 text-dark" aria-hidden="true"></i>
                         Log out
                     </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
                 </div>
             </li>
 

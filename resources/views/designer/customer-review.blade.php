@@ -39,14 +39,22 @@
                     <table class="table table-bordered bg-white border-0 table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th width="80%" class="border-left-0 border-right-0">CUSTOMER NAME</th>
-                                <th width="20%" class="border-left-0 border-right-0"></th>
+                                <th width="40%" class="border-left-0 border-right-0">CUSTOMER NAME</th>
+                                <th width="12%" class="border-left-0 border-right-0">SUBMITTED</th>
+                                <th width="12%" class="border-left-0 border-right-0">PROGRESS</th>
+                                <th width="12%" class="border-left-0 border-right-0">FOR REVIEW</th>
+                                <th width="12%" class="border-left-0 border-right-0">COMPLETED</th>
+                                <th width="12%" class="border-left-0 border-right-0"></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
                                 <tr>
                                     <td class="border-left-0 border-right-0 font-weight-bold"><a class="text-dark" href="{{ route('designer.review', ['customer_id' => $user->uid]) }}">{{ $user->first_name }} {{ $user->last_name }}</a></td>
+                                    <td class="border-left-0 border-right-0 font-weight-bold">{{ (new \App\Lib\SystemHelper)->getRequestsCount($user->uid, 2) }}</td>
+                                    <td class="border-left-0 border-right-0 font-weight-bold">{{ (new \App\Lib\SystemHelper)->getRequestsCount($user->uid, 3) }}</td>
+                                    <td class="border-left-0 border-right-0 font-weight-bold">{{ (new \App\Lib\SystemHelper)->getRequestsCount($user->uid, 4) }}</td>
+                                    <td class="border-left-0 border-right-0 font-weight-bold">{{ (new \App\Lib\SystemHelper)->getRequestsCount($user->uid, 0) }}</td>
                                     <td class="d-flex justify-content-end border-left-0 border-right-0">
                                         <a href="{{ route('designer.review', ['customer_id' => $user->uid]) }}"
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="View Request">

@@ -40,11 +40,12 @@
                         <thead>
                             <tr>
                                 <th width="10%" class="border-left-0 border-right-0">REQUEST ID</th>
-                                <th width="25%" class="border-left-0 border-right-0">REQUEST NAME</th>
-                                <th width="25%" class="border-left-0 border-right-0">CATEGORY</th>
+                                <th width="20%" class="border-left-0 border-right-0">REQUEST NAME</th>
+                                <th width="20%" class="border-left-0 border-right-0">CATEGORY</th>
                                 <th width="10%" class="border-left-0 border-right-0">STATUS</th>
                                 <th width="10%" class="border-left-0 border-right-0">DATE CREATED</th>
-                                <th width="20%" class="border-left-0 border-right-0"></th>
+                                <th width="20%" class="border-left-0 border-right-0">DATE UPDATED</th>
+                                <th width="10%" class="border-left-0 border-right-0"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,7 +62,16 @@
                                         <span class="badge badge-success">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                     </td>
                                     <td class="border-left-0 border-right-0">{{ $request->created_at->format('d F, Y') }}</td>
+                                    <td class="border-left-0 border-right-0">{{ $request->updated_at->format('d F, Y H:i:s') }}</td>
                                     <td class="d-flex justify-content-end border-left-0 border-right-0">
+                                        <div class="dropdown mx-2">
+                                            <a href="javascript:void(0);"class="text-dark" id="dropdownUpdate{{ $request->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-clock-o"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right p-2" aria-labelledby="dropdownUpdate{{ $request->id }}">
+                                                <span>{{ (new \App\Lib\SystemHelper)->displayByHourString($request->id) }}</span>
+                                            </div>
+                                        </div>
                                         <a href="{{ route('request.view', ['requests' => $request->id]) }}"
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>

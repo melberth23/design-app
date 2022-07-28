@@ -752,7 +752,18 @@ class BrandController extends Controller
     {
         DB::beginTransaction();
         try {
-            BrandAssets::whereId($request->asset)->delete();
+
+            $asset = BrandAssets::whereId($request->asset)->first();
+            if($asset->type != 'color' || $asset->type != 'color_second') {
+                $brand = Brand::whereId($asset->brand_id)->first();
+                $directory = $this->helper->media_directories($asset->type);
+                $filepath = public_path('storage/'. $directory .'/'. $brand->user_id .'/'. $asset->filename);
+
+                // Delete file
+                File::delete($filepath);
+            }
+
+            BrandAssets::whereId($asset->id)->delete();
 
             DB::commit();
             return response()->json(['success' => 'Brand Asset Deleted Successfully!.']);

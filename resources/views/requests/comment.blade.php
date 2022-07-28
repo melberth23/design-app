@@ -148,7 +148,11 @@
                             @foreach ($comments as $comment)
 
                                 <li class="media py-3">
-                                    <img class="width-64 img-thumbnail border-0 mr-3 rounded-circle" src="{{ asset('admin/img') }}/{{ $comment->user->roles->first()->name }}.png" alt="Generic placeholder image">
+                                    @if(!empty($comment->user->profile_img))
+                                        <img class="width-64 img-thumbnail border-0 mr-3 rounded-circle" src="{{ url('storage/profiles') }}/{{ $comment->user->id }}/{{ $comment->user->profile_img }}" id="profile-top-image">
+                                    @else
+                                        <img class="width-64 img-thumbnail border-0 mr-3 rounded-circle" src="{{asset('admin/img/undraw_profile.svg')}}">
+                                    @endif
                                     <div class="media-body">
                                         <h5 class="mt-0">{{ $comment->user->first_name }} <span class="comment-date">{{ $comment->created_at->format('D, d F, Y') }}</span></h5>
                                         @if($comment->user->roles->first()->name == 'Designer')

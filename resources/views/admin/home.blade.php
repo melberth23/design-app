@@ -16,18 +16,15 @@
         <!-- Number Of requests -->
         <div class="col span_1_of_5 mb-4">
             <div class="card shadow h-100 py-2">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $total_requests }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <img src="{{ asset('images/dash-request.svg') }}" class="dash-icons">
+                        <div class="col">
+                            <div class="dashboard-card-label"><strong>Total request</strong></div>
                         </div>
                     </div>
                     <div class="row no-gutters align-items-center">
-                        <div class="col">
-                            <div class="dashboard-card-label">Total request</div>
+                        <div class="col mr-2">
+                            <div class="dashboard-card-number text-dark">{{ $total_requests }}</div>
                         </div>
                     </div>
                 </div>
@@ -37,18 +34,15 @@
         <!-- Number of in progress -->
         <div class="col span_1_of_5 mb-4">
             <div class="card shadow h-100 py-2">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $inprogressreq }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <img src="{{ asset('images/dash-inprogress.svg') }}" class="dash-icons">
+                        <div class="col">
+                            <div class="dashboard-card-label"><strong>In progress requests</strong></div>
                         </div>
                     </div>
                     <div class="row no-gutters align-items-center">
-                        <div class="col">
-                            <div class="dashboard-card-label">In progress requests</div>
+                        <div class="col mr-2">
+                            <div class="dashboard-card-number text-primary">{{ $inprogressreq }}</div>
                         </div>
                     </div>
                 </div>
@@ -58,18 +52,15 @@
         <!-- Number of for review -->
         <div class="col span_1_of_5 mb-4">
             <div class="card shadow h-100 py-2">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $reqforreview }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <img src="{{ asset('images/dash-for-review.svg') }}" class="dash-icons">
+                        <div class="col">
+                            <div class="dashboard-card-label"><strong>For review requests</strong></div>
                         </div>
                     </div>
                     <div class="row no-gutters align-items-center">
-                        <div class="col">
-                            <div class="dashboard-card-label">For review requests</div>
+                        <div class="col mr-2">
+                            <div class="dashboard-card-number text-info">{{ $reqforreview }}</div>
                         </div>
                     </div>
                 </div>
@@ -79,18 +70,15 @@
         <!-- Number of in queue -->
         <div class="col span_1_of_5 mb-4">
             <div class="card shadow h-100 py-2">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $reqqueue }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <img src="{{ asset('images/dash-queu.svg') }}" class="dash-icons">
+                        <div class="col">
+                            <div class="dashboard-card-label"><strong>On queue requests</strong></div>
                         </div>
                     </div>
                     <div class="row no-gutters align-items-center">
-                        <div class="col">
-                            <div class="dashboard-card-label">On queue requests</div>
+                        <div class="col mr-2">
+                            <div class="dashboard-card-number text-secondary">{{ $reqqueue }}</div>
                         </div>
                     </div>
                 </div>
@@ -100,18 +88,15 @@
         <!-- Number of completed -->
         <div class="col span_1_of_5 mb-4">
             <div class="card shadow h-100 py-2">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $completed_req }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <img src="{{ asset('images/dash-completed.svg') }}" class="dash-icons">
+                        <div class="col">
+                            <div class="dashboard-card-label"><strong>Completed request</strong></div>
                         </div>
                     </div>
                     <div class="row no-gutters align-items-center">
-                        <div class="col">
-                            <div class="dashboard-card-label">Completed request</div>
+                        <div class="col mr-2">
+                            <div class="dashboard-card-number text-success">{{ $completed_req }}</div>
                         </div>
                     </div>
                 </div>

@@ -48,6 +48,7 @@ class SystemHelper {
                     'id' => '95d369cc-7fbd-4608-b53f-562605eab522',
                     'amount' => 399,
                     'request' => 1,
+                    'turnaround' => 48,
                     'backlog' => false,
                     'brand' => 1
                 ),
@@ -56,6 +57,7 @@ class SystemHelper {
                     'id' => '95d369fd-9228-4f36-bd7f-d03c6805027a',
                     'amount' => 599,
                     'request' => 2,
+                    'turnaround' => 24,
                     'backlog' => false,
                     'brand' => 2
                 ),
@@ -64,6 +66,7 @@ class SystemHelper {
                     'id' => '95d36a21-671d-48f9-909f-002d022c6b59',
                     'amount' => 2395,
                     'request' => 2,
+                    'turnaround' => 24,
                     'backlog' => true,
                     'brand' => 9999
                 )
@@ -74,6 +77,7 @@ class SystemHelper {
                     'id' => '95d32cca-1c37-4efc-a0f5-48203c8386f7',
                     'amount' => 4310,
                     'request' => 1,
+                    'turnaround' => 48,
                     'backlog' => false,
                     'brand' => 1
                 ),
@@ -82,6 +86,7 @@ class SystemHelper {
                     'id' => '9699a9c9-63e4-4895-9b01-cf7fa598dcc4',
                     'amount' => 6470,
                     'request' => 2,
+                    'turnaround' => 24,
                     'backlog' => false,
                     'brand' => 2
                 ),
@@ -90,6 +95,7 @@ class SystemHelper {
                     'id' => '9699aa3b-6196-426b-ac73-7627b7d94780',
                     'amount' => 3795,
                     'request' => 2,
+                    'turnaround' => 24,
                     'backlog' => true,
                     'brand' => 9999
                 )
@@ -119,15 +125,16 @@ class SystemHelper {
     * @return array allowed information
     */
     public function userActionRules($userid, $type='request', $status=1) {
-        $statusRules = array(2,3);
+        $statusRules = array(3);
         $numberofitems = array();
         if($type == 'brand') {
             $numberofitems = Brand::where('user_id', $userid)->get();
         } elseif($type == 'request') {
-            if($status == 2) {
+            if($status == 2 || $status == 3) {
                 $numberofitems = Requests::whereIn('status', $statusRules)->where('user_id', $userid)->get();
             }
         }
+
         $numberofitems = count($numberofitems);
         $user = User::whereId($userid)->first();
         $planrule = $this->getPlanRules($user->payments->plan);
@@ -224,6 +231,8 @@ class SystemHelper {
             'media' => 'media',
             'comment' => 'comments',
             'manual' => 'comments',
+            'comment_media' => 'comments',
+            'comment_document' => 'comments',
         );
 
         return $directories[$type];
@@ -255,7 +264,7 @@ class SystemHelper {
     public function get_brand_logo($brand) {
         $logos = BrandAssets::where('brand_id', $brand->id)->where('type', 'logo')->first();
 
-        $string = '<h2>'. substr($brand->name, 0, 1) .'.</h2>';
+        $string = '<h2>'. substr($brand->name, 0, 1) .'</h2>';
         if (!empty($logos) && $logos->count() > 0) {
             $string = '<img src="'. url('storage/logos') .'/'.$brand->user_id .'/'. $logos->filename .'" class="main-logo" >';
         }
@@ -756,5 +765,44 @@ class SystemHelper {
         }
 
         return $dates;
+    }
+
+    public function getRequestsCount($userid, $status)
+    {
+        return Requests::where('user_id', $userid)->where('status', $status)->count();
+    }
+
+    public function calculateTurnaround($requestid)
+    {
+        $request = Requests::whereId($requestid)->first();
+        $user = User::whereId($request->user_id)->first();
+        $planduration = !empty($user->payments->duration)?$user->payments->duration:'monthly';
+        $planinfo = $this->getPlanInformation($user->payments->plan, $planduration);
+
+        $plushours = !empty($planinfo['turnaround'])?intval($planinfo['turnaround']):24;
+
+        $requestdate = date('Y-m-d H:i:s', strtotime($request->updated_at .'+'. $plushours .' hours'));
+        $currentdate = date('Y-m-d H:i:s');
+        $timesreqdate = strtotime($requestdate);
+        $timescurdate = strtotime($currentdate);
+
+        $hour = abs($timesreqdate - $timescurdate)/(60*60);
+
+        return ['hour' => $hour, 'turnaround' => $plushours, 'turnarounddate' => $requestdate];
+    }
+
+    public function displayByHourString($requestid)
+    {
+        $calculatedtime = $this->calculateTurnaround($requestid);
+        $hour = $calculatedtime['hour'];
+        $explodetime = explode('.', $hour);
+        $minutes = (!empty($explodetime[1]))?$explodetime[1] * 60:0;
+
+        $hoursdisplay = "Turnaround hours: ". intval($hour) ." hour(s)";
+        if($hour > $calculatedtime['turnaround']) {
+            $hoursdisplay = "Already delayed and delivery date was ". date('d F, Y H:i:s', strtotime($calculatedtime['turnarounddate']));
+        }
+
+        return $hoursdisplay;
     }
 }

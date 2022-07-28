@@ -7,6 +7,13 @@
     <div class="container">
         <div class="row">
             <div class="col-4 offset-4">
+                <div class="admin-login-logo text-center m-4">
+                    <a href="{{ route('dashboard') }}"><img src="{{ asset('images/logo-dark.svg') }}"></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 offset-4">
                 <div class="card shadow mb-4">
                     <div class="card-body">
                         <form class="form p-4 m-0" method="POST" action="{{ route('userlogin') }}">

@@ -153,12 +153,14 @@
                         <div class="form-group">
                             <div class="text-dark">
                                 <label for="billing_country">Country</label>
-                                <input 
-                                    type="text" 
-                                    class="form-control form-control-user" 
-                                    id="billing_country" 
-                                    name="billing_country" 
-                                    value="{{ (old('billing_country')) ? old('billing_country') : ($data['billing_country'] != ''?$data['billing_country']:auth()->user()->country) }}">
+                                <select class="form-control" id="billing_country" name="billing_country">
+                                    @php
+                                        $billing_country = (old('billing_country')) ? old('billing_country') : ($data['billing_country'] != ''?$data['billing_country']:auth()->user()->country);
+                                    @endphp
+                                    @foreach($data['countries'] as $country)
+                                        <option value="{{ $country->name }}" {{ $billing_country == $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

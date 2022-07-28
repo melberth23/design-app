@@ -122,10 +122,15 @@
                                 <div class="mx-1 media media-container">
                                     <img src="{{ url('storage/comments') }}/{{ $media->comments->user_id }}/{{ $media->filename }}" class="picture-img">
                                 </div>
-                                <label class="mt-1">{{ $media->filename }}</label>
+                                <label class="mt-1">{{ $media->filename }}</label><br>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $media->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
+                                @if(auth()->user()->hasRole('Designer'))
+                                <a href="{{ route('comment.delete', ['asset' => $media->id]) }}" class="btn btn-outline-light action-icons rounded-circle border">
+                                  <img src="{{ asset('images/delete-media.svg') }}" class="action-icon">
+                                </a>
+                                @endif
                             </div>
                         @endforeach
 
@@ -134,10 +139,15 @@
                                 <div class="mx-1 media media-container">
                                     <img src="{{ url('storage/comments') }}/{{ $manualmedia->comments->user_id }}/{{ $manualmedia->filename }}" class="picture-img">
                                 </div>
-                                <label class="mt-1">{{ $manualmedia->filename }}</label>
+                                <label class="mt-1">{{ $manualmedia->filename }}</label><br>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $manualmedia->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
+                                @if(auth()->user()->hasRole('Designer'))
+                                <a href="{{ route('comment.delete', ['asset' => $manualmedia->id]) }}" class="btn btn-outline-light action-icons rounded-circle border">
+                                  <img src="{{ asset('images/delete-media.svg') }}" class="action-icon">
+                                </a>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -189,10 +199,15 @@
                                 <div class="mx-1 template media-container media-documents">
                                     <img src="{{ asset('images/template-img-') }}{{ $adobe->file_type }}.png" class="template-img">
                                 </div>
-                                <label class="mt-1">{{ $adobe->filename }}</label>
+                                <label class="mt-1">{{ $adobe->filename }}</label><br>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $adobe->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
+                                @if(auth()->user()->hasRole('Designer'))
+                                <a href="{{ route('comment.delete', ['asset' => $adobe->id]) }}" class="btn btn-outline-light action-icons rounded-circle border">
+                                  <img src="{{ asset('images/delete-media.svg') }}" class="action-icon">
+                                </a>
+                                @endif
                             </div>
                         @endforeach
 
@@ -201,10 +216,15 @@
                                 <div class="mx-1 template media-container media-documents">
                                     <img src="{{ asset('images/template-img-') }}{{ $manualadobe->file_type }}.png" class="template-img">
                                 </div>
-                                <label class="mt-1">{{ $manualadobe->filename }}</label>
+                                <label class="mt-1">{{ $manualadobe->filename }}</label><br>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $manualadobe->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
+                                @if(auth()->user()->hasRole('Designer'))
+                                <a href="{{ route('comment.delete', ['asset' => $manualadobe->id]) }}" class="btn btn-outline-light action-icons rounded-circle border">
+                                  <img src="{{ asset('images/delete-media.svg') }}" class="action-icon">
+                                </a>
+                                @endif
                             </div>
                         @endforeach
                     </div>

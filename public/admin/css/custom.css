@@ -573,9 +573,16 @@ fieldset.rating.star > label:before {
     height: 120px;
 }
 .pictures > div, .logos > div , .inspirations > div {
-    max-width: 150px;
+    max-width: 140px;
     margin-bottom: 10px;
     margin-right: 10px;
+    width: 100%;
+}
+img.download-img, img.delete-img {
+    border: 1px solid;
+    max-width: 33px;
+    height: 33px;
+    width: 100%;
 }
 .d-flex .media-container label {
   white-space: nowrap;
