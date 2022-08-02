@@ -599,23 +599,17 @@ class RequestsController extends Controller
 
             // Check upload attachments
             if($request->hasFile('attachments')) {
-
-                $commentspath = public_path('storage/comments') .'/'. $userid;
-                if(!File::isDirectory($commentspath)){
-                    // Create Path
-                    File::makeDirectory($commentspath, 0777, true, true);
-                }
-
                 $commentfiles = $request->file('attachments');
                 foreach($commentfiles as $commentfile) {
-                    $filename = $commentfile->getClientOriginalName();
                     $extension = $commentfile->getClientOriginalExtension();
                     $randomfilename = $this->helper->generateRandomString(15);
-                    $attachmentpath = $randomfilename .'.'. $extension;
-                    $commentfile->move($commentspath, $attachmentpath);
+                    $filename = $randomfilename .'.'. $extension;
+                    $s3path = 'comments/'. $userid .'/'. $filename;
+                    $path = Storage::disk('s3')->put($s3path, fopen($commentfile, 'r+'), 'public');
+                    $imgpath = Storage::disk('s3')->url($s3path);
 
                     $assets = CommentsAssets::create([
-                        'filename' => $attachmentpath,
+                        'filename' => $s3path,
                         'comments_id' => $comment->id,
                         'type' => 'comment',
                         'file_type' => $extension

@@ -108,7 +108,7 @@ class SystemHelper {
                 'basic' => array(
                     'label' => 'Basic',
                     'id' => '96e46e05-e636-42b6-ab29-a02e7c5cb21e',
-                    'amount' => 399,
+                    'amount' => 2,
                     'request' => 1,
                     'turnaround' => 48,
                     'backlog' => false,
@@ -117,7 +117,7 @@ class SystemHelper {
                 'premium' => array(
                     'label' => 'Premium',
                     'id' => '96e46f67-12b2-4283-a2c1-feeba42bbc8b',
-                    'amount' => 599,
+                    'amount' => 2,
                     'request' => 2,
                     'turnaround' => 24,
                     'backlog' => false,
