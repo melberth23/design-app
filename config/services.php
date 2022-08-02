@@ -31,7 +31,7 @@ return [
     ],
 
     'hitpay' => [
-        'key' => env('HITPAY_API_KEY'),
+        'key' => (config('app.env') == 'production')?env('HITPAY_API_LIVE_KEY'):env('HITPAY_API_KEY'),
         'environment' => env('HITPAY_API_END')
     ],
 

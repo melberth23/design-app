@@ -142,7 +142,7 @@
                         @if ($logos->count() > 0)
                             @foreach ($logos as $logo)
                                 <div id="media-{{ $logo->id }}" class="mx-1 logo media-container">
-                                    <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $logo->filename }}" class="logo-img" />
+                                    <img src="{{ Storage::disk('s3')->url($logo->filename) }}" class="logo-img" />
                                     <div class="overlay">
                                         <div class="full-height d-flex align-items-center justify-content-center">
                                             <a href="{{ route('download', ['asset' => $logo->id]) }}" class="action-icon">
@@ -186,7 +186,7 @@
                     @if ($secondary_logos->count() > 0)
                         @foreach ($secondary_logos as $secondary_logo)
                             <div id="media-{{ $secondary_logo->id }}" class="mx-1 logo media-container">
-                                <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $secondary_logo->filename }}" class="logo-img" />
+                                <img src="{{ Storage::disk('s3')->url($secondary_logo->filename) }}" class="logo-img" />
                                 <div class="overlay">
                                     <div class="full-height d-flex align-items-center justify-content-center">
                                         <a href="{{ route('download', ['asset' => $secondary_logo->id]) }}" class="action-icon">
@@ -309,7 +309,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <label class="mt-1">{{ $font->filename }}</label>
+                                    <label class="mt-1">{{ basename($font->filename) }}</label>
                                 </div>
                             @endforeach
                         @else
@@ -356,7 +356,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <label class="mt-1">{{ $font->filename }}</label>
+                                <label class="mt-1">{{ basename($font->filename) }}</label>
                             </div>
                         @endforeach
                     @else
@@ -396,7 +396,7 @@
                         @if ($images->count() > 0)
                             @foreach ($images as $image)
                                 <div id="media-{{ $image->id }}" class="mx-1 picture media-container">
-                                    <img src="{{ url('storage/pictures') }}/{{ auth()->user()->id }}/{{ $image->filename }}" class="picture-img">
+                                    <img src="{{ Storage::disk('s3')->url($image->filename) }}" class="picture-img">
                                     <div class="overlay">
                                         <div class="full-height d-flex align-items-center justify-content-center">
                                             <a href="{{ route('download', ['asset' => $image->id]) }}" class="action-icon">
@@ -450,7 +450,7 @@
                                     $previewimage = asset('images/guidelines-img-') . $guideline->file_type .'.png';
                                     $withguideimg = '';
                                     if($guideline->file_type == 'jpg' || $guideline->file_type == 'png') {
-                                        $previewimage = url('storage/guidelines') .'/'. $brand->user_id .'/'. $guideline->filename;
+                                        $previewimage = Storage::disk('s3')->url($guideline->filename);
                                         $withguideimg = 'guide-with-image';
                                     }
                                 ?>
@@ -468,7 +468,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <label class="mt-1">{{ $guideline->filename }}</label>
+                                    <label class="mt-1">{{ basename($guideline->filename) }}</label>
                                 </div>
                             @endforeach
                         @else
@@ -512,7 +512,7 @@
                                     $previewtemimage = asset('images/template-img-') . $template->file_type .'.png';
                                     $withtemimg = '';
                                     if($template->file_type == 'jpg' || $template->file_type == 'png') {
-                                        $previewtemimage = url('storage/templates') .'/'. $brand->user_id .'/'. $template->filename;
+                                        $previewtemimage = Storage::disk('s3')->url($template->filename);
                                         $withtemimg = 'template-with-image';
                                     }
                                 ?>
@@ -530,7 +530,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <label class="mt-1">{{ $template->filename }}</label>
+                                    <label class="mt-1">{{ basename($template->filename) }}</label>
                                 </div>
                             @endforeach
                         @else
@@ -571,7 +571,7 @@
                         @if ($inspirations->count() > 0)
                             @foreach ($inspirations as $inspiration)
                                 <div id="media-{{ $inspiration->id }}" class="mx-1 inspiration media-container">
-                                    <img src="{{ url('storage/inspirations') }}/{{ auth()->user()->id }}/{{ $inspiration->filename }}" class="inspiration-img">
+                                    <img src="{{ Storage::disk('s3')->url($inspiration->filename) }}" class="inspiration-img">
                                     <div class="overlay">
                                         <div class="full-height d-flex align-items-center justify-content-center">
                                             <a href="{{ route('download', ['asset' => $inspiration->id]) }}" class="action-icon">
@@ -721,7 +721,7 @@
                     cache:false,
                     processData:false,
                     success: function(data) {
-                        $('#primary-logos').append('<div id="media-preview-'+ data.file.logo_id +'" class="mx-1 logo media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.logo_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/logos'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="logo-img" /></div>');
+                        $('#primary-logos').append('<div id="media-preview-'+ data.file.logo_id +'" class="mx-1 logo media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.logo_id +');"><i class="fas fa-times"></i></a><img src="'+ data.file.path +'" class="logo-img" /></div>');
                     }
                 });
             });
@@ -745,7 +745,7 @@
                     cache:false,
                     processData:false,
                     success: function(data) {
-                        $('#secondary-logos').append('<div id="media-preview-'+ data.file.logo_id +'" class="mx-1 logo media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.logo_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/logos'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="logo-img" /></div>');
+                        $('#secondary-logos').append('<div id="media-preview-'+ data.file.logo_id +'" class="mx-1 logo media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.logo_id +');"><i class="fas fa-times"></i></a><img src="'+ data.file.path +'" class="logo-img" /></div>');
                     }
                 });
             });
@@ -771,7 +771,7 @@
                         var filename = data.file.path;
                         var fileExt = filename.split('.').pop();
 
-                        $('#primary-fonts-preview').append('<div id="media-preview-'+ data.file.font_id +'"><div class="mx-1 font media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.font_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                        $('#primary-fonts-preview').append('<div id="media-preview-'+ data.file.font_id +'"><div class="mx-1 font media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.font_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div></div>');
                     }
                 });
             });
@@ -797,7 +797,7 @@
                         var filename = data.file.path;
                         var fileExt = filename.split('.').pop();
 
-                        $('#secondary-fonts-preview').append('<div id="media-preview-'+ data.file.font_id +'"><div class="mx-1 font media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.font_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                        $('#secondary-fonts-preview').append('<div id="media-preview-'+ data.file.font_id +'"><div class="mx-1 font media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.font_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/font-img-'); ?>'+ fileExt +'.png" class="font-img" /></div></div>');
                     }
                 });
             });
@@ -820,7 +820,7 @@
                     cache:false,
                     processData:false,
                     success: function(data) {
-                        $('#preview-pictures').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/pictures'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="picture-img" /></div>');
+                        $('#preview-pictures').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="'+ data.file.path +'" class="picture-img" /></div>');
                     }
                 });
             });
@@ -848,11 +848,11 @@
                         var previewpath = "<?php echo asset('images/guidelines-img-'); ?>"+ fileExt +".png";
                         var withimage = '';
                         if(fileExt == 'jpg' || fileExt == 'png') {
-                            previewpath = "<?php echo url('storage/guidelines'); ?>/"+ data.file.ref_id +"/"+ filename;
+                            previewpath = filename;
                             withimage = 'guide-with-image';
                         }
 
-                        $('#guidelines-preview').append('<div id="media-preview-'+ data.file.guideline_id +'"><div class="mx-1 guideline '+ withimage +' media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.guideline_id +');"><i class="fas fa-times"></i></a><img src="'+ previewpath +'" class="guideline-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                        $('#guidelines-preview').append('<div id="media-preview-'+ data.file.guideline_id +'"><div class="mx-1 guideline '+ withimage +' media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.guideline_id +');"><i class="fas fa-times"></i></a><img src="'+ previewpath +'" class="guideline-img" /></div></div>');
                     }
                 });
             });
@@ -880,11 +880,11 @@
                         var previewpath = "<?php echo asset('images/template-img-'); ?>"+ fileExt +".png";
                         var withimage = '';
                         if(fileExt == 'jpg' || fileExt == 'png') {
-                            previewpath = "<?php echo url('storage/templates'); ?>/"+ data.file.ref_id +"/"+ filename;
+                            previewpath = filename;
                             withimage = 'template-with-image';
                         }
 
-                        $('#templates-preview').append('<div id="media-preview-'+ data.file.template_id +'"><div class="mx-1 template '+ withimage +' media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.template_id +');"><i class="fas fa-times"></i></a><img src="'+ previewpath +'" class="template-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                        $('#templates-preview').append('<div id="media-preview-'+ data.file.template_id +'"><div class="mx-1 template '+ withimage +' media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.template_id +');"><i class="fas fa-times"></i></a><img src="'+ previewpath +'" class="template-img" /></div></div>');
                     }
                 });
             });
@@ -907,7 +907,7 @@
                     cache:false,
                     processData:false,
                     success: function(data) {
-                        $('#inspirations-preview').append('<div id="media-preview-'+ data.file.inspiration_id +'" class="mx-1 inspiration media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.inspiration_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/inspirations'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="inspiration-img" /></div>');
+                        $('#inspirations-preview').append('<div id="media-preview-'+ data.file.inspiration_id +'" class="mx-1 inspiration media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.inspiration_id +');"><i class="fas fa-times"></i></a><img src="'+ data.file.path +'" class="inspiration-img" /></div>');
                     }
                 });
             });

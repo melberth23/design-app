@@ -149,7 +149,7 @@
 
                                 <li class="media py-3">
                                     @if(!empty($comment->user->profile_img))
-                                        <img class="width-64 img-thumbnail border-0 mr-3 rounded-circle" src="{{ url('storage/profiles') }}/{{ $comment->user->id }}/{{ $comment->user->profile_img }}" id="profile-top-image">
+                                        <img class="width-64 img-thumbnail border-0 mr-3 rounded-circle" src="{{ Storage::disk('s3')->url($comment->user->profile_img) }}" id="profile-top-image">
                                     @else
                                         <img class="width-64 img-thumbnail border-0 mr-3 rounded-circle" src="{{asset('admin/img/undraw_profile.svg')}}">
                                     @endif
@@ -164,7 +164,7 @@
                                         <p class="comment pt-2">{{ $comment->comments }}</p>
                                         <div class="attachments">
                                             @foreach (App\Models\CommentsAssets::where('comments_id', $comment->id)->get() as $asset)
-                                                <a class="mx-2" href="{{ route('comment.download', ['asset' => $asset->id]) }}"><i class="fa fa-download" aria-hidden="true"></i> {{ $asset->filename }}</a>
+                                                <a class="mx-2" href="{{ route('comment.download', ['asset' => $asset->id]) }}"><i class="fa fa-download" aria-hidden="true"></i> {{ basename($asset->filename) }}</a>
                                             @endforeach
                                         </div>
                                     </div>

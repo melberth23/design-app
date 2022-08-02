@@ -760,7 +760,12 @@ class BrandController extends Controller
                 $filepath = public_path('storage/'. $directory .'/'. $brand->user_id .'/'. $asset->filename);
 
                 // Delete file
-                File::delete($filepath);
+                if(file_exists($filepath)) {
+                    File::delete($filepath);
+                }
+                if(Storage::disk('s3')->exists($asset->filename)) {
+                    Storage::disk('s3')->delete($asset->filename);
+                }
             }
 
             BrandAssets::whereId($asset->id)->delete();

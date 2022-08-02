@@ -4,6 +4,8 @@ namespace App\Lib;
 
 use DB;
 use DateTimeZone;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\App;
 use App\Models\Payments;
 use App\Models\Requests;
 use App\Models\Brand;
@@ -41,7 +43,7 @@ class SystemHelper {
     */
     public function getPlanInformation($plan='basic', $duration='monthly')
     {
-        $plans = array(
+        $stageplans = array(
             'monthly' => array(
                 'basic' => array(
                     'label' => 'Basic',
@@ -64,7 +66,7 @@ class SystemHelper {
                 'royal' => array(
                     'label' => 'Enterprise',
                     'id' => '95d36a21-671d-48f9-909f-002d022c6b59',
-                    'amount' => 2395,
+                    'amount' => 1199,
                     'request' => 2,
                     'turnaround' => 24,
                     'backlog' => true,
@@ -93,7 +95,67 @@ class SystemHelper {
                 'royal' => array(
                     'label' => 'Enterprise',
                     'id' => '9699aa3b-6196-426b-ac73-7627b7d94780',
-                    'amount' => 3795,
+                    'amount' => 12950,
+                    'request' => 2,
+                    'turnaround' => 24,
+                    'backlog' => true,
+                    'brand' => 9999
+                )
+            )
+        );
+        $liveplans = array(
+            'monthly' => array(
+                'basic' => array(
+                    'label' => 'Basic',
+                    'id' => '96e46e05-e636-42b6-ab29-a02e7c5cb21e',
+                    'amount' => 399,
+                    'request' => 1,
+                    'turnaround' => 48,
+                    'backlog' => false,
+                    'brand' => 1
+                ),
+                'premium' => array(
+                    'label' => 'Premium',
+                    'id' => '96e46f67-12b2-4283-a2c1-feeba42bbc8b',
+                    'amount' => 599,
+                    'request' => 2,
+                    'turnaround' => 24,
+                    'backlog' => false,
+                    'brand' => 2
+                ),
+                'royal' => array(
+                    'label' => 'Enterprise',
+                    'id' => '96e46fec-6289-4ca0-ad27-e85859d0492f',
+                    'amount' => 1199,
+                    'request' => 2,
+                    'turnaround' => 24,
+                    'backlog' => true,
+                    'brand' => 9999
+                )
+            ),
+            'yearly' => array(
+                'basic' => array(
+                    'label' => 'Basic',
+                    'id' => '96e46efe-9c48-4dc7-91c5-e212da0b5047',
+                    'amount' => 4310,
+                    'request' => 1,
+                    'turnaround' => 48,
+                    'backlog' => false,
+                    'brand' => 1
+                ),
+                'premium' => array(
+                    'label' => 'Premium',
+                    'id' => '96e46f98-c7d7-4e05-bf93-e9aa8ec98c7d',
+                    'amount' => 6470,
+                    'request' => 2,
+                    'turnaround' => 24,
+                    'backlog' => false,
+                    'brand' => 2
+                ),
+                'royal' => array(
+                    'label' => 'Enterprise',
+                    'id' => '96e47091-90fb-4b5f-b6bc-2304752bd419',
+                    'amount' => 12950,
                     'request' => 2,
                     'turnaround' => 24,
                     'backlog' => true,
@@ -102,7 +164,7 @@ class SystemHelper {
             )
         );
 
-        return $plans[$duration][$plan];
+        return (App::environment('production'))?$liveplans[$duration][$plan]:$stageplans[$duration][$plan];
     }
 
     /**
@@ -266,7 +328,7 @@ class SystemHelper {
 
         $string = '<h2>'. substr($brand->name, 0, 1) .'</h2>';
         if (!empty($logos) && $logos->count() > 0) {
-            $string = '<img src="'. url('storage/logos') .'/'.$brand->user_id .'/'. $logos->filename .'" class="main-logo" >';
+            $string = '<img src="'. Storage::disk('s3')->url($logos->filename) .'" class="main-logo" >';
         }
 
         return $string;

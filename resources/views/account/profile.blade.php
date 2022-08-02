@@ -20,7 +20,7 @@
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-md-2 single-label">
                                     @if(!empty(auth()->user()->profile_img))
-                                        <img class="rounded-circle" width="130px" src="{{ url('storage/profiles') }}/{{ auth()->user()->id }}/{{ auth()->user()->profile_img }}" id="profile-image">
+                                        <img class="rounded-circle" width="130px" src="{{ Storage::disk('s3')->url(auth()->user()->profile_img) }}" id="profile-image">
                                     @else
                                         <img class="rounded-circle" width="130px" src="{{ asset('admin/img/undraw_profile.svg') }}" id="profile-image">
                                     @endif

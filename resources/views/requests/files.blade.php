@@ -120,9 +120,9 @@
                         @foreach ($medias as $media)
                             <div id="media-{{ $media->id }}">
                                 <div class="mx-1 media media-container">
-                                    <img src="{{ url('storage/comments') }}/{{ $media->comments->user_id }}/{{ $media->filename }}" class="picture-img">
+                                    <img src="{{ Storage::disk('s3')->url($media->filename) }}" class="picture-img">
                                 </div>
-                                <label class="mt-1">{{ $media->filename }}</label><br>
+                                <label class="mt-1">{{ basename($media->filename) }}</label><br>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $media->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
@@ -137,9 +137,9 @@
                         @foreach ($manualmedias as $manualmedia)
                             <div id="media-{{ $manualmedia->id }}">
                                 <div class="mx-1 media media-container">
-                                    <img src="{{ url('storage/comments') }}/{{ $manualmedia->comments->user_id }}/{{ $manualmedia->filename }}" class="picture-img">
+                                    <img src="{{ Storage::disk('s3')->url($manualmedia->filename) }}" class="picture-img">
                                 </div>
-                                <label class="mt-1">{{ $manualmedia->filename }}</label><br>
+                                <label class="mt-1">{{ basename($manualmedia->filename) }}</label><br>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $manualmedia->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
@@ -199,7 +199,7 @@
                                 <div class="mx-1 template media-container media-documents">
                                     <img src="{{ asset('images/template-img-') }}{{ $adobe->file_type }}.png" class="template-img">
                                 </div>
-                                <label class="mt-1">{{ $adobe->filename }}</label><br>
+                                <label class="mt-1">{{ basename($adobe->filename) }}</label><br>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $adobe->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
@@ -216,7 +216,7 @@
                                 <div class="mx-1 template media-container media-documents">
                                     <img src="{{ asset('images/template-img-') }}{{ $manualadobe->file_type }}.png" class="template-img">
                                 </div>
-                                <label class="mt-1">{{ $manualadobe->filename }}</label><br>
+                                <label class="mt-1">{{ basename($manualadobe->filename) }}</label><br>
                                 <a class="btn btn-outline-light action-icons rounded-circle border" href="{{ route('comment.download', ['asset' => $manualadobe->id]) }}">
                                     <img src="{{ asset('images/download.svg') }}" class="action-icon">
                                 </a>
@@ -379,7 +379,7 @@
                 cache:false,
                 processData:false,
                 success: function(data) {
-                    $('#pictures-preview').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/comments'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="picture-img" /></div>');
+                    $('#pictures-preview').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="'+ data.file.path +'" class="picture-img" /></div>');
                 }
             });
         });
@@ -405,7 +405,7 @@
                         var filename = data.file.path;
                         var fileExt = filename.split('.').pop();
 
-                        $('#adobe-previews').append('<div id="media-preview-'+ data.file.adobe_id +'"><div class="mx-1 template media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.adobe_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/template-img-'); ?>'+ fileExt +'.png" class="template-img" /></div><label class="mt-1">'+ filename +'</label></div>');
+                        $('#adobe-previews').append('<div id="media-preview-'+ data.file.adobe_id +'"><div class="mx-1 template media-container media-documents"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.adobe_id +');"><i class="fas fa-times"></i></a><img src="<?php echo asset('images/template-img-'); ?>'+ fileExt +'.png" class="template-img" /></div></div>');
                     }
                 });
         });

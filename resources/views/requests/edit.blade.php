@@ -120,7 +120,7 @@
                             @foreach ($medias as $media)
                                 <div id="media-{{ $media->id }}">
                                     <div class="mx-1 media media-container">
-                                        <img src="{{ url('storage/media') }}/{{ $requests->user_id }}/{{ $media->filename }}" class="picture-img">
+                                        <img src="{{ Storage::disk('s3')->url($media->filename) }}" class="picture-img">
                                         <div class="overlay">
                                             <div class="full-height d-flex align-items-center justify-content-center">
                                                 <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="action-icon">
@@ -317,7 +317,7 @@
                 cache:false,
                 processData:false,
                 success: function(data) {
-                    $('#pictures-preview').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="<?php echo url('storage/media'); ?>/'+ data.file.ref_id +'/'+ data.file.path +'" class="picture-img" /></div>');
+                    $('#pictures-preview').append('<div id="media-preview-'+ data.file.picture_id +'" class="mx-1 picture media-container"><a href="javascript:void(0)" class="preview-remove" onclick="removeTempFile('+ data.file.picture_id +');"><i class="fas fa-times"></i></a><img src="'+ data.file.path +'" class="picture-img" /></div>');
                 }
             });
         });

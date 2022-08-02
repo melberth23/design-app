@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Infinitypaul\LaravelPasswordHistoryValidation\Rules\NotFromPasswordHistory;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use App\Lib\PaymentHelper;
 use App\Lib\SystemHelper;
 use App\Rules\IsValidPassword;
@@ -947,17 +948,18 @@ class HomeController extends Controller
             $allowedprofileExtension = ['jpg','png'];
             $profile = $request->file('file');
 
-            $filename = $profile->getClientOriginalName();
             $extension = $profile->getClientOriginalExtension();
             $check = in_array($extension, $allowedprofileExtension);
 
             if($check) { 
                 $randomfilename = $this->helper->generateRandomString(15);
-                $profilepath = $randomfilename .'.'. $extension;
-                $profile->move($requestprofilepath, $profilepath);
+                $filename = $randomfilename .'.'. $extension;
+                $s3path = 'profiles/'. $userid .'/'. $filename;
+                $path = Storage::disk('s3')->put($s3path, fopen($profile, 'r+'), 'public');
+                $profilepath = Storage::disk('s3')->url($s3path);
 
                 User::where('id', $userid)->update([
-                    'profile_img' => $profilepath
+                    'profile_img' => $s3path
                 ]);
             }
         }

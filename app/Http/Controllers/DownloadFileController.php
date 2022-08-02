@@ -33,7 +33,11 @@ class DownloadFileController extends Controller
         $directory = $this->helper->media_directories($asset->type);
         $filepath = public_path('storage/'. $directory .'/'. $brand->user_id .'/'. $asset->filename);
 
-        return Response::download($filepath);
+        if(file_exists($filepath)) {
+            return Response::download($filepath);
+        } else {
+            return Storage::disk('s3')->download($asset->filename);
+        }
     }
 
     public function deleteBrandFile(BrandAssets $asset){
@@ -42,7 +46,12 @@ class DownloadFileController extends Controller
         $filepath = public_path('storage/'. $directory .'/'. $brand->user_id .'/'. $asset->filename);
 
         // Delete file
-        File::delete($filepath);
+        if(file_exists($filepath)) {
+            File::delete($filepath);
+        }
+        if(Storage::disk('s3')->exists($asset->filename)) {
+            Storage::disk('s3')->delete($asset->filename);
+        }
         BrandAssets::whereId($asset->id)->delete();
 
         return redirect()->back()->with('error', 'File deleted successfully!');
@@ -53,7 +62,11 @@ class DownloadFileController extends Controller
         $directory = $this->helper->media_directories($asset->type);
         $filepath = public_path('storage/'. $directory .'/'. $request->user_id .'/'. $asset->filename);
 
-        return Response::download($filepath);
+        if(file_exists($filepath)) {
+            return Response::download($filepath);
+        } else {
+            return Storage::disk('s3')->download($asset->filename);
+        }
     }
 
     public function deleteRequestFile(RequestAssets $asset){
@@ -62,7 +75,12 @@ class DownloadFileController extends Controller
         $filepath = public_path('storage/'. $directory .'/'. $request->user_id .'/'. $asset->filename);
 
         // Delete file
-        File::delete($filepath);
+        if(file_exists($filepath)) {
+            File::delete($filepath);
+        }
+        if(Storage::disk('s3')->exists($asset->filename)) {
+            Storage::disk('s3')->delete($asset->filename);
+        }
         RequestAssets::whereId($asset->id)->delete();
 
         return redirect()->back()->with('error', 'File deleted successfully!');
@@ -73,7 +91,11 @@ class DownloadFileController extends Controller
         $directory = $this->helper->media_directories($asset->type);
         $filepath = public_path('storage/'. $directory .'/'. $comments->user_id .'/'. $asset->filename);
 
-        return Response::download($filepath);
+        if(file_exists($filepath)) {
+            return Response::download($filepath);
+        } else {
+            return Storage::disk('s3')->download($asset->filename);
+        }
     }
     
     public function deleteCommentFile(CommentsAssets $asset){
@@ -82,7 +104,12 @@ class DownloadFileController extends Controller
         $filepath = public_path('storage/'. $directory .'/'. $comments->user_id .'/'. $asset->filename);
 
         // Delete file
-        File::delete($filepath);
+        if(file_exists($filepath)) {
+            File::delete($filepath);
+        }
+        if(Storage::disk('s3')->exists($asset->filename)) {
+            Storage::disk('s3')->delete($asset->filename);
+        }
         CommentsAssets::whereId($asset->id)->delete();
 
         return redirect()->back()->with('error', 'File deleted successfully!');

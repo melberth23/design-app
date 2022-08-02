@@ -52,7 +52,7 @@
         <div class="card-header bg-primary py-4">
             <div class="top-main-logo">
                 @if ($logos->count() > 0)
-                    <img src="{{ url('storage/logos') }}/{{ auth()->user()->id }}/{{ $logos[0]->filename }}" class="main-logo" >
+                    <img src="{{ Storage::disk('s3')->url($logos[0]->filename) }}" class="main-logo" >
                 @else
                     <h2>{{ substr($brand->name, 0, 1) }}.</h2>
                 @endif
@@ -171,7 +171,7 @@
                                 @foreach ($logos as $logo)
                                     <div id="media-{{ $logo->id }}">
                                         <div class="mx-1 logo media-container">
-                                            <img src="{{ url('storage/logos') }}/{{ $brand->user_id }}/{{ $logo->filename }}" class="logo-img" />
+                                            <img src="{{ Storage::disk('s3')->url($logo->filename) }}" class="logo-img" />
                                             <div class="overlay">
                                                 <div class="full-height d-flex align-items-center justify-content-center">
                                                     <a href="{{ route('download', ['asset' => $logo->id]) }}" class="action-icon">
@@ -207,7 +207,7 @@
                                 @foreach ($secondary_logos as $secondary_logo)
                                     <div id="media-{{ $secondary_logo->id }}">
                                         <div class="mx-1 logo media-container">
-                                            <img src="{{ url('storage/logos') }}/{{  $brand->user_id }}/{{ $secondary_logo->filename }}" class="logo-img" />
+                                            <img src="{{ Storage::disk('s3')->url($secondary_logo->filename) }}" class="logo-img" />
                                             <div class="overlay">
                                                 <div class="full-height d-flex align-items-center justify-content-center">
                                                     <a href="{{ route('download', ['asset' => $secondary_logo->id]) }}" class="action-icon">
@@ -317,7 +317,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <label class="mt-1">{{ $font->filename }}</label>
+                                        <label class="mt-1">{{ basename($font->filename) }}</label>
                                         <div class="d-block d-sm-none">
                                             <div class="full-height d-flex align-items-center justify-content-start">
                                                 <a href="{{ route('download', ['asset' => $font->id]) }}" class="action-icon">
@@ -354,7 +354,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <label class="mt-1">{{ $font->filename }}</label>
+                                        <label class="mt-1">{{ basename($font->filename) }}</label>
                                         <div class="d-block d-sm-none">
                                             <div class="full-height d-flex align-items-center justify-content-start">
                                                 <a href="{{ route('download', ['asset' => $secondary_font->id]) }}" class="action-icon">
@@ -392,7 +392,7 @@
                                 @foreach ($images as $image)
                                     <div id="media-{{ $image->id }}">
                                         <div class="mx-1 picture media-container">
-                                            <img src="{{ url('storage/pictures') }}/{{ $brand->user_id }}/{{ $image->filename }}" class="picture-img">
+                                            <img src="{{ Storage::disk('s3')->url($image->filename) }}" class="picture-img">
                                             <div class="overlay">
                                                 <div class="full-height d-flex align-items-center justify-content-center">
                                                     <a href="{{ route('download', ['asset' => $image->id]) }}" class="action-icon">
@@ -443,7 +443,7 @@
                                     $previewimage = asset('images/guidelines-img-') . $guideline->file_type .'.png';
                                     $withguideimg = '';
                                     if($guideline->file_type == 'jpg' || $guideline->file_type == 'png') {
-                                        $previewimage = url('storage/guidelines') .'/'. $brand->user_id .'/'. $guideline->filename;
+                                        $previewimage = Storage::disk('s3')->url($guideline->filename);
                                         $withguideimg = 'guide-with-image';
                                     }
                                 ?>
@@ -461,7 +461,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <label class="mt-1">{{ $guideline->filename }}</label>
+                                    <label class="mt-1">{{ basename($guideline->filename) }}</label>
                                     <div class="d-block d-sm-none">
                                         <div class="full-height d-flex align-items-center justify-content-start">
                                             <a href="{{ route('download', ['asset' => $guideline->id]) }}" class="action-icon">
@@ -499,7 +499,7 @@
                                     $previewtemimage = asset('images/template-img-') . $template->file_type .'.png';
                                     $withtemimg = '';
                                     if($template->file_type == 'jpg' || $template->file_type == 'png') {
-                                        $previewtemimage = url('storage/templates') .'/'. $brand->user_id .'/'. $template->filename;
+                                        $previewtemimage = Storage::disk('s3')->url($template->filename);
                                         $withtemimg = 'template-with-image';
                                     }
                                 ?>
@@ -517,7 +517,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <label class="mt-1">{{ $template->filename }}</label>
+                                    <label class="mt-1">{{ basename($template->filename) }}</label>
                                     <div class="d-block d-sm-none">
                                         <div class="full-height d-flex align-items-center justify-content-start">
                                             <a href="{{ route('download', ['asset' => $template->id]) }}" class="action-icon">
@@ -553,7 +553,7 @@
                             @foreach ($inspirations as $inspiration)
                                 <div id="media-{{ $inspiration->id }}">
                                     <div class="mx-1 inspiration media-container">
-                                        <img src="{{ url('storage/inspirations') }}/{{ $brand->user_id }}/{{ $inspiration->filename }}" class="inspiration-img">
+                                        <img src="{{ Storage::disk('s3')->url($inspiration->filename) }}" class="inspiration-img">
                                         <div class="overlay">
                                             <div class="full-height d-flex align-items-center justify-content-center">
                                                 <a href="{{ route('download', ['asset' => $inspiration->id]) }}" class="action-icon">

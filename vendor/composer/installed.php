@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '778daf40b27dc40bff64ad3928328c453d001619',
+    'reference' => '0d651c39ba305f199ec363972b6dd8890bfaf44b',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -19,6 +19,24 @@
       array (
       ),
       'reference' => '73e5b88775c64ccc0b84fb60836b30dc9d92ac4a',
+    ),
+    'aws/aws-crt-php' => 
+    array (
+      'pretty_version' => 'v1.0.2',
+      'version' => '1.0.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '3942776a8c99209908ee0b287746263725685732',
+    ),
+    'aws/aws-sdk-php' => 
+    array (
+      'pretty_version' => '3.231.17',
+      'version' => '3.231.17.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd377e1b62b40a4d9e5d9c9387db7c539f28cb6df',
     ),
     'barryvdh/laravel-dompdf' => 
     array (
@@ -180,12 +198,12 @@
     ),
     'guzzlehttp/guzzle' => 
     array (
-      'pretty_version' => '7.4.1',
-      'version' => '7.4.1.0',
+      'pretty_version' => '7.4.5',
+      'version' => '7.4.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ee0a041b1760e6a53d2a39c8c34115adc2af2c79',
+      'reference' => '1dd98b0564cb3f6bd16ce683cb755f94c10fbd82',
     ),
     'guzzlehttp/promises' => 
     array (
@@ -198,12 +216,12 @@
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '2.1.0',
-      'version' => '2.1.0.0',
+      'pretty_version' => '2.4.0',
+      'version' => '2.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '089edd38f5b8abba6cb01567c2a8aaa47cec4c72',
+      'reference' => '13388f00956b1503577598873fffb5ae994b5737',
     ),
     'hamcrest/hamcrest-php' => 
     array (
@@ -471,7 +489,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '778daf40b27dc40bff64ad3928328c453d001619',
+      'reference' => '0d651c39ba305f199ec363972b6dd8890bfaf44b',
     ),
     'laravel/sail' => 
     array (
@@ -538,21 +556,30 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.0.11',
-      'version' => '3.0.11.0',
+      'pretty_version' => '3.2.0',
+      'version' => '3.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1ca148713c23cadeb9d7526973f81fb4a04090a3',
+      'reference' => 'ed0ecc7f9b5c2f4a9872185846974a808a3b052a',
+    ),
+    'league/flysystem-aws-s3-v3' => 
+    array (
+      'pretty_version' => '3.2.0',
+      'version' => '3.2.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '257893ef7398b3c9255b26dff8b0118bb93fc5ff',
     ),
     'league/mime-type-detection' => 
     array (
-      'pretty_version' => '1.9.0',
-      'version' => '1.9.0.0',
+      'pretty_version' => '1.11.0',
+      'version' => '1.11.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'aa70e813a6ad3d1558fc927863d47309b4c23e69',
+      'reference' => 'ff6248ea87a9f116e78edd6002e39e5128a0d4dd',
     ),
     'maatwebsite/excel' => 
     array (
@@ -614,6 +641,15 @@
       array (
         0 => '^1.0',
       ),
+    ),
+    'mtdowling/jmespath.php' => 
+    array (
+      'pretty_version' => '2.6.1',
+      'version' => '2.6.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9b87907a81b87bc76d19a7fb2d61e61486ee9edb',
     ),
     'myclabs/deep-copy' => 
     array (
@@ -1196,12 +1232,12 @@
     ),
     'symfony/deprecation-contracts' => 
     array (
-      'pretty_version' => 'v3.0.0',
-      'version' => '3.0.0.0',
+      'pretty_version' => 'v3.0.2',
+      'version' => '3.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c726b64c1ccfe2896cb7df2e1331c357ad1c8ced',
+      'reference' => '26954b3d62a6c5fd0ea8a2a00c0353a14978d05c',
     ),
     'symfony/error-handler' => 
     array (
@@ -1320,12 +1356,12 @@
     ),
     'symfony/polyfill-mbstring' => 
     array (
-      'pretty_version' => 'v1.25.0',
-      'version' => '1.25.0.0',
+      'pretty_version' => 'v1.26.0',
+      'version' => '1.26.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0abb51d2f102e00a4eefcf46ba7fec406d245825',
+      'reference' => '9344f9cb97f3b19424af1a21a3b0e75b0a7d8d7e',
     ),
     'symfony/polyfill-php72' => 
     array (

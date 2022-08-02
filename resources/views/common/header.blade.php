@@ -44,7 +44,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @if(!empty(auth()->user()->profile_img))
-                        <img class="img-profile rounded-circle" src="{{ url('storage/profiles') }}/{{ auth()->user()->id }}/{{ auth()->user()->profile_img }}" id="profile-top-image">
+                        <img class="img-profile rounded-circle" src="{{ Storage::disk('s3')->url(auth()->user()->profile_img) }}" id="profile-top-image">
                     @else
                         <img class="img-profile rounded-circle" src="{{asset('admin/img/undraw_profile.svg')}}">
                     @endif

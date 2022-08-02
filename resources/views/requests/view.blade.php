@@ -179,7 +179,7 @@
                                 @if ($medias->count() > 0)
                                     @foreach ($medias as $media)
                                         <div id="media-{{ $media->id }}" class="mx-1 media media-container">
-                                            <img src="{{ url('storage/media') }}/{{ $requests->user_id }}/{{ $media->filename }}" class="picture-img">
+                                            <img src="{{ Storage::disk('s3')->url($media->filename) }}" class="picture-img">
                                             <div class="overlay">
                                                 <div class="full-height d-flex align-items-center justify-content-center">
                                                     <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="action-icon">
