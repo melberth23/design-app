@@ -169,7 +169,7 @@
                     @foreach ($allinprogressreq as $progressreq)
                         <tr>
                             <td class="border-left-0 border-right-0 text-primary">#{{ $progressreq->id }}</td>
-                            <td class="border-left-0 border-right-0 font-weight-bold">{{ $progressreq->title }}</td>
+                            <td class="border-left-0 border-right-0 font-weight-bold"><a href="{{ route('request.view', ['requests' => $progressreq->id]) }}">{{ $progressreq->title }}</a></td>
                             @if(!empty($progressreq->designtype->name))
                             <td class="border-left-0 border-right-0">{{ $progressreq->designtype->name }}</td>
                             @else

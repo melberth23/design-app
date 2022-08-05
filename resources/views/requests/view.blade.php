@@ -185,9 +185,11 @@
                                                     <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="action-icon">
                                                       <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                     </a>
+                                                    @if(!auth()->user()->hasRole('Designer'))
                                                     <a href="{{ route('request.delete', ['asset' => $media->id]) }}" class="action-icon">
                                                       <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
                                                     </a>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

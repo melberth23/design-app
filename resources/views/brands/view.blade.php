@@ -54,7 +54,7 @@
                 @if ($logos->count() > 0)
                     <img src="{{ Storage::disk('s3')->url($logos[0]->filename) }}" class="main-logo" >
                 @else
-                    <h2>{{ substr($brand->name, 0, 1) }}.</h2>
+                    <h2>{{ substr($brand->name, 0, 1) }}</h2>
                 @endif
             </div>
         </div>
