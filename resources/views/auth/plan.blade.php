@@ -27,11 +27,11 @@
     <div class="row justify-content-center mt-5 text-center">
         <div class="col-md-3">
             <div id="plan-toggle" class="btn-group btn-group-toggle btn-light" data-toggle="buttons">
-                <label id="yearly-plan" class="btn btn-light">
-                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked> Yearly
-                </label>
                 <label id="monthly-plan" class="btn btn-light active">
                     <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off"> Monthly
+                </label>
+                <label id="yearly-plan" class="btn btn-light">
+                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked> Yearly
                 </label>
             </div>
         </div>
@@ -51,10 +51,11 @@
                     <div class="shadow bg-white rounded card no-header">
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Basic</h6>
-                            <p class="card-text">Ideal for entrepreneurs and small companies who only require a few designs. Our top-notch designers will help them fulfill their design needs while staying on-brand.</p>
+                            <p class="card-text">The perfect starter plan for all your basic design needs.</p>
                             <h2 class="monthly-amount">$399</h2>
-                            <h2 class="yearly-amount hide-amount">$4310</h2>
-                            <p>USD / <span class="monthly-per-duration">MONTH</span><span class="yearly-per-duration hide-per-duration">YEAR</span></p>
+                            <h2 class="yearly-amount hide-amount">$359</h2>
+                            <p>USD / MONTH</p>
+                            <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
                                 <input type="hidden" name="plan" value="basic" />
@@ -67,7 +68,7 @@
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="bi bi-check-circle-fill mr-4 pr-3"></i>
-                                    <span class="c-black">1 Project at a time</span>
+                                    <span class="c-black">1 Ongoing Request</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
@@ -108,10 +109,11 @@
                         <div class="card-header">MOST POPULAR</div>
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Premium</h6>
-                            <p class="card-text">Ideal for marketing teams looking to increase their creative output while also refreshing their brand.</p>
+                            <p class="card-text">Get double the output and crush all your design needs.</p>
                             <h2 class="monthly-amount">$599</h2>
-                            <h2 class="yearly-amount hide-amount">$6470</h2>
-                            <p>USD / <span class="monthly-per-duration">MONTH</span><span class="yearly-per-duration hide-per-duration">YEAR</span></p>
+                            <h2 class="yearly-amount hide-amount">$539</h2>
+                            <p>USD / MONTH</p>
+                            <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
                                 <input type="hidden" name="plan" value="premium" />
@@ -164,10 +166,11 @@
                     <div class="shadow bg-white rounded card no-header">
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Enterprise</h6>
-                            <p class="card-text">Ideal for businesses who want full-service creative and want to increase their productivity by a factor of two to help them grow their business.</p>
-                            <h2 class="monthly-amount">$2395</h2>
-                            <h2 class="yearly-amount hide-amount">$8795</h2>
-                            <p>USD / <span class="monthly-per-duration">MONTH</span><span class="yearly-per-duration hide-per-duration">YEAR</span></p>
+                            <p class="card-text">Level up your content with the ultimate creative plan.</p>
+                            <h2 class="monthly-amount">$1199</h2>
+                            <h2 class="yearly-amount hide-amount">$1079</h2>
+                            <p>USD / MONTH</p>
+                            <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
                                 <input type="hidden" name="plan" value="royal" />

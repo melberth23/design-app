@@ -146,7 +146,9 @@ class RequestsAdminController extends Controller
 
                     // Send email
                     $details = array(
-                        'subject' => 'Request status changed',
+                        'subject' => 'Request status changed to '. $this->helper->statusLabel($status),
+                        'fromemail' => 'hello@designsowl.com',
+                        'fromname' => 'DesignsOwl',
                         'heading' => 'Hi '. $customerfullname,
                         'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel($status),
                         'sub_message' => 'Please login using your login information to check. Thank you!',
@@ -241,6 +243,8 @@ class RequestsAdminController extends Controller
                 // Send email for notification
                 $details = array(
                     'subject' => 'Request notification',
+                    'fromemail' => 'hello@designsowl.com',
+                    'fromname' => 'DesignsOwl',
                     'heading' => 'Hi there,',
                     'message' => 'You have new notification.',
                     'sub_message' => 'Please login using your login information to check. Thank you!',
@@ -261,6 +265,8 @@ class RequestsAdminController extends Controller
                 // Send email for notification
                 $details = array(
                     'subject' => 'Request notification',
+                    'fromemail' => 'hello@designsowl.com',
+                    'fromname' => 'DesignsOwl',
                     'heading' => 'Hi there,',
                     'message' => 'You have new notification.',
                     'sub_message' => 'Please login using your login information to check. Thank you!',

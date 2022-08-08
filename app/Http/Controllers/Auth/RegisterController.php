@@ -81,11 +81,16 @@ class RegisterController extends Controller
                 'token' => $token,
                 'code' => $code
             ]);
+
+            $toname = $user->first_name;
       
             // Send Email
             $details = array(
+                'toname' => $toname,
                 'subject' => 'Account Email Verification',
                 'token' => $token,
+                'fromemail' => 'hello@designsowl.com',
+                'fromname' => 'DesignsOwl',
                 'code' => $code,
                 'template' => 'emailverification',
             );

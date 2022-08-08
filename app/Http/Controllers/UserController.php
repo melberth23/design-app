@@ -99,7 +99,9 @@ class UserController extends Controller
 
             // Send email
             $details = array(
-                'subject' => 'Welcome aboard!',
+                'subject' => 'Welcome aboard',
+                'fromemail' => 'hello@designsowl.com',
+                'fromname' => 'DesignsOwl',
                 'heading' => 'Hi '. $user->first_name,
                 'message' => $message,
                 'sub_message' => 'Please login using your email and this password '. $randomstring .'. Thank you!',

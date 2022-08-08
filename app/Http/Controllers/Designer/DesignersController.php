@@ -289,6 +289,8 @@ class DesignersController extends Controller
                 // Send email for notification
                 $details = array(
                     'subject' => 'Request notification',
+                    'fromemail' => 'hello@designsowl.com',
+                    'fromname' => 'DesignsOwl',
                     'heading' => 'Hi there,',
                     'message' => 'You have new notification.',
                     'sub_message' => 'Please login using your login information to check. Thank you!',
@@ -310,6 +312,8 @@ class DesignersController extends Controller
                     // Send email for notification
                     $details = array(
                         'subject' => 'Request notification',
+                        'fromemail' => 'hello@designsowl.com',
+                        'fromname' => 'DesignsOwl',
                         'heading' => 'Hi there,',
                         'message' => 'You have new notification.',
                         'sub_message' => 'Please login using your login information to check. Thank you!',
@@ -379,7 +383,9 @@ class DesignersController extends Controller
 
                 // Send email
                 $details = array(
-                    'subject' => 'Request status changed',
+                    'subject' => 'Request status changed to '. $this->helper->statusLabel($status),
+                    'fromemail' => 'hello@designsowl.com',
+                    'fromname' => 'DesignsOwl',
                     'heading' => 'Hi '. $customerfullname,
                     'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel($status),
                     'sub_message' => 'Please login using your login information to check. Thank you!',
@@ -432,23 +438,16 @@ class DesignersController extends Controller
 
             // Check upload media
             if($request->hasFile('media')) {
-
-                $mediapath = public_path('storage/comments') .'/'. $userid;
-                if(!File::isDirectory($mediapath)){
-                    // Create Path
-                    File::makeDirectory($mediapath, 0777, true, true);
-                }
-
                 $mediafiles = $request->file('media');
                 foreach($mediafiles as $mediafile) {
-                    $filename = $mediafile->getClientOriginalName();
                     $extension = $mediafile->getClientOriginalExtension();
                     $randomfilename = $this->helper->generateRandomString(15);
-                    $attachmentpath = $randomfilename .'.'. $extension;
-                    $mediafile->move($mediapath, $attachmentpath);
+                    $filename = $randomfilename .'.'. $extension;
+                    $s3path = 'comments/'. $userid .'/'. $filename;
+                    $path = Storage::disk('s3')->put($s3path, fopen($mediafile, 'r+'), 'public');
 
                     $assets = CommentsAssets::create([
-                        'filename' => $attachmentpath,
+                        'filename' => $s3path,
                         'comments_id' => $comment->id,
                         'type' => 'review',
                         'file_type' => $extension
@@ -458,23 +457,16 @@ class DesignersController extends Controller
 
             // Check upload adobe
             if($request->hasFile('documents')) {
-
-                $documentspath = public_path('storage/comments') .'/'. $userid;
-                if(!File::isDirectory($documentspath)){
-                    // Create Path
-                    File::makeDirectory($documentspath, 0777, true, true);
-                }
-
                 $documentsfiles = $request->file('documents');
                 foreach($documentsfiles as $documentsfile) {
-                    $filename = $documentsfile->getClientOriginalName();
                     $extension = $documentsfile->getClientOriginalExtension();
                     $randomfilename = $this->helper->generateRandomString(15);
-                    $attachmentpath = $randomfilename .'.'. $extension;
-                    $documentsfile->move($documentspath, $attachmentpath);
+                    $filename = $randomfilename .'.'. $extension;
+                    $s3path = 'comments/'. $userid .'/'. $filename;
+                    $path = Storage::disk('s3')->put($s3path, fopen($documentsfile, 'r+'), 'public');
 
                     $assets = CommentsAssets::create([
-                        'filename' => $attachmentpath,
+                        'filename' => $s3path,
                         'comments_id' => $comment->id,
                         'type' => 'review',
                         'file_type' => $extension
@@ -507,6 +499,8 @@ class DesignersController extends Controller
                 // Send email for notification
                 $details = array(
                     'subject' => 'Request notification',
+                    'fromemail' => 'hello@designsowl.com',
+                    'fromname' => 'DesignsOwl',
                     'heading' => 'Hi there,',
                     'message' => 'You have new notification.',
                     'sub_message' => 'Please login using your login information to check. Thank you!',
@@ -541,6 +535,8 @@ class DesignersController extends Controller
                     // Send email for notification
                     $details = array(
                         'subject' => 'Request notification',
+                        'fromemail' => 'hello@designsowl.com',
+                        'fromname' => 'DesignsOwl',
                         'heading' => 'Hi there,',
                         'message' => 'You have new notification.',
                         'sub_message' => 'Please login using your login information to check. Thank you!',
@@ -560,7 +556,9 @@ class DesignersController extends Controller
 
             // Send email
             $details = array(
-                'subject' => 'Request status changed',
+                'subject' => 'Request status changed to '. $this->helper->statusLabel(4),
+                'fromemail' => 'hello@designsowl.com',
+                'fromname' => 'DesignsOwl',
                 'heading' => 'Hi '. $customerfullname,
                 'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel(4),
                 'sub_message' => 'Please login using your login information to check. Thank you!',

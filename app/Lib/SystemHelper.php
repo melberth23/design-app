@@ -43,6 +43,7 @@ class SystemHelper {
     */
     public function getPlanInformation($plan='basic', $duration='monthly')
     {
+        $duration = !empty($duration)?$duration:'monthly';
         $stageplans = array(
             'monthly' => array(
                 'basic' => array(
@@ -832,6 +833,12 @@ class SystemHelper {
     public function getRequestsCount($userid, $status)
     {
         return Requests::where('user_id', $userid)->where('status', $status)->count();
+    }
+
+    public function getUserPlanName($userid)
+    {
+        $user = User::whereId($userid)->first();
+        return $this->getPlanName($user->payments->plan, $user->payments->duration);
     }
 
     public function calculateTurnaround($requestid)

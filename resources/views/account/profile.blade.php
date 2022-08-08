@@ -130,7 +130,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-text-label text-dark py-3">
+                        <!-- <div class="tab-text-label text-dark py-3">
                             <div class="row">
                                 <div class="col-md-3 single-label">Currency</div>
                                 <div class="col-md-9">
@@ -144,7 +144,7 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="card mb-4">

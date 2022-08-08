@@ -69,6 +69,8 @@ class AccountController extends Controller
         $details = array(
             'subject' => 'Account Email Verification',
             'token' => $request->token,
+            'fromemail' => 'hello@designsowl.com',
+            'fromname' => 'DesignsOwl',
             'code' => $code,
             'template' => 'emailverification',
         );
@@ -183,7 +185,7 @@ class AccountController extends Controller
 
                 // Send Email
                 $details = array(
-                    'subject' => 'Payment Confirmation Details!',
+                    'subject' => 'Payment Confirmation Details',
                     'message' => 'Welcome '. $customerfullname .',',
                     'extra_msg' => 'Please see details below:',
                     'plan' => $planInfo['label'],

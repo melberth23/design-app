@@ -42,7 +42,7 @@ class PaymentsController extends Controller
 
             // Send confirmation email
             $details = array(
-                'subject' => 'Account fully setup!',
+                'subject' => 'Account fully setup',
                 'message' => 'Greetings '. $customerfullname .' and welcome!',
                 'extra_msg' => 'Please refer your plan information below:',
                 'plan' => $planInfo['label'],
@@ -102,7 +102,7 @@ class PaymentsController extends Controller
 
                 // Send confirmation email
                 $details = array(
-                    'subject' => 'New card added!',
+                    'subject' => 'New card added',
                     'message' => 'Greetings '. $customerfullname,
                     'extra_msg' => 'Please refer your plan information below:',
                     'plan' => $planInfo['label'],

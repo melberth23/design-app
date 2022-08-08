@@ -374,6 +374,8 @@ class HomeController extends Controller
                 $code = sprintf("%04d", mt_rand(1, 9999));
                 $details = array(
                     'subject' => 'Request change email code',
+                    'fromemail' => 'hello@designsowl.com',
+                    'fromname' => 'DesignsOwl',
                     'heading' => 'Hi '. auth()->user()->fullname,
                     'message' => 'This email to confirm that you are about to change your email.',
                     'fieldlabel' => 'Email Address',
@@ -397,6 +399,8 @@ class HomeController extends Controller
                 // $pcode = sprintf("%04d", mt_rand(1, 9999));
                 // $details = array(
                 //     'subject' => 'Request change phone code',
+                // 'fromemail' => 'hello@designsowl.com',
+                // 'fromname' => 'DesignsOwl',
                 //     'heading' => 'Hi '. auth()->user()->fullname,
                 //     'message' => 'This email to confirm that you are about to change your phone number.',
                 //     'fieldlabel' => 'phone number',
@@ -543,6 +547,8 @@ class HomeController extends Controller
 
         $details = array(
             'subject' => 'Request change '. $request->type .' code',
+            'fromemail' => 'hello@designsowl.com',
+            'fromname' => 'DesignsOwl',
             'heading' => 'Hi '. auth()->user()->fullname,
             'message' => 'This email to confirm that you are about to change your '. $label .'.',
             'fieldlabel' => $label,
@@ -604,7 +610,9 @@ class HomeController extends Controller
 
                 // Send Email
                 $details = array(
-                    'subject' => 'Request status changed',
+                    'subject' => 'Delete account confirmation email',
+                    'fromemail' => 'hello@designsowl.com',
+                    'fromname' => 'DesignsOwl',
                     'heading' => 'Hi '. auth()->user()->fullname,
                     'message' => 'This email to confirm that you are about to delete your account in Designsowl.',
                     'template' => 'deleteaccount'
@@ -760,7 +768,7 @@ class HomeController extends Controller
 
                 // Send Email
                 $details = array(
-                    'subject' => 'Payment Confirmation Details!',
+                    'subject' => 'Payment Confirmation Details',
                     'message' => 'Welcome '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
                     'extra_msg' => 'Please see details below:',
                     'plan' => $planInfo['label'],
@@ -830,7 +838,7 @@ class HomeController extends Controller
 
                 // Send Email
                 $details = array(
-                    'subject' => 'Payment Confirmation Details!',
+                    'subject' => 'Payment Confirmation Details',
                     'message' => 'Welcome '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
                     'extra_msg' => 'Please see details below:',
                     'plan' => $planInfo['label'],
@@ -904,7 +912,7 @@ class HomeController extends Controller
 
             // Send Email
             $details = array(
-                'subject' => 'Change Payment Method Card!',
+                'subject' => 'Change Payment Method Card',
                 'message' => 'Hi '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
                 'extra_msg' => 'Please see details below:',
                 'plan' => $planInfo['label'],

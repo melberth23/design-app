@@ -30,7 +30,13 @@ class DigitalMail extends Mailable
      */
     public function build()
     {
-        return $this->subject($this->details['subject'])
-                    ->view('emails.'. $this->details['template']);
+        $build = $this;
+        if(!empty($this->details['fromemail'])) {
+            $build->from($this->details['fromemail'], $this->details['fromname']);
+        }
+        $build->subject($this->details['subject']);
+        $build->view('emails.'. $this->details['template']);
+        
+        return $build;
     }
 }

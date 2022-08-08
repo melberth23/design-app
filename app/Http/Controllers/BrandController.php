@@ -153,7 +153,7 @@ class BrandController extends Controller
             $backurl = route('adminrequest.index');
         }
         if(auth()->user()->hasRole('Designer')) {
-            $backurl = route('designer.index');
+            $backurl = route('designer.index', ['customer_id' => $brand->user_id]);
         }
 
         return view('brands.view')->with([
