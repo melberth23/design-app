@@ -219,7 +219,8 @@ class AccountController extends Controller
 
     public function viewInvoicePDF(Invoices $invoice)
     {        
-        $pdf = PDF::loadView('account.invoice', ['invoice' => $invoice, 'user' => auth()->user(), 'logo' => asset('images/logo-dark.svg')]);
+        $payments = Payments::whereId($invoice->payment_id)->first();
+        $pdf = PDF::loadView('account.invoice', ['payments' => $payments, 'invoice' => $invoice, 'user' => auth()->user(), 'logo' => asset('images/logo-dark.svg')]);
         return $pdf->stream();
     }
 

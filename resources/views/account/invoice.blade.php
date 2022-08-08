@@ -46,22 +46,48 @@
 </head>
 <body>
 
-<div class="information">
+<div style="padding-left: 3%;padding-right: 3%;">
     <table width="100%">
         <tr>
-            <td align="left" style="width: 50%;">
-                <h3>{{ $user->first_name }} {{ $user->last_name }}</h3>
-                Date: {{ $invoice->created_at->format('d F, Y') }}
-                <br /><br />
+            <td align="left" style="width: 60%;">
+                <img src="{{ asset('images/logo-dark.svg') }}" style="width: 200px; vertical-align: top;">
+            </td>
+            <td align="right" style="width: 40%;">
+                <h2 style="text-align: left;">Invoice Information</h2>
+                <hr>
+                <table style="width: 100%;">
+                    <tr>
+                        <td align="left">Invoice Number:</td>
+                        <td align="right">DO{{ $invoice->number }}</td>
+                    </tr>
+                    <tr>
+                        <td align="left">Invoice Date:</td>
+                        <td align="right">{{ $invoice->created_at->format('d F, Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td align="left">Payment Method:</td>
+                        <td align="right">Card</td>
+                    </tr>
+                    <tr>
+                        <td align="left">Customer Number:</td>
+                        <td align="right">{{ $user->mobile_number }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<div style="padding-left: 3%;padding-right: 3%;">
+    <table width="100%">
+        <tr>
+            <td align="left" style="font-size: 18px;">
+                <h3>Bill To</h3>
+                <h4>{{ $user->first_name }} {{ $user->last_name }}</h4>
                 {{ $user->address_1 }} {{ $user->address_2 }},<br />
                 {{ $user->city }} {{ $user->state }}, {{ $user->zip }}<br />
                 {{ $user->country }}
-            </td>
-            <td align="right" style="width: 50%;">
-
-                <h3>DesignsOwl</h3>
-                <br /><br />
-                {{ config('app.url') }}
             </td>
         </tr>
 
@@ -71,45 +97,65 @@
 
 <br/>
 
-<div class="invoice">
-    <h3>Invoice DO{{ $invoice->number }}</h3>
-    <table width="100%">
-        <thead>
-        <tr>
-            <th align="left">Description</th>
-            <th align="left">Plan</th>
-            <th align="left">Total</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td align="left">Invoice for {{ $invoice->created_at->format('d F, Y') }}</td>
-            <td align="left">Designs Owl, {{ (new \App\Lib\SystemHelper)->getPlanInformation($invoice->plan)['label'] }}</td>
-            <td align="left">{{ (new \App\Lib\SystemHelper)->getCurrency('', 'symbol') }}{{ number_format($invoice->amount) }}</td>
-        </tr>
-        </tbody>
+<div style="padding-left: 3%;padding-right: 3%;">
+    <h3 style="font-size: 28px; font-weight: normal;">INVOICE</h3>
+    <p style="background-color: #9672FB; color: #FFF; font-size: 18px; padding: 10px 10px; margin: 0; font-weight: bold;">Item Details</p>
+    <p style="background-color: #f8f9fc; color: #000; font-size: 18px; padding: 10px 10px; margin: 0; font-weight: bold;">Service Term: <?php echo date('d F, Y', strtotime($invoice->date_invoice)); ?> to <?php echo date('d F, Y', strtotime("+1 month", strtotime($invoice->date_invoice))); ?></p>
+</div>
 
-        <tfoot>
-            <tr>
-                <td colspan="1"></td>
-                <td align="left">Total</td>
-                <td align="left" class="gray">{{ (new \App\Lib\SystemHelper)->getCurrency('', 'symbol') }}{{ number_format($invoice->amount) }}</td>
+<br/>
+
+<div style="padding-left: 3%;padding-right: 3%;">
+    <table width="100%" >
+        <tbody>
+            <tr style="margin: 0;">
+                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">PRODUCT DESCRIPTION</td>
+                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">PRODUCT PLAN</td>
+                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">UNIT PRICE</td>
+                <td align="right" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">TOTAL</td>
             </tr>
-        </tfoot>
+            <tr style="margin: 0;">
+                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;"><strong>{{ ucfirst(!empty($payments->duration)?$payments->duration:'monthly') }}</strong></td>
+                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">Designs Owl, {{ (new \App\Lib\SystemHelper)->getPlanInformation($invoice->plan)['label'] }}</td>
+                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">{{ number_format($invoice->amount, 2) }}</td>
+                <td align="right" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">{{ number_format($invoice->amount, 2) }}</td>
+            </tr>
+        </tbody>
     </table>
 </div>
 
-<div class="information" style="position: absolute; bottom: 0;width: 100%;">
-    <table width="100%">
-        <tr>
-            <td align="left" style="width: 50%;">
-                &copy; {{ date('Y') }} {{ config('app.url') }} - All rights reserved.
-            </td>
-            <td align="right" style="width: 50%;">
-                {{ config('app.name') }}
-            </td>
-        </tr>
+<br/>
 
+<div style="padding-left: 3%;padding-right: 3%;">
+    <table width="100%" style="background-color: #ddd;">
+        <tr style="margin: 0;">
+            <td align="left" style="padding: 15px 10px;"><h3 style="font-size: 28px;">Invoice Total</h3></td>
+            <td align="right" style="padding: 15px 10px;">NET AMOUNT(SGD)</td>
+            <td align="right" style="padding: 15px 10px;">{{ number_format($invoice->amount, 2) }}</td>
+        </tr>
     </table>
+    <table width="100%" style="background-color: #000; color: #fff;">
+        <tr style="margin: 0;">
+            <td align="left" style="padding: 15px 10px;"></td>
+            <td align="right" style="padding: 15px 10px;">GRAND TOTAL(SGD)</td>
+            <td align="right" style="padding: 15px 10px;">{{ number_format($invoice->amount, 2) }}</td>
+        </tr>
+    </table>
+</div>
+
+<br/>
+<br/>
+
+<div style="padding-left: 3%;padding-right: 3%;">
+    <table width="100%">
+        <tr style="margin: 0;">
+            <td style="width: 70%;"></td>
+            <td align="left" style="width: 30%; font-size: 20px;">Billing Contact<br><hr><a href="https://designsowl.com/contact" style="color: #000;">https://designsowl.com/contact</a></td>
+        </tr>
+    </table>
+</div>
+
+<div style="padding-left: 3%;padding-right: 3%; position: absolute; bottom: 0;width: 100%; text-align: center;">
+    <p style="font-size: 28px;">Thank you for your business!</p>
 </div>
 </body>
