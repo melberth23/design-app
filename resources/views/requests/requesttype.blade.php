@@ -58,8 +58,16 @@
                     <label for="dimensions">Design dimension</label>
                     <select id="dimensions" class="form-control form-control-user @error('dimensions') is-invalid @enderror" name="dimensions">
                         <option selected disabled>Select dimension</option>
-                        @foreach($dimensions as $dimension)
-                            <option value="{{ $dimension->label }}" {{ old('dimensions') == $dimension->label ? 'selected' : '' }}>{{ $dimension->label }}</option>
+                        @foreach($dimensions as $dkey => $dimension)
+                            @if(!is_numeric($dkey))
+                                <optgroup label="{{ $dkey }}">
+                                @foreach($dimension as $dimen)
+                                    <option value="{{ $dimen->label }}" {{ old('dimensions') == $dimen->label ? 'selected' : '' }}>{{ $dimen->label }}</option>
+                                @endforeach
+                                </optgroup>
+                            @else
+                                <option value="{{ $dimension->label }}" {{ old('dimensions') == $dimension->label ? 'selected' : '' }}>{{ $dimension->label }}</option>
+                            @endif
                         @endforeach
                         <option value="custom" {{ old('dimensions') == 'custom' ? 'selected' : '' }}>Custom</option>
                     </select>

@@ -261,9 +261,22 @@ class RequestsController extends Controller
             $brands = Brand::where('user_id', $userid)->get();
             $file_types = $this->helper->request_file_types();
             $designtype = RequestTypes::whereId($type)->first();
-            $dimensions = Dimensions::where('request_type_id', $type)->get();
+            $dimensions = Dimensions::where('request_type_id', $type)->where('status', 1)->get();
 
-            return view('requests.requesttype', ['brands' => $brands, 'designtype' => $designtype, 'types' => $file_types, 'dimensions' => $dimensions]);
+            $dimension_options = [];
+            foreach($dimensions as $dimension) {
+                if(!empty($dimension->parent_type)) {
+                    if(!empty($dimension_options[$dimension->parent_type])) {
+                        array_push($dimension_options[$dimension->parent_type], $dimension);
+                    } else {
+                        $dimension_options[$dimension->parent_type][] = $dimension;
+                    }
+                } else {
+                    $dimension_options[] = $dimension;
+                }
+            }
+
+            return view('requests.requesttype', ['brands' => $brands, 'designtype' => $designtype, 'types' => $file_types, 'dimensions' => $dimension_options]);
         } else {
             return redirect()->route('dashboard');
         }
