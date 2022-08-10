@@ -10,13 +10,13 @@
     @include('common.alert')
    
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
         <h1 class="brand-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between"><a href="{{ $backurl }}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $brand->name }}</span></h1>
         @if(!auth()->user()->hasRole('Designer'))
-        <div class="actions d-sm-flex align-items-center justify-content-between">
+        <div class="actions d-flex align-items-center justify-content-end">
             <div class="dropdown m-1">
               <button class="btn btn-outline-light text-dark border dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                More Actions
+                <span class="d-none d-md-inline-block">More Actions</span>
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <!-- <a class="dropdown-item" href="#"><img src="{{ asset('images/downloiad.svg') }}" class="action-icons"> Download Brand Profile</a> -->

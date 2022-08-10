@@ -13,7 +13,7 @@
             <!-- Page Heading -->
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h1 class="h3 mb-0 text-gray-800 page-heading">My brand profile</h1>
-                <div class="actions d-flex align-items-center justify-content-between">
+                <div class="actions d-flex align-items-center justify-content-end">
                     <div class="dropdown m-1">
                       <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-sliders" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Sort</span>

@@ -11,14 +11,14 @@
         @if ($brands->count() > 0)
 
             <!-- Page Heading -->
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
                 <h1 class="h3 mb-0 text-gray-800 page-heading">My brand profile</h1>
-                <div class="actions d-sm-flex align-items-center justify-content-between">
+                <div class="actions d-flex align-items-center justify-content-end">
                     <div class="dropdown m-1">
                       <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-sliders" aria-hidden="true"></i> Sort
+                        <i class="fa fa-sliders" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Sort</span>
                       </button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="{{ route('brand.drafts.sort', ['type' => 'date', 'sort' => 'asc']) }}">Date added (Ascending)</a>
                         <a class="dropdown-item" href="{{ route('brand.drafts.sort', ['type' => 'date', 'sort' => 'desc']) }}">Date added (Descending)</a>
                         <a class="dropdown-item" href="{{ route('brand.drafts.sort', ['type' => 'name', 'sort' => 'asc']) }}">Name (A-Z)</a>

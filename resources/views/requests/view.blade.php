@@ -10,7 +10,7 @@
     @include('common.alert')
    
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
         <h1 class="request-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between page-heading"><a href="{{ $backurl }}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $requests->title }}</span>
             @if ($requests->status == 0)
                 <span class="badge badge-primary py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
@@ -24,17 +24,17 @@
                 <span class="badge badge-dark py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
             @endif
             @if ($requests->status == 4 && !auth()->user()->hasRole('Designer'))
-            <a href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 0]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fas fa-check" aria-hidden="true"></i> Mark Complete</a>
+            <a href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 0]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fas fa-check" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Mark Complete</span></a>
             @endif
         </h1>
-        <div class="actions d-sm-flex align-items-center justify-content-between">
+        <div class="actions d-flex align-items-center justify-content-end">
             @if (auth()->user()->hasRole('Designer') && $requests->status == 2)
                 <a href="{{ route('designer.status', ['request_id' => $requests->id, 'status' => 3]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fa fa-list"></i> Move to progress</a>
             @endif
             @if (auth()->user()->hasRole('Designer') && $requests->status == 3)
                 <a href="#" data-toggle="modal" data-target="#movereviewModal" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-dark"><i class="fas fa-check" aria-hidden="true"></i> Move to review</a>
             @endif
-            <div class="dropdown m-1">
+            <div class="dropdown m-1 d-none d-md-inline-block">
                 <button class="btn btn-outline-light text-dark border" id="dropdownUpdate{{ $requests->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-clock-o"></i>
                 </button>
@@ -178,10 +178,24 @@
                             <div class="d-flex flex-wrap pictures">
                                 @if ($medias->count() > 0)
                                     @foreach ($medias as $media)
-                                        <div id="media-{{ $media->id }}" class="mx-1 media media-container">
-                                            <img src="{{ Storage::disk('s3')->url($media->filename) }}" class="picture-img">
-                                            <div class="overlay">
-                                                <div class="full-height d-flex align-items-center justify-content-center">
+                                        <div id="media-{{ $media->id }}">
+                                            <div class="mx-1 media media-container">
+                                                <img src="{{ Storage::disk('s3')->url($media->filename) }}" class="picture-img">
+                                                <div class="overlay">
+                                                    <div class="full-height d-flex align-items-center justify-content-center">
+                                                        <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="action-icon">
+                                                          <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                        </a>
+                                                        @if(!auth()->user()->hasRole('Designer'))
+                                                        <a href="{{ route('request.delete', ['asset' => $media->id]) }}" class="action-icon">
+                                                          <img src="{{ asset('images/delete-media.svg') }}" class="delete-img rounded-circle p-2 m-1 bg-white text-dark">
+                                                        </a>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-block d-sm-none">
+                                                <div class="full-height d-flex align-items-center justify-content-start">
                                                     <a href="{{ route('request.download', ['asset' => $media->id]) }}" class="action-icon">
                                                       <img src="{{ asset('images/download-media.svg') }}" class="download-img rounded-circle p-2 m-1 bg-white text-dark">
                                                     </a>

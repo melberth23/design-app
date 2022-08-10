@@ -320,8 +320,8 @@ h1.page-heading span.badge {
     color: #ADA7BC;
 }
 .action-icons {
-    max-width: 40px;
-    width: 100%;
+    max-width: 100%;
+    width: 40px;
     height: 40px;
 }
 img.action-icon {
@@ -558,6 +558,9 @@ fieldset.rating.star > label:before {
   .rating.star > label {
     margin: 1px;
     width: 19%;
+  }
+  .dropdown-item {
+    white-space: normal;
   }
 }
 .pricing-table .card-text {
