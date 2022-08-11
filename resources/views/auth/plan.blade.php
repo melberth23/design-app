@@ -52,9 +52,9 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Basic</h6>
                             <p class="card-text">The perfect starter plan for all your basic design needs.</p>
-                            <h2 class="monthly-amount">$399</h2>
-                            <h2 class="yearly-amount hide-amount">$359</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount">S$399</h2>
+                            <h2 class="yearly-amount hide-amount">S$359</h2>
+                            <p>SGD / MONTH</p>
                             <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
@@ -110,9 +110,9 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Premium</h6>
                             <p class="card-text">Get double the output and crush all your design needs.</p>
-                            <h2 class="monthly-amount">$599</h2>
-                            <h2 class="yearly-amount hide-amount">$539</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount">S$599</h2>
+                            <h2 class="yearly-amount hide-amount">S$539</h2>
+                            <p>SGD / MONTH</p>
                             <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
@@ -167,9 +167,9 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Enterprise</h6>
                             <p class="card-text">Level up your content with the ultimate creative plan.</p>
-                            <h2 class="monthly-amount">$1199</h2>
-                            <h2 class="yearly-amount hide-amount">$1079</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount">S$1199</h2>
+                            <h2 class="yearly-amount hide-amount">S$1079</h2>
+                            <p>SGD / MONTH</p>
                             <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf

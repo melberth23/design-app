@@ -41,9 +41,9 @@
                         <div class="card-body pt-5 pb-5 text-dark">
                             <h6 class="card-title">Basic</h6>
                             <p class="card-text">The perfect starter plan for all your basic design needs.</p>
-                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">$399</h2>
-                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">$359</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">S$399</h2>
+                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">S$359</h2>
+                            <p>SGD / MONTH</p>
                             <div class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }} pb-2">Save 10%</div>
                             @if(auth()->user()->payments->plan == 'basic')
                                 <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
@@ -116,9 +116,9 @@
                         <div class="card-body pt-5 pb-5 text-dark">
                             <h6 class="card-title">Premium</h6>
                             <p class="card-text">Get double the output and crush all your design needs.</p>
-                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">$599</h2>
-                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">$539</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">S$599</h2>
+                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">S$539</h2>
+                            <p>SGD / MONTH</p>
                             <div class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }} pb-2">Save 10%</div>
                             @if(auth()->user()->payments->plan == 'premium')
                                 <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>
@@ -190,9 +190,9 @@
                         <div class="card-body pt-5 pb-5 text-dark">
                             <h6 class="card-title">Enterprise</h6>
                             <p class="card-text">Level up your content with the ultimate creative plan.</p>
-                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">$1199</h2>
-                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">$1079</h2>
-                            <p>USD / MONTH</p>
+                            <h2 class="monthly-amount {{ ($durationlabel == 'yearly')?'hide-amount':'' }}">S$1199</h2>
+                            <h2 class="yearly-amount {{ ($durationlabel == 'monthly')?'hide-amount':'' }}">S$1079</h2>
+                            <p>SGD / MONTH</p>
                             <div class="yearly-per-duration {{ ($durationlabel == 'monthly')?'hide-per-duration':'' }} pb-2">Save 10%</div>
                             @if(auth()->user()->payments->plan == 'royal')
                                 <div class="monthly-block-label bg-opacity-primary rounded py-2 px-4 text-dark {{ ($durationlabel == 'yearly')?'hide-label':'d-block' }}">Monthly plan, paid monthly</div>

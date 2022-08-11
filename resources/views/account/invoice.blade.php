@@ -117,8 +117,8 @@
             <tr style="margin: 0;">
                 <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;"><strong>{{ ucfirst(!empty($payments->duration)?$payments->duration:'monthly') }}</strong></td>
                 <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">Designs Owl, {{ (new \App\Lib\SystemHelper)->getPlanInformation($invoice->plan)['label'] }}</td>
-                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">{{ number_format($invoice->amount, 2) }}</td>
-                <td align="right" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">{{ number_format($invoice->amount, 2) }}</td>
+                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">S${{ number_format($invoice->amount, 2) }}</td>
+                <td align="right" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">S${{ number_format($invoice->amount, 2) }}</td>
             </tr>
         </tbody>
     </table>
@@ -131,14 +131,14 @@
         <tr style="margin: 0;">
             <td align="left" style="padding: 15px 10px;"><h3 style="font-size: 28px;">Invoice Total</h3></td>
             <td align="right" style="padding: 15px 10px;">NET AMOUNT(SGD)</td>
-            <td align="right" style="padding: 15px 10px;">{{ number_format($invoice->amount, 2) }}</td>
+            <td align="right" style="padding: 15px 10px;">S${{ number_format($invoice->amount, 2) }}</td>
         </tr>
     </table>
     <table width="100%" style="background-color: #000; color: #fff;">
         <tr style="margin: 0;">
             <td align="left" style="padding: 15px 10px;"></td>
             <td align="right" style="padding: 15px 10px;">GRAND TOTAL(SGD)</td>
-            <td align="right" style="padding: 15px 10px;">{{ number_format($invoice->amount, 2) }}</td>
+            <td align="right" style="padding: 15px 10px;">S${{ number_format($invoice->amount, 2) }}</td>
         </tr>
     </table>
 </div>

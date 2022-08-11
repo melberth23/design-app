@@ -33,7 +33,7 @@
                         <td class="text-primary"><a href="{{ route('view.invoice', ['invoice' => $invoice->id]) }}" target="_blank">DO{{ $invoice->number }}</a></td>
                         <td>{{ $invoice->created_at->format('d F, Y') }}</td>
                         <td>Designs Owl, {{ (new \App\Lib\SystemHelper)->getPlanInformation($invoice->plan)['label'] }}</td>
-                        <td>{{ (new \App\Lib\SystemHelper)->getCurrency('', 'symbol') }}{{ number_format($invoice->amount) }}</td>
+                        <td>S${{ number_format($invoice->amount) }}</td>
                         <td class="d-flex   justify-content-start">
                             <a href="{{ route('view.invoice', ['invoice' => $invoice->id]) }}" target="_blank" class="btn btn-outline-light action-icons rounded-circle border p-1 mx-1">
                                 <img src="{{ asset('images/inv-open.svg') }}" class="action-icon">
