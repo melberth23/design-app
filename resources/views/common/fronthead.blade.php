@@ -12,7 +12,7 @@
     <title>{{ config('app.name', 'Laravel') }} | @yield('title')</title>
 
     {{-- ICON --}}
-    <link rel="shortcut icon" type="image/jpg" href="{{ asset('images/icon.png') }}"/>
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/designowl-fav.png') }}"/>
 
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
