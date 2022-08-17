@@ -41,6 +41,17 @@ class PaymentsController extends Controller
                 ->where('id', $user->id)
                 ->update(['status' => 1]);
 
+            // Create invoice
+            $datetoday = date('Y-m-d');
+            Invoices::create([
+                'user_id' => $user->id,
+                'payment_id' => $rowpayment->id,
+                'number' => 100000000,
+                'date_invoice' => $datetoday,
+                'plan' => $rowpayment->plan,
+                'amount' => $rowpayment->price
+            ]);
+
             // Send confirmation email
             $details = array(
                 'subject' => 'Account fully setup',

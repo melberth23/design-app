@@ -19,7 +19,7 @@
         <div class="col-md-9">
             <div id="rightside-content" class="row justify-content-center mt-5">
                 <div class="col-md-6">
-                    <h1>Welcome to Designs Owl</h1>
+                    <h1>Welcome to DesignsOwl</h1>
                     <p>Already have an account? <a href="{{ route('login') }}">Log in</a></p>
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
@@ -108,7 +108,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label class="col-form-label"><input type="checkbox" name="receive_promotion_email" value="1"> {{ __("I don't want to receive promotional email from Designs Owl.") }}</label>
+                            <label class="col-form-label"><input type="checkbox" name="receive_promotion_email" value="1"> {{ __("I don't want to receive promotional email from DesignsOwl.") }}</label>
                         </div>
 
                         <div class="row mb-3">

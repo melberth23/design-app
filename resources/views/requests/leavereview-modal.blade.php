@@ -65,7 +65,7 @@
                         <textarea id="suggestion" class="form-control form-control-user" name="suggestion"></textarea>
                     </div>
                     <div class="recommend">
-                        <label class="pt-3">Would you recommend Designs Owl to your friends?</label>
+                        <label class="pt-3">Would you recommend DesignsOwl to your friends?</label>
                     </div>
                     <div class="recommend-buttons btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-primary">

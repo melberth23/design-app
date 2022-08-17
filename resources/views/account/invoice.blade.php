@@ -116,7 +116,7 @@
             </tr>
             <tr style="margin: 0;">
                 <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;"><strong>{{ ucfirst(!empty($payments->duration)?$payments->duration:'monthly') }}</strong></td>
-                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">Designs Owl, {{ (new \App\Lib\SystemHelper)->getPlanInformation($invoice->plan)['label'] }}</td>
+                <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">DesignsOwl, {{ (new \App\Lib\SystemHelper)->getPlanInformation($invoice->plan)['label'] }}</td>
                 <td align="left" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">S${{ number_format($invoice->amount, 2) }}</td>
                 <td align="right" style="padding: 15px 10px; border-bottom: 1px solid #000; margin: 0;">S${{ number_format($invoice->amount, 2) }}</td>
             </tr>

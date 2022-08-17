@@ -172,17 +172,6 @@ class AccountController extends Controller
                     'duration' => $selectedduration
                 ]);
 
-                // Create invoice
-                $datetoday = date('Y-m-d');
-                Invoices::create([
-                    'user_id' => $user->id,
-                    'payment_id' => $payments->id,
-                    'number' => 100000000,
-                    'date_invoice' => $datetoday,
-                    'plan' => $payments->plan,
-                    'amount' => $payments->price
-                ]);
-
                 // Send Email
                 $details = array(
                     'subject' => 'Payment Confirmation Details',
