@@ -97,10 +97,17 @@
 
 <br/>
 
+<?php 
+    $add1 = '+1 month';
+    if(!empty($payments->duration) && $payments->duration == 'yearly') {
+        $add1 = '+1 year';
+    }
+?>
+
 <div style="padding-left: 3%;padding-right: 3%;">
     <h3 style="font-size: 28px; font-weight: normal;">INVOICE</h3>
     <p style="background-color: #9672FB; color: #FFF; font-size: 18px; padding: 10px 10px; margin: 0; font-weight: bold;">Item Details</p>
-    <p style="background-color: #f8f9fc; color: #000; font-size: 18px; padding: 10px 10px; margin: 0; font-weight: bold;">Service Term: <?php echo date('d F, Y', strtotime($invoice->date_invoice)); ?> to <?php echo date('d F, Y', strtotime("+1 month", strtotime($invoice->date_invoice))); ?></p>
+    <p style="background-color: #f8f9fc; color: #000; font-size: 18px; padding: 10px 10px; margin: 0; font-weight: bold;">Service Term: <?php echo date('d F, Y', strtotime($invoice->date_invoice)); ?> to <?php echo date('d F, Y', strtotime($add1, strtotime($invoice->date_invoice))); ?></p>
 </div>
 
 <br/>
