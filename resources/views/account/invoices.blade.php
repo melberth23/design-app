@@ -30,7 +30,7 @@
             <tbody>
                 @foreach ($invoices as $invoice)
                     <tr>
-                        <td class="text-primary"><a href="{{ route('view.invoice', ['invoice' => $invoice->id]) }}" target="_blank">DO{{ $invoice->number }}</a></td>
+                        <td class="text-primary"><a href="{{ route('view.invoice', ['invoice' => $invoice->id]) }}" target="_blank">DO{{ $invoice->id }}</a></td>
                         <td>{{ $invoice->created_at->format('d F, Y') }}</td>
                         <td>Designs Owl, {{ (new \App\Lib\SystemHelper)->getPlanInformation($invoice->plan)['label'] }}</td>
                         <td>S${{ number_format($invoice->amount) }}</td>

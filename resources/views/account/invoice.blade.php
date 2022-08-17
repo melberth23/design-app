@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Invoice - DO{{ $invoice->number }}</title>
+    <title>Invoice - DO{{ $invoice->id }}</title>
 
     <style type="text/css">
         @page {
@@ -58,7 +58,7 @@
                 <table style="width: 100%;">
                     <tr>
                         <td align="left">Invoice Number:</td>
-                        <td align="right">DO{{ $invoice->number }}</td>
+                        <td align="right">DO{{ $invoice->id }}</td>
                     </tr>
                     <tr>
                         <td align="left">Invoice Date:</td>

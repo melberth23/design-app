@@ -140,7 +140,7 @@
                     </div>
                     <div class="tab-text-label text-dark py-3 border-bottom">
                         <div class="row">
-                            <div class="col-md-3 single-label">Services Provider</div>
+                            <div class="col-md-3 single-label">Services/Products</div>
                             <div class="col-md-9">{{ $brand->services_provider }}</div>
                         </div>
                     </div>

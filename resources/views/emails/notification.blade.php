@@ -2,3 +2,5 @@
   
 <p>{{ $details['message'] }}</p>
 <p>{{ $details['sub_message'] }}</p>
+<p>Best regards,<br/>
+DesignsOwl</p>

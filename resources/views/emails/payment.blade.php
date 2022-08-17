@@ -10,5 +10,7 @@
     <p>Amount: {{ $details['amount'] }}</p>
     <p>{{ $details['paymentlink'] }}</p>
     <p>{{ $details['thank_msg'] }}</p>
+    <p>Best regards,<br/>
+    DesignsOwl</p>
 </body>
 </html>

@@ -12,7 +12,7 @@
     <title>{{ config('app.name', 'Laravel') }} | @yield('title')</title>
 
     {{-- ICON --}}
-    <link rel="shortcut icon" type="image/jpg" href="{{ asset('images/icon.png') }}"/>
+    <link rel="shortcut icon" type="image/jpg" href="{{ asset('images/designowl-fav.png') }}"/>
 
     <!-- Font Awesome UI KIT-->
     <script src="https://kit.fontawesome.com/f75ab26951.js" crossorigin="anonymous"></script>

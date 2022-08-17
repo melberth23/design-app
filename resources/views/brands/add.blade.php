@@ -112,7 +112,7 @@
                             @enderror
                         </div>
                         <div class="tab-text-label text-dark pb-3">
-                            <label for="servicesProvider">Services Provider</label>
+                            <label for="servicesProvider">Services/Products</label>
                             <input 
                                 type="text" 
                                 class="form-control form-control-user @error('services_provider') is-invalid @enderror" 

@@ -7,7 +7,7 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="dashboard-welcome-label">Howdy, {{ Auth()->user()->first_name }}</h1>
+        <h1 class="dashboard-welcome-label">Hello, {{ Auth()->user()->first_name }}</h1>
         <div class="actions d-sm-flex align-items-center justify-content-between small">
             <form id="filter-dashboard" method="get">
                 @csrf
