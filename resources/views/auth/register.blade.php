@@ -112,7 +112,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <p>By clicking Create account, I agree that I have read and accepted the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+                            <p>By clicking Create account, I agree that I have read and accepted the <a href="https://designsowl.com/terms-and-conditions/" target="_blank">Terms of Use</a> and <a href="https://designsowl.com/privacy-policy/" target="_blank">Privacy Policy</a>.</p>
                         </div>
 
                         <div class="row mb-0">
