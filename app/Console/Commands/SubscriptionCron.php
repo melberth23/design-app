@@ -57,10 +57,15 @@ class SubscriptionCron extends Command
                     $current_recurring_date = strtotime($recurring_date);
                     $datetoday = date('Y-m-d');
                     $current_date = strtotime($datetoday);
+                    
+                    $add1 = '+1 month';
+                    if(!empty($payments->duration) && $payments->duration == 'yearly') {
+                        $add1 = '+1 year';
+                    }
 
                     if($current_date >= $current_recurring_date && $payments->plan_status == 0) {
                         // Increase 1 month
-                        $next_recurring_date = date("Y-m-d", strtotime("+1 month", $current_recurring_date));
+                        $next_recurring_date = date("Y-m-d", strtotime($add1, $current_recurring_date));
                         Payments::whereId($payments->id)->update(['recurring_date' => $next_recurring_date]);
 
                         $last_invoice = Invoices::where('user_id', $customer->id)->latest('created_at')->first();

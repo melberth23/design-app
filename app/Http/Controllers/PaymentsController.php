@@ -21,14 +21,19 @@ class PaymentsController extends Controller
     public function payment(Request $request) {
         $payments = $request->all();
         if(!empty($payments['reference']) && $payments['status'] == 'active') {
+            // Get payments
+            $rowpayment = Payments::where('reference', $payments['reference'])->first();
+            
             // Update payment by reference
             $datetoday = date('Y-m-d');
             $current_date = strtotime($datetoday);
-            $next_recurring_date = date("Y-m-d", strtotime("+1 month", $current_date));
+            $add1 = '+1 month';
+            if(!empty($rowpayment->duration) && $rowpayment->duration == 'yearly') {
+                $add1 = '+1 year';
+            }
+            $next_recurring_date = date("Y-m-d", strtotime($add1, $current_date));
             Payments::where('reference', $payments['reference'])->update(array('type' => $payments['type'], 'recurring_date' => $next_recurring_date, 'status' => $payments['status']));
 
-            // Get payments
-            $rowpayment = Payments::where('reference', $payments['reference'])->first();
             $helper = new SystemHelper();
             $planInfo = $helper->getPlanInformation($rowpayment->plan);
 
