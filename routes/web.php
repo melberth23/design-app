@@ -172,7 +172,11 @@ Route::middleware('auth')->prefix('admin/users')->name('users.')->group(function
 
 // Admin Subscribers 
 Route::middleware('auth')->prefix('admin/subscribers')->name('subscribers.')->group(function(){
-    Route::get('/', [App\Http\Controllers\Admin\PaymentsController::class, 'index'])->name('index');
+    Route::get('/view/{subscriber}', [App\Http\Controllers\Admin\SubscribersController::class, 'view'])->name('view');
+    Route::get('/', [App\Http\Controllers\Admin\SubscribersController::class, 'index'])->name('index');
+    Route::get('/basic', [App\Http\Controllers\Admin\SubscribersController::class, 'basic'])->name('basic');
+    Route::get('/premium', [App\Http\Controllers\Admin\SubscribersController::class, 'premium'])->name('premium');
+    Route::get('/enterprise', [App\Http\Controllers\Admin\SubscribersController::class, 'enterprise'])->name('enterprise');
 });
 
 // Request Types

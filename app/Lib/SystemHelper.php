@@ -841,6 +841,12 @@ class SystemHelper {
         return $this->getPlanName($user->payments->plan, $user->payments->duration);
     }
 
+    public function geUserPaymentField($userid, $field)
+    {
+        $user = User::whereId($userid)->first();
+        return $user->payments->$field;
+    }
+
     public function calculateTurnaround($requestid)
     {
         $request = Requests::whereId($requestid)->first();

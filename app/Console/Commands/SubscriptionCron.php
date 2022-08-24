@@ -41,7 +41,7 @@ class SubscriptionCron extends Command
     public function handle()
     {
         // Get all active users
-        $customers = User::where('status', 1)->where('role_id', 2)->get();
+        $customers = User::where('status', 1)->where('free', 0)->where('role_id', 2)->get();
         if(!empty($customers)) {
             foreach($customers as $customer) {
                 // Get Customer Payment info
