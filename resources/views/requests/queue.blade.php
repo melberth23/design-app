@@ -141,7 +141,7 @@
                             <div class="no-record py-4 text-center">
                                 <img src="{{ asset('images/requests-empty.svg') }}">
                                 <div class="pt-4">
-                                    <h2>You have no requests.</h2>
+                                    <h2>You have no requests in queue.</h2>
                                 </div>
                                 <div class="pt-4">
                                     <h5>Create your request now.</h5>
