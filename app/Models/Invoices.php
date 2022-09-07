@@ -24,4 +24,9 @@ class Invoices extends Model
     {
         return $this->belongsTo(Payments::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

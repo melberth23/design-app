@@ -1,70 +1,76 @@
 @extends('layouts.app')
 
-@section('title', 'List Payments')
+@section('title', 'Payments')
 
 @section('content')
-    <div class="container-fluid">
+<div class="container-fluid">
 
-        <!-- Page Heading -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">All Payments</h1>
-        </div>
+    {{-- Alert Messages --}}
+    @include('common.alert')
 
-        {{-- Alert Messages --}}
-        @include('common.alert')
+    @if ($invoices->count() > 0)
 
-        @if ($payments->count() > 0)
+    <!-- Page Heading -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800 page-heading">Payment History</h1>
+    </div>
 
-        <!-- Requests -->
+    <div class="table-responsive">
+        <table class="table bg-white" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th width="10%">ORDER NUMBER</th>
+                    <th width="25%">NAME</th>
+                    <th width="25%">DATE</th>
+                    <th width="25%">PLAN</th>
+                    <th width="15%">AMOUNT</th>
+                    <th width="20%">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($invoices as $invoice)
+                    <tr>
+                        <td class="text-primary"><a href="{{ route('view.invoice', ['invoice' => $invoice->id]) }}" target="_blank">DO{{ $invoice->id }}</a></td>
+                        <td>{{ $invoice->user->first_name }} {{ $invoice->user->last_name }}</td>
+                        <td>{{ $invoice->created_at->format('d F, Y') }}</td>
+                        <td>DesignsOwl, {{ (new \App\Lib\SystemHelper)->getPlanInformation($invoice->plan)['label'] }}</td>
+                        <td>S${{ number_format($invoice->amount) }}</td>
+                        <td class="d-flex   justify-content-start">
+                            <a href="{{ route('view.invoice', ['invoice' => $invoice->id]) }}" target="_blank" class="btn btn-outline-light action-icons rounded-circle border p-1 mx-1">
+                                <img src="{{ asset('images/inv-open.svg') }}" class="action-icon">
+                            </a>
+                            <a href="{{ route('generate.invoice', ['invoice' => $invoice->id]) }}" class="btn btn-outline-light action-icons rounded-circle border p-1 mx-1">
+                                <img src="{{ asset('images/inv-donwload.svg') }}" class="action-icon">
+                            </a>
+                            <a href="#" class="btn btn-outline-light action-icons rounded-circle border p-1 mx-1" data-ref="{{ $invoice->id }}" data-toggle="modal" data-target="#sendInvoiceModal">
+                                <img src="{{ asset('images/inv-mail.svg') }}" class="action-icon">
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        {{ $invoices->links() }}
+    </div>
+
+    @else
+
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">All Payments</h6>
-            </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th width="20%">Customer</th>
-                                <th width="15%">Status</th>
-                                <th width="10%">Plan</th>
-                                <th width="10%">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($payments as $payment)
-                                <tr>
-                                    <td>{{ $payment->user->first_name }} {{ $payment->user->last_name }}</td>
-                                    <td>
-                                        @if($payment->status == 'active')
-                                            <span class="badge badge-success">{{ __('Completed') }}</span>
-                                        @else
-                                            <span class="badge badge-warning">{{ __('Pending') }}</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ (new \App\Lib\SystemHelper)->getPlanInformation($payment->plan)['label'] }}</td>
-                                    <td>{{ $payment->price }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-                    {{ $payments->links() }}
+                <div class="min-height-600 d-flex align-items-center justify-content-center">
+                    <div class="no-record py-4 text-center">
+                        <img src="{{ asset('images/requests-empty.svg') }}">
+                        <div class="pt-4">
+                            <h2>No Payments.</h2>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        @else
+    @endif 
 
-            <div class="alert alert-danger" role="alert">
-                No payments found! 
-            </div>
+</div>
 
-        @endif  
-    </div>
-
-@endsection
-
-@section('scripts')
-    
 @endsection

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Queue Requests List')
+@section('title', 'Requests List')
 
 @section('content')
     <div class="container-fluid">
@@ -10,9 +10,8 @@
 
         @if ($requests->count() > 0)
 
-        <!-- Page Heading -->
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800 page-heading">In Queue requests</h1>
+            <h1 class="h3 mb-0 text-gray-800 page-heading">In progress requests</h1>
         </div>
 
         <div class="card">
@@ -22,10 +21,10 @@
                         <a class="nav-link py-3 {{ (request()->is('admin/requests')) ? 'active' : '' }}" id="queue-tab" href="{{ route('adminrequest.index') }}">All {{ $all }}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('admin/requests/queue')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('admin/requests/queue')) ? 'active' : '' }}" id="queue-tab" href="{{ route('adminrequest.queue') }}">Queue {{ $requests->count() }}</a>
+                        <a class="nav-link py-3 {{ (request()->is('admin/requests/queue')) ? 'active' : '' }}" id="queue-tab" href="{{ route('adminrequest.queue') }}">Queue {{ $queue }}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('admin/requests/progress')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('admin/requests/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('adminrequest.progress') }}">Progress {{ $progress }}</a>
+                        <a class="nav-link py-3 {{ (request()->is('admin/requests/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('adminrequest.progress') }}">Progress {{ $requests->count()}}</a>
                     </li>
                     <li class="nav-item {{ (request()->is('admin/requests/review')) ? 'border-bottom' : '' }}">
                         <a class="nav-link py-3 {{ (request()->is('admin/requests/review')) ? 'active' : '' }}" id="review-tab" href="{{ route('adminrequest.review') }}">Review {{ $review }}</a>
@@ -37,14 +36,12 @@
             </div>
             <div class="card-footer bg-light-custom p-0">
                 <div class="table-responsive">
-                    <table id="queue-request" class="table table-bordered bg-white border-0 table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered bg-white border-0 table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th width="2%" class="border-left-0 border-right-0"></th>
-                                <th width="8%" class="border-left-0 border-right-0">REQUEST ID</th>
+                                <th width="10%" class="border-left-0 border-right-0">REQUEST ID</th>
                                 <th width="25%" class="border-left-0 border-right-0">REQUEST NAME</th>
-                                <th width="20%" class="border-left-0 border-right-0">CATEGORY</th>
-                                <th width="5%" class="border-left-0 border-right-0">PRIORITY</th>
+                                <th width="25%" class="border-left-0 border-right-0">CATEGORY</th>
                                 <th width="10%" class="border-left-0 border-right-0">STATUS</th>
                                 <th width="10%" class="border-left-0 border-right-0">DATE CREATED</th>
                                 <th width="20%" class="border-left-0 border-right-0"></th>
@@ -52,8 +49,7 @@
                         </thead>
                         <tbody>
                             @foreach ($requests as $request)
-                                <tr id="{{ $request->id }}">
-                                    <td class="border-left-0 border-right-0 text-primary"><img src="{{ asset('images/ellipses.svg') }}"></td>
+                                <tr>
                                     <td class="border-left-0 border-right-0 text-primary">#{{ $request->id }}</td>
                                     <td class="border-left-0 border-right-0 font-weight-bold"><a class="text-dark" href="{{ route('request.view', ['requests' => $request->id]) }}">{{ $request->title }}</a></td>
                                     @if(!empty($request->designtype->name))
@@ -61,9 +57,8 @@
                                     @else
                                     <td class="border-left-0 border-right-0"></td>
                                     @endif
-                                    <td id="priority" class="border-left-0 border-right-0 text-primary">{{ (!is_null($request->priority) ? $request->priority+1 : '') }}</td>
                                     <td class="border-left-0 border-right-0">
-                                        <span class="badge badge-info">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
+                                        <span class="badge badge-success">{{ (new \App\Lib\SystemHelper)->statusLabel($request->status) }}</span>
                                     </td>
                                     <td class="border-left-0 border-right-0">{{ $request->created_at->format('d F, Y') }}</td>
                                     <td class="d-flex justify-content-end border-left-0 border-right-0">
@@ -75,19 +70,6 @@
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>
                                         </a>
-                                        @if ($request->status == 2)
-                                            <a href="{{ route('request.status', ['request_id' => $request->id, 'status' => 1]) }}"
-                                                class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Move to Draft">
-                                                <i class="fa fa-ban"></i>
-                                            </a>
-                                            <a href="{{ route('request.edit', ['requests' => $request->id]) }}"
-                                                class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Edit Request">
-                                                <i class="fa fa-pen"></i>
-                                            </a>
-                                            <a class="text-dark mx-2" href="#" data-ref="{{ $request->id }}" data-toggle="modal" data-target="#deleteRequestModal">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -95,12 +77,7 @@
                     </table>
                 </div>
 
-                <div class="px-2 pt-3">
-                    <div class="alert alert-success alert-dismissible" role="alert">
-                        You can sort your Queue request per priority.
-                    </div>
-                </div>
-                
+                {{ $requests->links() }}
             </div>
         </div>
 
@@ -129,7 +106,7 @@
                             <div class="no-record py-4 text-center">
                                 <img src="{{ asset('images/requests-empty.svg') }}">
                                 <div class="pt-4">
-                                    <h2>You have no requests in queue.</h2>
+                                    <h2>You have no requests in progress.</h2>
                                 </div>
                                 <div class="pt-4">
                                     <h5>Create your request now.</h5>
@@ -145,37 +122,5 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/TableDnD/0.9.1/jquery.tablednd.js" integrity="sha256-d3rtug+Hg1GZPB7Y/yTcRixO/wlI78+2m08tosoRn7A=" crossorigin="anonymous"></script>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-    // Initialise the table
-    jQuery("#queue-request").tableDnD({
-        onDragClass: "request-drag",
-        onDrop: function(table, row) {
-            var rows = table.tBodies[0].rows;
-            console.log(rows.length);
-            var sortkeys = [];
-            for (var i=0; i < rows.length; i++) {
-                sortkeys.push(rows[i].id);
-                jQuery('#'+ rows[i].id).find('#priority').html(i+1);
-            }
-            
-            jQuery.ajax({
-                type:'POST',
-                url:"{{ route('request.sort') }}",
-                data: {
-                    sortkeys:sortkeys,
-                    _token: jQuery('meta[name="csrf-token"]').attr('content')
-                },
-                success:function(data) {
-                    $('#dimensions').html(data.dimensions);
-                }
-            });
-        },
-        onDragStart: function(table, row) {
-            console.log(row.id);
-        }
-    });
-});
-</script> 
+    
 @endsection

@@ -11322,7 +11322,7 @@ body.sidebar-toggled footer.sticky-footer {
   font-size: 18px;
   font-weight: 700;
 }
-#brand-tab-contents h3, .form-brand-profile h3, .form-brand-request h3 {
+#brand-tab-contents h3, .form-brand-profile h3, .form-brand-request h3, .admin-subscriber-account h3 {
   font-size: 16px;
   font-weight: 700;
 }
@@ -11409,4 +11409,8 @@ h5.card-label {
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   text-align: center;
+}
+.btn:focus {
+  outline: none;
+  box-shadow: none;
 }

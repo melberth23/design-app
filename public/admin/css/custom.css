@@ -357,6 +357,15 @@ img.action-icon {
   height: 64px;
   object-fit: cover;
 }
+.width-30percent {
+  width: 30% !important;
+}
+.width-40percent {
+  width: 40% !important;
+}
+.width-50percent {
+  width: 50% !important;
+}
 
 /* Add Request */
 .request-type-label {
@@ -639,4 +648,89 @@ a.remove-color-item {
   box-shadow: -1px 1px 10px -1px rgba(0,0,0,1);
   -webkit-box-shadow: -1px 1px 10px -1px rgba(0,0,0,1);
   -moz-box-shadow: -1px 1px 10px -1px rgba(0,0,0,1);
+}
+
+/* Subscribers Page */
+h3.customer-name {
+    letter-spacing: 0px;
+    color: #28213A;
+    font-size: 20px;
+    font-weight: 600;
+}
+.customer-contact ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.customer-contact ul li {
+    display: inline-block;
+    margin: 5px;
+}
+.customer-contact ul li .contact-icon {
+    padding: 10px;
+    border-radius: 50%;
+    border: 1px solid #D4D2D7;
+}
+.customer-contact ul li .contact-icon i {
+    width: 20px;
+    height: 20px;
+}
+.rounded-fix-size {
+  width: 40px;
+  height: 40px;
+  padding: 0px !important;
+}
+
+.month-label {
+  font-size: 14px;
+}
+
+.slide-actions {
+  position: relative;
+}
+.side-container {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 3;
+  right: 0;
+  background-color: #fff;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 10px;
+  -webkit-box-shadow: -5px 7px 17px -8px rgba(0,0,0,0.75);
+-moz-box-shadow: -5px 7px 17px -8px rgba(0,0,0,0.75);
+box-shadow: -5px 7px 17px -8px rgba(0,0,0,0.75);
+}
+.side-container .filter-content {
+    height: 100%;
+}
+.side-container .filter-content .head-slide {
+  padding: 20px 20px 0;
+}
+
+.side-container a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.side-container a:hover {
+  color: #f1f1f1;
+}
+
+.side-container .closebtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .side-container {padding-top: 15px;}
+  .side-container a {font-size: 18px;}
 }

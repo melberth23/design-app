@@ -13,26 +13,43 @@
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800 page-heading">Subscribers</h1>
             <div class="actions d-flex align-items-center justify-content-between">
-                <a href="{{ route('users.create') }}" class="btn btn-primary">
-                    <span class="d-none d-md-inline-block">New</span>
-                </a>
+                <!-- Filter -->
+                <button class="btn btn-outline-light text-dark border" type="button" onclick="openNav('filter-actions');">
+                    <i class="fa fa-sliders" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Filter</span>
+                </button>
+                <!-- Sort -->
+                <div class="dropdown m-1">
+                  <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-sort" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Sort</span>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="{{ route('subscribers.index.sort', ['type' => 'date', 'sort' => 'asc']) }}">Date added (Ascending)</a>
+                    <a class="dropdown-item" href="{{ route('subscribers.index.sort', ['type' => 'date', 'sort' => 'desc']) }}">Date added (Descending)</a>
+                    <a class="dropdown-item" href="{{ route('subscribers.index.sort', ['type' => 'name', 'sort' => 'asc']) }}">Name (A-Z)</a>
+                    <a class="dropdown-item" href="{{ route('subscribers.index.sort', ['type' => 'name', 'sort' => 'desc']) }}">Name (Z-A)</a>
+                  </div>
+                </div>
+                <!-- Activities -->
+                <button class="btn btn-outline-light text-dark border" type="button" onclick="openNav('activity-actions');">
+                    <i class="fa fa-list-ul" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Activities</span>
+                </button>
             </div>
         </div>
 
         <div class="card">
             <div class="card-body py-0 px-1">
                 <ul class="nav nav-tabs" id="brand-tabs" role="tablist">
-                    <li class="nav-item {{ (request()->is('subscribers')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('subscribers')) ? 'active' : '' }}" id="all-tab" href="{{ route('subscribers.index') }}">All {{ $users }}</a>
+                    <li class="nav-item {{ (request()->is('admin/subscribers')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (request()->is('admin/subscribers')) ? 'active' : '' }}" id="all-tab" href="{{ route('subscribers.index') }}">All {{ $users }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('subscribers/basic')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('subscribers/basic')) ? 'active' : '' }}" id="basic-tab" href="{{ route('subscribers.basic') }}">Basic {{ $basic }}</a>
+                    <li class="nav-item {{ (request()->is('admin/subscribers/basic')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (request()->is('admin/subscribers/basic')) ? 'active' : '' }}" id="basic-tab" href="{{ route('subscribers.basic') }}">Basic {{ $basic }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('subscribers/premium')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('subscribers/premium')) ? 'active' : '' }}" id="premium-tab" href="{{ route('subscribers.premium') }}">Premium {{ $premium }}</a>
+                    <li class="nav-item {{ (request()->is('admin/subscribers/premium')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (request()->is('admin/subscribers/premium')) ? 'active' : '' }}" id="premium-tab" href="{{ route('subscribers.premium') }}">Premium {{ $premium }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('subscribers/enterprise')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('subscribers/enterprise')) ? 'active' : '' }}" id="enterprise-tab" href="{{ route('subscribers.enterprise') }}">Enterprise {{ $royal }}</a>
+                    <li class="nav-item {{ (request()->is('admin/subscribers/enterprise')) ? 'border-bottom' : '' }}">
+                        <a class="nav-link py-3 {{ (request()->is('admin/subscribers/enterprise')) ? 'active' : '' }}" id="enterprise-tab" href="{{ route('subscribers.enterprise') }}">Enterprise {{ $royal }}</a>
                     </li>
                 </ul>
             </div>
@@ -54,7 +71,7 @@
                             @foreach ($subscribers as $user)
                                 <tr>
                                     <td class="border-left-0 border-right-0 text-primary">DS{{ $user->uid }}</td>
-                                    <td class="border-left-0 border-right-0 font-weight-bold"><a class="text-dark" href="{{ route('subscribers.view', ['subscriber' => $user->uid]) }}">{{ $user->first_name }} {{ $user->last_name }}</a></td>
+                                    <td class="border-left-0 border-right-0 font-weight-bold"><a class="text-dark" href="{{ route('subscribers.view', ['subscriber' => $user->uid]) }}">{{ $user->full_name }}</a></td>
                                     <td class="border-left-0 border-right-0">{{ $user->mobile_number }}</td>
                                     <td class="border-left-0 border-right-0">{{ $user->email }}</td>
                                     <td class="border-left-0 border-right-0">{{ $user->address_1 }} {{ $user->address_2 }}, {{ $user->city }} {{ $user->state }}, {{ $user->zip }} {{ $user->country }}</td>
@@ -111,5 +128,13 @@
 @endsection
 
 @section('scripts')
-    
+<script type="text/javascript">
+function openNav(elem) {
+    document.getElementById(elem).style.width = "280px";
+}
+
+function closeNav(elem) {
+    document.getElementById(elem).style.width = "0";
+}
+</script>
 @endsection

@@ -728,10 +728,15 @@ class HomeController extends Controller
         try {
             DB::beginTransaction();
 
+            $user = Auth::user();
+            if(!empty($request->userid)) {
+                $user = User::where('id', $request->userid)->first();
+            }
+
             // Start date
-            $startdate = auth()->user()->payments->created_at;
-            if(auth()->user()->payments->recurring_date) {
-                $startdate = auth()->user()->payments->recurring_date;
+            $startdate = $user->payments->created_at;
+            if($user->payments->recurring_date) {
+                $startdate = $user->payments->recurring_date;
             }
 
             // Add new plan
@@ -744,8 +749,8 @@ class HomeController extends Controller
             $payment = new PaymentHelper($apikey, $isStg);
             $respayment = $payment->recurringRequestCreate(array(
                 'plan_id'    =>  $planInfo['id'],
-                'customer_email'  =>  auth()->user()->email,
-                'customer_name'  =>  auth()->user()->first_name .' '. auth()->user()->last_name,
+                'customer_email'  =>  $user->email,
+                'customer_name'  =>  $user->first_name .' '. $user->last_name,
                 'start_date'  =>  date('Y-m-d'),
                 'redirect_url'  =>  url("upgrade-payment-success"),
                 'reference'  =>  time()
@@ -753,7 +758,7 @@ class HomeController extends Controller
 
             if(!empty($respayment['status']) && $respayment['status'] == 'scheduled') {
                 NewAttempt::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => $user->id,
                     'reference' => $respayment['id'],
                     'business_recurring_plans_id' => $respayment['business_recurring_plans_id'],
                     'plan' => $selectedplan,
@@ -769,7 +774,7 @@ class HomeController extends Controller
                 // Send Email
                 $details = array(
                     'subject' => 'Payment Confirmation Details',
-                    'message' => 'Welcome '. auth()->user()->first_name .' '. auth()->user()->last_name .',',
+                    'message' => 'Welcome '. $user->first_name .' '. $user->last_name .',',
                     'extra_msg' => 'Please see details below:',
                     'plan' => $planInfo['label'],
                     'amount' => number_format($planInfo['amount']),
@@ -778,7 +783,7 @@ class HomeController extends Controller
                     'template' => 'payment'
                 );
 
-                Mail::to(auth()->user()->email)->send(new DigitalMail($details));
+                Mail::to($user->email)->send(new DigitalMail($details));
 
                 #Commit Transaction
                 DB::commit();

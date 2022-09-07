@@ -48,10 +48,15 @@ class RequestsAdminController extends Controller
      */
     public function index()
     {
-        $requests = Requests::paginate(10);
-        return view('admin.requests.index', ['requests' => $requests]);
-    }
+        $brands = Brand::count();
+        $requests = Requests::orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('status', 2)->count();
+        $progress = Requests::where('status', 3)->count();
+        $review = Requests::where('status', 4)->count();
+        $completed = Requests::where('status', 0)->count();
 
+        return view('admin.requests.index', ['brands' => $brands, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+    }
 
     /**
      * Queue requests 
@@ -60,8 +65,31 @@ class RequestsAdminController extends Controller
      */
     public function queue()
     {
+        $brands = Brand::count();
+        $all = Requests::count();
         $requests = Requests::where('status', 2)->orderByRaw('-priority DESC')->paginate(10);
-        return view('admin.requests.queue', ['requests' => $requests]);
+        $progress = Requests::where('status', 3)->count();
+        $review = Requests::where('status', 4)->count();
+        $completed = Requests::where('status', 0)->count();
+
+        return view('admin.requests.queue', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+    }
+
+    /**
+     * Progress requests 
+     * @param Nill
+     * @return Array $requests
+     */
+    public function progress()
+    {
+        $brands = Brand::count();
+        $all = Requests::count();
+        $requests = Requests::where('status', 3)->orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('status', 2)->count();
+        $review = Requests::where('status', 4)->count();
+        $completed = Requests::where('status', 0)->count();
+        
+        return view('admin.requests.progress', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
     }
 
     /**
@@ -71,8 +99,14 @@ class RequestsAdminController extends Controller
      */
     public function review()
     {
-        $requests = Requests::where('status', 4)->paginate(10);
-        return view('admin.requests.review', ['requests' => $requests]);
+        $brands = Brand::count();
+        $all = Requests::count();
+        $requests = Requests::where('status', 4)->orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('status', 2)->count();
+        $progress = Requests::where('status', 3)->count();
+        $completed = Requests::where('status', 0)->count();
+
+        return view('admin.requests.review', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
     }
 
     /**
@@ -82,8 +116,14 @@ class RequestsAdminController extends Controller
      */
     public function delivered()
     {
-        $requests = Requests::where('status', 0)->paginate(10);
-        return view('admin.requests.delivered', ['requests' => $requests]);
+        $brands = Brand::count();
+        $all = Requests::count();
+        $requests = Requests::where('status', 0)->orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('status', 2)->count();
+        $progress = Requests::where('status', 3)->count();
+        $review = Requests::where('status', 4)->count();
+
+        return view('admin.requests.delivered', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
     }
 
     /**
@@ -120,7 +160,7 @@ class RequestsAdminController extends Controller
             'status'    => $status
         ], [
             'request_id'   =>  'required|exists:requests,id',
-            'status'    =>  'required|in:1,2,4',
+            'status'    =>  'required|in:0,1,2,3,4',
         ]);
 
         // If Validations Fails
@@ -150,7 +190,7 @@ class RequestsAdminController extends Controller
                         'fromemail' => 'hello@designsowl.com',
                         'fromname' => 'DesignsOwl',
                         'heading' => 'Hi '. $customerfullname,
-                        'message' => 'Your request '. $request->title .' status changed to '. $this->helper->statusLabel($status),
+                        'message' => 'Your request '. $requestrow->title .' status changed to '. $this->helper->statusLabel($status),
                         'sub_message' => 'Please login using your login information to check. Thank you!',
                         'template' => 'status'
                     );
@@ -159,7 +199,7 @@ class RequestsAdminController extends Controller
 
                 // Commit And Redirect on index with Success Message
                 DB::commit();
-                return redirect()->route('adminrequest.index')->with('success','Requests Status Updated Successfully!');
+                return redirect()->route('subscribers.view', ['subscriber' => $requestrow->user_id])->with('success','Requests Status Updated Successfully!');
             } else {
                 $statustext = $this->helper->statusLabel($requestrow->status);
                 return redirect()->back()->with('error', $requestrow->title .' is in '. $statustext .' status and you are not allowed to change it.');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Activities;
 use App\Mail\DigitalMail;
 use App\Lib\SystemHelper;
 use App\Exports\UsersExport;
@@ -213,6 +214,12 @@ class UserController extends Controller
             
             // Assign Role To User
             $user->assignRole($user->role_id);
+
+            // Save to Activities
+            Activities::create([
+                'user_id' => auth()->user()->id,
+                'activity_note' => auth()->user()->first_name ." edited an account of ". $request->first_name ." ". $request->last_name
+            ]);
 
             // Commit And Redirected To Listing
             DB::commit();

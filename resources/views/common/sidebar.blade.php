@@ -166,7 +166,7 @@
             </li>
 
             <!-- Brand Profiles -->
-            <li class="nav-item {{ (request()->is('admin/brand')) ? 'active' : '' }}">
+            <li class="nav-item {{ (request()->is('admin/brands')) ? 'active' : '' }} {{ (request()->is('admin/brands/drafts')) ? 'active' : '' }} {{ (request()->is('admin/brands/archived')) ? 'active' : '' }}">
                 <a class="nav-link text-dark" href="{{ route('adminbrand.index') }}">
                     <img src="{{ asset('images/brand-icon.svg') }}" class="menu-icons">
                     <span>Brand Profiles</span>
@@ -175,18 +175,10 @@
 
             <!-- Nav Item - Payments -->
             <li class="nav-item {{ (request()->is('admin/payments')) ? 'active' : '' }} {{ (request()->is('admin/payments/pending')) ? 'active' : '' }} {{ (request()->is('admin/payments/completed')) ? 'active' : '' }}">
-                <a class="nav-link text-dark {{ (request()->is('admin/payments')) ? '' : 'collapsed' }} {{ (request()->is('admin/payments/pending')) ? '' : 'collapsed' }} {{ (request()->is('admin/payments/completed')) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#paymentsDropdown"
-                    aria-expanded="true" aria-controls="paymentsDropdown">
+                <a class="nav-link text-dark" href="{{ route('adminpayment.index') }}" >
                     <img src="{{ asset('images/payments.svg') }}" class="menu-icons">
                     <span>Payment History</span>
                 </a>
-                <div id="paymentsDropdown" class="{{ (request()->is('admin/payments')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/payments/pending')) ? 'collapsed collapse show' : 'collapse' }} {{ (request()->is('admin/payments/completed')) ? 'collapsed collapse show' : 'collapse' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item {{ (request()->is('admin/payments')) ? 'active' : '' }}" href="{{ route('adminpayment.index') }}">All Payments</a>
-                        <a class="collapse-item {{ (request()->is('admin/payments/pending')) ? 'active' : '' }}" href="{{ route('adminpayment.pending') }}">Pending Payments</a>
-                        <a class="collapse-item {{ (request()->is('admin/payments/completed')) ? 'active' : '' }}" href="{{ route('adminpayment.completed') }}">Completed Payments</a>
-                    </div>
-                </div>
             </li>
             
             <!-- Nav Item - Users -->

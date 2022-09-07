@@ -115,7 +115,7 @@
                         <h3 class="text-dark mb-0">Global Preferences</h3>
                     </div>
                     <div class="card-body py-0">
-                        <div class="tab-text-label text-dark py-3 border-bottom">
+                        <div class="tab-text-label text-dark py-3">
                             <div class="row">
                                 <div class="col-md-3 single-label">Language</div>
                                 <div class="col-md-9">

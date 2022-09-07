@@ -12,19 +12,21 @@
     <!-- Page Heading -->
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h1 class="request-title h3 mb-0 text-gray-800 d-flex align-items-center justify-content-between page-heading"><a href="{{ $backurl }}" class="d-none d-sm-inline-block btn btn-sm btn-outline-light text-dark border"><i class="fas fa-arrow-left fa-sm"></i></a> <span class="mx-2">{{ $requests->title }}</span>
-            @if ($requests->status == 0)
-                <span class="badge badge-primary py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
-            @elseif ($requests->status == 1)
-                <span class="badge badge-warning py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
-            @elseif ($requests->status == 2)
-                <span class="badge badge-info py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
-            @elseif ($requests->status == 3)
-                <span class="badge badge-success py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
-            @elseif ($requests->status == 4)
-                <span class="badge badge-dark py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
-            @endif
-            @if ($requests->status == 4 && !auth()->user()->hasRole('Designer'))
-            <a href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 0]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fas fa-check" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Mark Complete</span></a>
+            @if(auth()->user()->hasRole('User'))
+                @if ($requests->status == 0)
+                    <span class="badge badge-primary py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
+                @elseif ($requests->status == 1)
+                    <span class="badge badge-warning py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
+                @elseif ($requests->status == 2)
+                    <span class="badge badge-info py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
+                @elseif ($requests->status == 3)
+                    <span class="badge badge-success py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
+                @elseif ($requests->status == 4)
+                    <span class="badge badge-dark py-2">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</span>
+                @endif
+                @if ($requests->status == 4 && !auth()->user()->hasRole('Designer'))
+                <a href="{{ route('request.status', ['request_id' => $requests->id, 'status' => 0]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fas fa-check" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Mark Complete</span></a>
+                @endif
             @endif
         </h1>
         <div class="actions d-flex align-items-center justify-content-end">
@@ -34,6 +36,33 @@
             @if (auth()->user()->hasRole('Designer') && $requests->status == 3)
                 <a href="#" data-toggle="modal" data-target="#movereviewModal" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-dark"><i class="fas fa-check" aria-hidden="true"></i> Move to review</a>
             @endif
+            @if(auth()->user()->hasRole('Admin') && ($requests->status == 2 || $requests->status == 3))
+            <div class="dropdown">
+              <button class="btn btn-outline-light text-dark border rounded-circle rounded-fix-size" type="button" id="dropdownDesignersButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-user-plus" aria-hidden="true"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownDesignersButton">
+                @if ($designers->count() > 0)
+                    @foreach ($designers as $designer)
+                    <?php 
+                    $assignedDesigner = '';
+                    if($designer->id == $requests->designer_id) {
+                        $assignedDesigner = ' active';
+                    }
+                    ?>
+                    <a class="dropdown-item{{ $assignedDesigner }}" href="{{ route('subscribers.requeststatus', ['request_id' => $requests->id, 'status' => 3, 'designerid' => $designer->id]) }}">
+                        @if(!empty($designer->profile_img))
+                            <img class="rounded-circle" width="25px" src="{{ Storage::disk('s3')->url($designer->profile_img) }}" id="profile-assign-image">
+                        @else
+                            <img class="rounded-circle" width="25px" src="{{ asset('admin/img/undraw_profile.svg') }}" id="profile-assign-image">
+                        @endif
+                        <span>{{ $designer->first_name }} {{ $designer->last_name }}</span>
+                    </a>
+                    @endforeach
+                @endif
+              </div>
+            </div>
+            @endif
             <div class="dropdown m-1 d-none d-md-inline-block">
                 <button class="btn btn-outline-light text-dark border" id="dropdownUpdate{{ $requests->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-clock-o"></i>
@@ -42,7 +71,39 @@
                     <span>Last Updated: {{ $requests->updated_at->format('d F, Y, h:i:s A') }}</span>
                 </div>
             </div>
-            @if(!auth()->user()->hasRole('Designer'))
+            @if(auth()->user()->hasRole('Admin'))
+            <?php 
+            $status = 'primary';
+            $itemactions = '';
+            if($requests->status == 1) {
+                $status = 'warning';
+                $itemactions .= '<a class="dropdown-item" href="'. route('adminrequest.status', ['request_id' => $requests->id, 'status' => 2]) .'">Queue</a>';
+            } elseif($requests->status == 2) {
+                $status = 'info';
+                $itemactions .= '<a class="dropdown-item" href="'. route('adminrequest.status', ['request_id' => $requests->id, 'status' => 1]) .'">Draft</a>';
+                $itemactions .= '<a class="dropdown-item" href="'. route('adminrequest.status', ['request_id' => $requests->id, 'status' => 3]) .'">Progress</a>';
+            } elseif($requests->status == 3) {
+                $status = 'success';
+                $itemactions .= '<a class="dropdown-item" href="'. route('adminrequest.status', ['request_id' => $requests->id, 'status' => 4]) .'">Review</a>';
+            } elseif($requests->status == 4) {
+                $status = 'dark';
+                $itemactions .= '<a class="dropdown-item" href="'. route('adminrequest.status', ['request_id' => $requests->id, 'status' => 0]) .'">Complete</a>';
+            }
+            ?>
+            <div class="btn-group">
+              @if(!empty($itemactions))
+              <button type="button" class="btn btn-{{ $status }}">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</button>
+              <button type="button" class="btn btn-{{ $status }} dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right">
+                <?php echo $itemactions; ?>
+              </div>
+              @else
+              <button type="button" class="btn btn-{{ $status }}">{{ (new \App\Lib\SystemHelper)->statusLabel($requests->status) }}</button>
+              @endif
+            </div>
+            @else
             <div class="dropdown m-1">
               <button class="btn btn-outline-light text-dark border" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -55,7 +116,7 @@
                 @endif
                 @if ($requests->status == 1 || $requests->status == 2)
                     <a class="dropdown-item" href="{{ route('request.edit', ['requests' => $requests->id]) }}"><i class="fa fa-pen"></i> Edit Request</a>
-                    <a class="dropdown-item" href="{{ route('request.edit', ['requests' => $requests->id]) }}"><i class="fa fa-trash"></i> Delete Request</a>
+                    <a class="dropdown-item" href="#" data-ref="{{ $requests->id }}" data-toggle="modal" data-target="#deleteRequestModal"><i class="fa fa-trash"></i> Delete Request</a>
                 @endif
                 @if ($requests->status == 3)
                     <div class="px-2">
@@ -249,6 +310,8 @@
     </div>
 
 </div>
+
+@include('requests.delete-modal') 
 
 @if(auth()->user()->hasRole('Designer'))
 <div class="modal fade" id="movereviewModal" tabindex="-1" role="dialog" aria-labelledby="movereviewModalExample"

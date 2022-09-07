@@ -16,6 +16,7 @@ use App\Models\CommentNotification;
 use App\Models\StatusNotifications;
 use App\Models\FileNotifications;
 use App\Models\User;
+use App\Models\Activities;
 
 class SystemHelper {
 
@@ -728,10 +729,13 @@ class SystemHelper {
         }
     }
 
-    public function getLanguage($lang=false)
+    public function getLanguage($lang=false, $userid=false)
     {
         if(empty($lang)) {
-            $lang = $this->getUserSetting(auth()->user()->id, 'language');
+            if(!$userid) {
+                $userid = auth()->user()->id;
+            }
+            $lang = $this->getUserSetting($userid, 'language');
         }
         return !empty($lang)?$this->getLanguages($lang):false;
     }
@@ -758,6 +762,12 @@ class SystemHelper {
             'counter' => (count($notifications)>100)?'999+':count($notifications),
             'lists' => $notifications
         );
+    }
+
+    public function getActivities()
+    {
+        $activities = Activities::get();
+        return $activities;
     }
 
     public function getNotificationInformation()

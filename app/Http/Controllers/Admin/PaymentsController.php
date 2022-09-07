@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Payments;
+use App\Models\Invoices;
 use App\Mail\DigitalMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -36,8 +37,9 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        $payments = Payments::paginate(10);
-        return view('admin.payments.index', ['payments' => $payments]);
+        $invoices = Invoices::paginate(10);
+
+        return view('admin.payments.index', ['invoices' => $invoices]);
     }
 
     /**
@@ -48,7 +50,10 @@ class PaymentsController extends Controller
     public function pending()
     {
         $payments = Payments::where('status', 'scheduled')->paginate(10);
-        return view('admin.payments.pending', ['payments' => $payments]);
+        $all = Payments::groupBy('user_id')->count();
+        $completed = Payments::where('status', 'active')->groupBy('user_id')->count();
+
+        return view('admin.payments.pending', ['payments' => $payments, 'all' => $all, 'completed' => $completed]);
     }
 
     /**
@@ -59,6 +64,9 @@ class PaymentsController extends Controller
     public function completed()
     {
         $payments = Payments::where('status', 'active')->paginate(10);
-        return view('admin.payments.completed', ['payments' => $payments]);
+        $pending = Payments::where('status', 'scheduled')->groupBy('user_id')->count();
+        $all = Payments::groupBy('user_id')->count();
+
+        return view('admin.payments.completed', ['payments' => $payments, 'all' => $all, 'pending' => $pending]);
     }
 }

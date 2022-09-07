@@ -173,10 +173,19 @@ Route::middleware('auth')->prefix('admin/users')->name('users.')->group(function
 // Admin Subscribers 
 Route::middleware('auth')->prefix('admin/subscribers')->name('subscribers.')->group(function(){
     Route::get('/view/{subscriber}', [App\Http\Controllers\Admin\SubscribersController::class, 'view'])->name('view');
+    Route::get('/account-settings/{subscriber}', [App\Http\Controllers\Admin\SubscribersController::class, 'account'])->name('accountsettings');
     Route::get('/', [App\Http\Controllers\Admin\SubscribersController::class, 'index'])->name('index');
+    Route::get('/sort/{type}/{sort}', [App\Http\Controllers\Admin\SubscribersController::class, 'index'])->name('index.sort');
     Route::get('/basic', [App\Http\Controllers\Admin\SubscribersController::class, 'basic'])->name('basic');
+    Route::get('/basic/sort/{type}/{sort}', [App\Http\Controllers\Admin\SubscribersController::class, 'basic'])->name('basic.sort');
     Route::get('/premium', [App\Http\Controllers\Admin\SubscribersController::class, 'premium'])->name('premium');
+    Route::get('/premium/sort/{type}/{sort}', [App\Http\Controllers\Admin\SubscribersController::class, 'premium'])->name('premium.sort');
     Route::get('/enterprise', [App\Http\Controllers\Admin\SubscribersController::class, 'enterprise'])->name('enterprise');
+    Route::get('/enterprise/sort/{type}/{sort}', [App\Http\Controllers\Admin\SubscribersController::class, 'enterprise'])->name('enterprise.sort');
+
+    // Profile pages
+    Route::get('/account/{subscriber}', [App\Http\Controllers\Admin\SubscribersController::class, 'account'])->name('account');
+    Route::get('/account/request/status/{request_id}/{status}/{designerid}', [App\Http\Controllers\Admin\SubscribersController::class, 'assignDesigner'])->name('requeststatus');
 });
 
 // Request Types
@@ -195,6 +204,7 @@ Route::middleware('auth')->prefix('admin/requests')->name('adminrequest.')->grou
     Route::get('/', [App\Http\Controllers\Admin\RequestsAdminController::class, 'index'])->name('index');
     Route::get('/view/{requests}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'view'])->name('view');
     Route::get('/queue', [App\Http\Controllers\Admin\RequestsAdminController::class, 'queue'])->name('queue');
+    Route::get('/progress', [App\Http\Controllers\Admin\RequestsAdminController::class, 'progress'])->name('progress');
     Route::get('/review', [App\Http\Controllers\Admin\RequestsAdminController::class, 'review'])->name('review');
     Route::get('/delivered', [App\Http\Controllers\Admin\RequestsAdminController::class, 'delivered'])->name('delivered');
     Route::get('/comment/{requests}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'comment'])->name('comment');
@@ -212,19 +222,11 @@ Route::middleware('auth')->prefix('admin/payments')->name('adminpayment.')->grou
 });
 
 // Admin Brand Profiles 
-Route::middleware('auth')->prefix('admin/brand')->name('adminbrand.')->group(function(){
-    Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
-    Route::get('/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'index'])->name('index.sort');
-    Route::get('/drafts', [App\Http\Controllers\BrandController::class, 'drafts'])->name('drafts');
-    Route::get('/drafts/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'drafts'])->name('drafts.sort');
-    Route::get('/archived', [App\Http\Controllers\BrandController::class, 'archived'])->name('archived');
-    Route::get('/archived/sort/{type}/{sort}', [App\Http\Controllers\BrandController::class, 'archived'])->name('archived.sort');
-    Route::get('/view/{brand}', [App\Http\Controllers\BrandController::class, 'view'])->name('view');
-    Route::get('/create', [App\Http\Controllers\BrandController::class, 'create'])->name('create');
-    Route::post('/store', [App\Http\Controllers\BrandController::class, 'store'])->name('store');
-    Route::get('/edit/{section}/{brand}', [App\Http\Controllers\BrandController::class, 'edit'])->name('edit');
-    Route::put('/update/{brand}', [App\Http\Controllers\BrandController::class, 'update'])->name('update');
-    Route::delete('/delete/{brand}', [App\Http\Controllers\BrandController::class, 'delete'])->name('destroy');
-    Route::post('/delete-assets', [App\Http\Controllers\BrandController::class, 'deleteAsset'])->name('destroyassets');
-    Route::get('/update/status/{brand_id}/{status}', [App\Http\Controllers\BrandController::class, 'updateStatus'])->name('status');
+Route::middleware('auth')->prefix('admin/brands')->name('adminbrand.')->group(function(){
+    Route::get('/', [App\Http\Controllers\Admin\BrandsController::class, 'index'])->name('index');
+    Route::get('/sort/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'index'])->name('index.sort');
+    Route::get('/drafts', [App\Http\Controllers\Admin\BrandsController::class, 'drafts'])->name('drafts');
+    Route::get('/drafts/sort/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'drafts'])->name('drafts.sort');
+    Route::get('/archived', [App\Http\Controllers\Admin\BrandsController::class, 'archived'])->name('archived');
+    Route::get('/archived/sort/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'archived'])->name('archived.sort');
 });

@@ -1,4 +1,4 @@
-<div class="bg-white border-bottom mb-5">
+<div class="bg-white border-bottom">
     <nav class="navbar navbar-expand navbar-light topbar static-top">
 
         <!-- Sidebar Toggle (Topbar) -->
@@ -89,3 +89,61 @@
         </form>
     </div>
 </div>
+
+@if(auth()->user()->hasRole('Admin'))
+    @if((str_contains(url()->current(), 'admin/subscribers')))
+    <div class="slide-actions">
+        <!-- Filter -->
+        <div id="filter-actions" class="side-container">
+            <div class="filter-content">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav('filter-actions')">&times;</a>
+                <div class="head-slide">
+                    <h5 class="text-dark font-weight-bold">Filter</h5>
+                </div>
+                <hr>
+                <div class="content-slide">
+                    
+                </div>
+            </div>
+        </div>
+
+        <?php 
+            $activities = (new \App\Lib\SystemHelper)->getActivities();
+        ?>
+        <!-- Activities -->
+        <div id="activity-actions" class="side-container">
+            <div class="filter-content">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav('activity-actions')">&times;</a>
+                <div class="head-slide">
+                    <h5 class="text-dark font-weight-bold">Activity</h5>
+                    <select id="activity-filter" class="form-control">
+                        <option value="today">Today</option>
+                        <option value="yesterda">Yesterday</option>
+                        <option value="7days">Last 7 days</option>
+                        <option value="thismonth">This Month</option>
+                    </select>
+                </div>
+                <hr>
+                <!-- Activity Lists -->
+                <div id="activities-lists">
+                    @if(!empty($activities))
+                        @foreach($activities as $activity)
+                           <div class="px-4">
+                                <span>{{ $activity->activity_note }}</span>
+                            </div>
+                            <hr>
+                        @endforeach
+                    @else
+                        <div class="px-4">
+                            <span>No Activities</span>
+                        </div>
+                        <hr>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+@endif
+
+<div class="mb-5"></div>

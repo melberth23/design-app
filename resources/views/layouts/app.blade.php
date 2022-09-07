@@ -62,10 +62,13 @@
                 $('[data-toggle="tooltip"]').tooltip();
 
                 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                    var target = $(e.target).attr("href") // activated tab
-                    $('#brand-tabs .nav-link').removeClass('active');
-                    $(target +'-tab').addClass('active');
-                    $('.continue-btn').removeClass('active');
+                    var target = $(e.target).attr("href"); // activated tab
+                    var area = $(e.target).attr("data-area"); // activated tab
+                    if(area == 'add-brand') {
+                        $('#brand-tabs .nav-link').removeClass('active');
+                        $(target +'-tab').addClass('active');
+                        $('.continue-btn').removeClass('active');
+                    }
                 });
             });
         });

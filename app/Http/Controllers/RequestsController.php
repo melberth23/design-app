@@ -211,11 +211,14 @@ class RequestsController extends Controller
         // Get url by role
         $backurl = route('request.index');
         if(auth()->user()->hasRole('Admin')) {
-            $backurl = route('adminrequest.index');
+            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
         }
         if(auth()->user()->hasRole('Designer')) {
             $backurl = route('designer.customers', ['status' => 'all']);
         }
+
+        // All designers
+        $designers = User::where('role_id', 3)->get();
 
         return view('requests.view')->with([
             'backurl'  => $backurl,
@@ -227,6 +230,7 @@ class RequestsController extends Controller
             'medias' => $medias,
             'notifications'  => $notifications,
             'filenotifications'  => $filenotifications,
+            'designers'  => $designers
         ]);
     }
 
@@ -507,11 +511,14 @@ class RequestsController extends Controller
         // Get url by role
         $backurl = route('request.index');
         if(auth()->user()->hasRole('Admin')) {
-            $backurl = route('adminrequest.index');
+            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
         }
         if(auth()->user()->hasRole('Designer')) {
             $backurl = route('designer.customers', ['status' => 'all']);
         }
+
+        // All designers
+        $designers = User::where('role_id', 3)->get();
 
         return view('requests.comment')->with([
             'requests'  => $requests,
@@ -521,6 +528,7 @@ class RequestsController extends Controller
             'comments'  => $comments,
             'notifications' => $notifications,
             'filenotifications' => $filenotifications,
+            'designers' => $designers
         ]);
     }
 
@@ -571,11 +579,14 @@ class RequestsController extends Controller
         // Get url by role
         $backurl = route('request.index');
         if(auth()->user()->hasRole('Admin')) {
-            $backurl = route('adminrequest.index');
+            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
         }
         if(auth()->user()->hasRole('Designer')) {
             $backurl = route('designer.customers', ['status' => 'all']);
         }
+
+        // All designers
+        $designers = User::where('role_id', 3)->get();
 
         return view('requests.files')->with([
             'requests'  => $requests,
@@ -587,7 +598,8 @@ class RequestsController extends Controller
             'medias'  => $media,
             'adobes'  => $dobe,
             'manualmedias'  => $manual_media,
-            'manualadobes'  => $manual_dobe
+            'manualadobes'  => $manual_dobe,
+            'designers'  => $designers
         ]);
     }
 
