@@ -713,7 +713,11 @@ class BrandController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('brand.index')->with('success','Brand Updated Successfully.');
+            $redirecturl = redirect()->route('brand.index')->with('success','Brand Updated Successfully.');
+            if(auth()->user()->hasRole('Admin')) {
+                $redirecturl = redirect()->route('subscribers.view', ['subscriber' => $brand->user_id])->with('success','Brand Updated Successfully.');
+            }
+            return $redirecturl;
 
         } catch (\Throwable $th) {
             // Rollback and return with Error

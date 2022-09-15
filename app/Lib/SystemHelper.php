@@ -6,6 +6,8 @@ use DB;
 use DateTimeZone;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 use App\Models\Payments;
 use App\Models\Requests;
 use App\Models\Brand;
@@ -764,10 +766,20 @@ class SystemHelper {
         );
     }
 
-    public function getActivities()
+    public function getActivities($subid=0)
     {
-        $activities = Activities::get();
-        return $activities;
+        $user = Auth::user();
+        $today = Carbon::now();
+        $activities = Activities::whereDate('created_at', $today);
+        $activities->where('activity_note', '!=', '');
+        if(!empty($subid)) {
+            $activities->where('subscriber_id', $subid);
+        } else {
+            $activities->where('user_id', $user->id);
+        }
+
+        $records = $activities->get();
+        return $records;
     }
 
     public function getNotificationInformation()

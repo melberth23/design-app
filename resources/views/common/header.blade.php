@@ -93,6 +93,7 @@
 @if(auth()->user()->hasRole('Admin'))
     @if((str_contains(url()->current(), 'admin/subscribers')))
     <div class="slide-actions">
+        @if(!empty($view))
         <!-- Filter -->
         <div id="filter-actions" class="side-container">
             <div class="filter-content">
@@ -102,13 +103,64 @@
                 </div>
                 <hr>
                 <div class="content-slide">
-                    
+                    <form method="get" >
+                        <ul class="d-none d-md-flex navbar-nav sidebar" id="accordionSidebar">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark collapsed" href="#" data-toggle="collapse" data-target="#dateDropdown"
+                                    aria-expanded="true" aria-controls="dateDropdown">
+                                    <span>Date account created</span>
+                                </a>
+                                <div id="dateDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                                    <div class="bg-white py-2 collapse-inner">
+                                       <label class="d-block"><input type="checkbox" name="date[]" value="3today" <?php echo (in_array('3today', $filterdate))?'checked="checked"':''; ?>> Today</label>
+                                       <label class="d-block"><input type="checkbox" name="date[]" value="2yesterday" <?php echo (in_array('2yesterday', $filterdate))?'checked="checked"':''; ?>> Yesterday</label>
+                                       <label class="d-block"><input type="checkbox" name="date[]" value="1last7" <?php echo (in_array('1last7', $filterdate))?'checked="checked"':''; ?>> Last 7 days</label>
+                                       <label class="d-block"><input type="checkbox" name="date[]" value="4thismonth" <?php echo (in_array('4thismonth', $filterdate))?'checked="checked"':''; ?>> This month</label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark collapsed" href="#" data-toggle="collapse" data-target="#PlantypeDropdown"
+                                    aria-expanded="true" aria-controls="PlantypeDropdown">
+                                    <span>Plan type</span>
+                                </a>
+                                <div id="PlantypeDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                                    <div class="bg-white py-2 collapse-inner">
+                                       <label class="d-block"><input type="checkbox" name="plantype[]" value="basic" <?php echo (in_array('basic', $filterplantype))?'checked="checked"':''; ?>> Basic</label>
+                                       <label class="d-block"><input type="checkbox" name="plantype[]" value="premium" <?php echo (in_array('premium', $filterplantype))?'checked="checked"':''; ?>> Premium</label>
+                                       <label class="d-block"><input type="checkbox" name="plantype[]" value="royal" <?php echo (in_array('royal', $filterplantype))?'checked="checked"':''; ?>> Enterprise</label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark collapsed" href="#" data-toggle="collapse" data-target="#PlanstatusDropdown"
+                                    aria-expanded="true" aria-controls="PlanstatusDropdown">
+                                    <span>Plan status</span>
+                                </a>
+                                <div id="PlanstatusDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                                    <div class="bg-white py-2 collapse-inner">
+                                       <label class="d-block"><input type="checkbox" name="planstatus[]" value="active" <?php echo (in_array('active', $filterplanstatus))?'checked="checked"':''; ?>> Active</label>
+                                       <label class="d-block"><input type="checkbox" name="planstatus[]" value="expired" <?php echo (in_array('expired', $filterplanstatus))?'checked="checked"':''; ?>> Expired</label>
+                                       <label class="d-block"><input type="checkbox" name="planstatus[]" value="cancelled" <?php echo (in_array('cancelled', $filterplanstatus))?'checked="checked"':''; ?>> Cancelled</label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nav-item action-apply">
+                                <button type="submit" class="btn btn-primary">Apply</button>
+                            </li>
+                        </ul>
+                    </form>
                 </div>
             </div>
         </div>
+        @endif
 
         <?php 
-            $activities = (new \App\Lib\SystemHelper)->getActivities();
+            $sub_id = 0;
+            if(!empty($perid)) {
+                $sub_id = $perid;
+            }
+            $activities = (new \App\Lib\SystemHelper)->getActivities($sub_id);
         ?>
         <!-- Activities -->
         <div id="activity-actions" class="side-container">
@@ -116,17 +168,17 @@
                 <a href="javascript:void(0)" class="closebtn" onclick="closeNav('activity-actions')">&times;</a>
                 <div class="head-slide">
                     <h5 class="text-dark font-weight-bold">Activity</h5>
-                    <select id="activity-filter" class="form-control">
+                    <select id="activity-filter" class="form-control" data-subid="{{ $sub_id }}">
                         <option value="today">Today</option>
-                        <option value="yesterda">Yesterday</option>
-                        <option value="7days">Last 7 days</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="last7">Last 7 days</option>
                         <option value="thismonth">This Month</option>
                     </select>
                 </div>
                 <hr>
                 <!-- Activity Lists -->
                 <div id="activities-lists">
-                    @if(!empty($activities))
+                    @if($activities->count() > 0)
                         @foreach($activities as $activity)
                            <div class="px-4">
                                 <span>{{ $activity->activity_note }}</span>

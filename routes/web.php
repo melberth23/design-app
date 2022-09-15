@@ -182,6 +182,7 @@ Route::middleware('auth')->prefix('admin/subscribers')->name('subscribers.')->gr
     Route::get('/premium/sort/{type}/{sort}', [App\Http\Controllers\Admin\SubscribersController::class, 'premium'])->name('premium.sort');
     Route::get('/enterprise', [App\Http\Controllers\Admin\SubscribersController::class, 'enterprise'])->name('enterprise');
     Route::get('/enterprise/sort/{type}/{sort}', [App\Http\Controllers\Admin\SubscribersController::class, 'enterprise'])->name('enterprise.sort');
+    Route::post('/activities', [App\Http\Controllers\Admin\SubscribersController::class, 'activities'])->name('activities');
 
     // Profile pages
     Route::get('/account/{subscriber}', [App\Http\Controllers\Admin\SubscribersController::class, 'account'])->name('account');

@@ -5,3 +5,12 @@
         </div>
     </div>
 </footer>
+<script type="text/javascript">
+function openNav(elem) {
+    document.getElementById(elem).style.width = "280px";
+}
+
+function closeNav(elem) {
+    document.getElementById(elem).style.width = "0";
+}
+</script>

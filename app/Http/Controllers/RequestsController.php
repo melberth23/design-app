@@ -468,7 +468,7 @@ class RequestsController extends Controller
      */
     public function edit(Requests $requests)
     {
-        $userid = Auth::id();
+        $userid = $requests->user_id;
 
         $designtypes = RequestTypes::get();
         $brands = Brand::where('user_id', $userid)->get();
@@ -752,6 +752,7 @@ class RequestsController extends Controller
      */
     public function update(Request $request, Requests $requests)
     {
+
         $userid = $request->user()->id;
 
         // Validations
@@ -805,7 +806,11 @@ class RequestsController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('request.index')->with('success','Requests Updated Successfully.');
+            $redirecturl = redirect()->route('request.index')->with('success','Requests Updated Successfully.');
+            if(auth()->user()->hasRole('Admin')) {
+                $redirecturl = redirect()->route('subscribers.view', ['subscriber' => $requests->user_id])->with('success','Requests Updated Successfully.');
+            }
+            return $redirecturl;
 
         } catch (\Throwable $th) {
             // Rollback and return with Error

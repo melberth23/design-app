@@ -25,7 +25,7 @@
             <button class="btn btn-outline-light text-dark border m-1" type="button" >
                 <i class="fa fa-file-text" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Notes</span>
             </button>
-            <button class="btn btn-outline-light text-dark border m-1" type="button" >
+            <button class="btn btn-outline-light text-dark border m-1" type="button" onclick="openNav('activity-actions');">
                 <i class="fa fa-list-ul" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Activities</span>
             </button>
             <button class="btn btn-primary m-1" type="button" >

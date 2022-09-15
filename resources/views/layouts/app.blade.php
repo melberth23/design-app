@@ -134,6 +134,32 @@
 
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
+    @hasrole('Admin')
+    <script type="text/javascript">
+        jQuery(function($) {
+            $('#activity-filter').on('change', function() {
+                $('#activities-lists').html('');
+                var subid = $(this).attr('data-subid');
+                var filter = $(this).val();
+                $.ajax({
+                   type:'POST',
+                   url:"{{ route('subscribers.activities') }}",
+                   data: {'_token': '{{ csrf_token() }}', 'filter': filter, 'subid': subid},
+                   success:function(res) {
+                        if(res.data.length > 0) {
+                            $.each(res.data, function( index, field ) {
+                                $('#activities-lists').append('<div class="px-4"><span>'+ field.activity_note +'</span></div><hr>');
+                            });
+                        } else {
+                            $('#activities-lists').html('<div class="px-4"><span>No Activities</span></div><hr>');
+                        }
+                   }
+                });
+            });
+        });
+    </script>
+    @endhasrole
+
     @yield('scripts')
 </body>
 

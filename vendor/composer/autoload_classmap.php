@@ -87,6 +87,7 @@ return array(
     'App\\Models\\FileNotifications' => $baseDir . '/app/Models/FileNotifications.php',
     'App\\Models\\Invoices' => $baseDir . '/app/Models/Invoices.php',
     'App\\Models\\NewAttempt' => $baseDir . '/app/Models/NewAttempt.php',
+    'App\\Models\\Notes' => $baseDir . '/app/Models/Notes.php',
     'App\\Models\\Payments' => $baseDir . '/app/Models/Payments.php',
     'App\\Models\\RequestAssets' => $baseDir . '/app/Models/RequestAssets.php',
     'App\\Models\\Requests' => $baseDir . '/app/Models/Requests.php',
