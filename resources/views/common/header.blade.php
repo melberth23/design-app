@@ -194,6 +194,22 @@
                 </div>
             </div>
         </div>
+
+        @if((str_contains(url()->current(), 'admin/subscribers/view')))
+            <!-- Notes -->
+            <div id="notes-actions" class="side-container">
+                <div class="filter-content">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav('notes-actions')">&times;</a>
+                    <div class="head-slide">
+                        <h5 class="text-dark font-weight-bold">Notes</h5>
+                    </div>
+                    <hr>
+                    <!-- Activity Lists -->
+                    <div id="notes-lists">
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
     @endif
 @endif
