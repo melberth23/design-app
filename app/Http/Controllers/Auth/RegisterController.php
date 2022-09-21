@@ -96,6 +96,24 @@ class RegisterController extends Controller
             );
             Mail::to($user)->send(new DigitalMail($details));
 
+            // Send admin notification
+            $admins = User::where('role_id', 1)->get();
+            if(!empty($admins)) {
+                foreach($admins as $admin) {
+                    // Send email for notification
+                    $details = array(
+                        'subject' => 'New Subscriber notification',
+                        'fromemail' => 'hello@designsowl.com',
+                        'fromname' => 'DesignsOwl',
+                        'heading' => 'Hi there,',
+                        'message' => 'New subscriber '. $toname .'.',
+                        'sub_message' => 'Please login using your login information to check. Thank you!',
+                        'template' => 'status'
+                    );
+                    Mail::to($admin->email)->send(new DigitalMail($details));
+                }
+            }
+
             return redirect()->route('user.verify', array('token' => $token))->with('success', "Please check your email to verify and enter code");
         }
         catch (Exception $e) {

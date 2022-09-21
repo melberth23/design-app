@@ -151,7 +151,7 @@ class AccountController extends Controller
                 'plan_id'    =>  $planInfo['id'],
                 'customer_email'  =>  $email,
                 'customer_name'  =>  $customerfullname,
-                'start_date'  =>  date('Y-m-d', strtotime("+1 day")),
+                'start_date'  =>  date('Y-m-d'),
                 'redirect_url'  =>  url("payment-success"),
                 'reference'  =>  time()
             ));

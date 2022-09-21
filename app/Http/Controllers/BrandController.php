@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\BrandAssets;
 use App\Models\Payments;
 use App\Models\TempFile;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DigitalMail;
 use App\Lib\SystemHelper;
 use File;
 
@@ -399,6 +402,24 @@ class BrandController extends Controller
 
                         // remove tempfile
                         TempFile::whereId($tempguideline->id)->delete();
+                    }
+                }
+
+                // Send admin notification
+                $admins = User::where('role_id', 1)->get();
+                if(!empty($admins)) {
+                    foreach($admins as $admin) {
+                        // Send email for notification
+                        $details = array(
+                            'subject' => 'Brand Profile notification',
+                            'fromemail' => 'hello@designsowl.com',
+                            'fromname' => 'DesignsOwl',
+                            'heading' => 'Hi there,',
+                            'message' => 'New brand profile '. $request->name .' added.',
+                            'sub_message' => 'Please login using your login information to check. Thank you!',
+                            'template' => 'status'
+                        );
+                        Mail::to($admin->email)->send(new DigitalMail($details));
                     }
                 }
 

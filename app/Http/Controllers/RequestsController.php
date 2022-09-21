@@ -244,7 +244,7 @@ class RequestsController extends Controller
         $userid = Auth::id();
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $designtypes = RequestTypes::get();
+            $designtypes = RequestTypes::where('status', 1)->get();
 
             return view('requests.add', ['designtypes' => $designtypes]);
         } else {
@@ -348,6 +348,24 @@ class RequestsController extends Controller
 
                     // remove tempfile
                     TempFile::whereId($tempmedia->id)->delete();
+                }
+            }
+
+            // Send admin notification
+            $admins = User::where('role_id', 1)->get();
+            if(!empty($admins)) {
+                foreach($admins as $admin) {
+                    // Send email for notification
+                    $details = array(
+                        'subject' => 'Request notification',
+                        'fromemail' => 'hello@designsowl.com',
+                        'fromname' => 'DesignsOwl',
+                        'heading' => 'Hi there,',
+                        'message' => 'New request '. $request->title .' added.',
+                        'sub_message' => 'Please login using your login information to check. Thank you!',
+                        'template' => 'status'
+                    );
+                    Mail::to($admin->email)->send(new DigitalMail($details));
                 }
             }
 
