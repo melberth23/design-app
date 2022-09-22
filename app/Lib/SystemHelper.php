@@ -120,8 +120,8 @@ class SystemHelper {
                 ),
                 'premium' => array(
                     'label' => 'Premium',
-                    'id' => '975117f4-0b2a-457d-a7b6-6c9f9f31bdaf', // Test
-                    // 'id' => '96e46f67-12b2-4283-a2c1-feeba42bbc8b', // Live
+                    // 'id' => '975117f4-0b2a-457d-a7b6-6c9f9f31bdaf', // Test
+                    'id' => '96e46f67-12b2-4283-a2c1-feeba42bbc8b', // Live
                     'amount' => 599,
                     'request' => 2,
                     'turnaround' => 24,

@@ -326,7 +326,7 @@
                             <div class="d-sm-flex align-items-center justify-content-between">
                                 <div class="guideline-information">
                                     <h5 class="card-label text-dark">Brand Guidelines</h5>
-                                    <p class="img-description mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                                    <p class="img-description mb-0">Upload guidelines for your brand that we should follow.</p>
                                     <p class="img-limit">Acceptable file DOC, DOCX, PDF, JPG, PNG max file size 150mb.</p>
                                 </div>
                                 <div class="guideline-uploader">
@@ -360,7 +360,7 @@
                             <div class="d-sm-flex align-items-center justify-content-between">
                                 <div class="template-information">
                                     <h5 class="card-label text-dark">Templates</h5>
-                                    <p class="img-description mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                                    <p class="img-description mb-0">Upload templates for your brand that we should follow.</p>
                                     <p class="img-limit">Acceptable file PNG, JPG, PDF, PSD, AI, INDD, DOC, DOCX max file size 150mb.</p>
                                 </div>
                                 <div class="template-uploader">
