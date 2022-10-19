@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="container">
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -18,9 +18,6 @@
    
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Add New User</h6>
-        </div>
         <form method="POST" action="{{route('users.store')}}">
             @csrf
             <div class="card-body">
@@ -28,7 +25,7 @@
 
                     {{-- First Name --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>First Name</label>
+                        <label><span style="color:red;">*</span>First Name</label>
                         <input 
                             type="text" 
                             class="form-control form-control-user @error('first_name') is-invalid @enderror" 
@@ -44,7 +41,7 @@
 
                     {{-- Last Name --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Last Name</label>
+                        <label><span style="color:red;">*</span>Last Name</label>
                         <input 
                             type="text" 
                             class="form-control form-control-user @error('last_name') is-invalid @enderror" 
@@ -60,7 +57,7 @@
 
                     {{-- Email --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Email</label>
+                        <label><span style="color:red;">*</span>Email</label>
                         <input 
                             type="email" 
                             class="form-control form-control-user @error('email') is-invalid @enderror" 
@@ -76,7 +73,7 @@
 
                     {{-- Mobile Number --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Mobile Number</label>
+                        <label><span style="color:red;">*</span>Mobile Number</label>
                         <input 
                             type="text" 
                             class="form-control form-control-user @error('mobile_number') is-invalid @enderror" 
@@ -92,8 +89,8 @@
 
                     {{-- Role --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Role</label>
-                        <select class="form-control form-control-user @error('role_id') is-invalid @enderror" name="role_id">
+                        <label><span style="color:red;">*</span>Role</label>
+                        <select class="form-control form-control-user @error('role_id') is-invalid @enderror" id="role_id" name="role_id">
                             <option selected disabled>Select Role</option>
                             @foreach ($roles as $role)
                                 <option value="{{$role->id}}">{{$role->name}}</option>
@@ -106,13 +103,40 @@
 
                     {{-- Status --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Status</label>
+                        <label><span style="color:red;">*</span>Status</label>
                         <select class="form-control form-control-user @error('status') is-invalid @enderror" name="status">
                             <option selected disabled>Select Status</option>
                             <option value="1" selected>Active</option>
                             <option value="0">Inactive</option>
                         </select>
                         @error('status')
+                            <span class="text-danger">{{$message}}</span>
+                        @enderror
+                    </div>
+
+                    {{-- Duration --}}
+                    <div class="col-sm-6 mb-3 mt-3 mb-sm-0 duration-option" style="display: none;">
+                        <label>Duration</label>
+                        <select class="form-control form-control-user @error('duration') is-invalid @enderror" name="duration">
+                            <option selected disabled>Select</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                        @error('duration')
+                            <span class="text-danger">{{$message}}</span>
+                        @enderror
+                    </div>
+
+                    {{-- Plan --}}
+                    <div class="col-sm-6 mb-3 mt-3 mb-sm-0 plan-option" style="display: none;">
+                        <label>Plan</label>
+                        <select class="form-control form-control-user @error('plan') is-invalid @enderror" name="plan">
+                            <option selected disabled>Select</option>
+                            <option value="basic" selected>Basic</option>
+                            <option value="premium">Premium</option>
+                            <option value="royal">Enterprise</option>
+                        </select>
+                        @error('plan')
                             <span class="text-danger">{{$message}}</span>
                         @enderror
                     </div>
@@ -130,4 +154,23 @@
 </div>
 
 
+@endsection
+
+@section('scripts')
+
+<script type="text/javascript">
+    jQuery(function($) {
+        $('#role_id').on('change', function() {
+            var role_id = $(this).val();
+            if(role_id == 2) {
+                $('.duration-option').show();
+                $('.plan-option').show();
+            } else {
+                $('.duration-option').hide();
+                $('.plan-option').hide();
+            }
+        });
+    });
+</script>
+    
 @endsection

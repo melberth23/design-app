@@ -263,6 +263,31 @@
                                     </div>
                                 </div>
                             </div>
+                            @if($subscriber->manual == 1)
+                            <div class="tab-text-label text-dark pt-3">
+                                <div class="row">
+                                    <div class="col-md-12 single-label text-dark"><strong>{{ !empty($subscriber->status)?"Hold":"Renew" }} Account</strong></div>
+                                </div>
+                            </div>
+                            <div class="tab-text-label text-dark pb-3">
+                                <div class="row">
+                                    <div class="col-md-9 single-label">Admin can make control this account manually.</div>
+                                    <div class="col-md-3 text-right">
+                                        @if ($subscriber->status == 0)
+                                            <a href="{{ route('users.status', ['user_id' => $subscriber->id, 'status' => 1]) }}"
+                                                class="btn btn-success m-2">
+                                                <i class="fa fa-check"></i> Renew
+                                            </a>
+                                        @elseif ($subscriber->status == 1)
+                                            <a href="{{ route('users.status', ['user_id' => $subscriber->id, 'status' => 0]) }}"
+                                                class="btn btn-danger m-2">
+                                                <i class="fa fa-ban"></i> Hold
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

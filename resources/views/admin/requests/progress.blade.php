@@ -17,20 +17,20 @@
         <div class="card">
             <div class="card-body py-0 px-1">
                 <ul class="nav nav-tabs" id="brand-tabs" role="tablist">
-                    <li class="nav-item {{ (request()->is('admin/requests')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('admin/requests')) ? 'active' : '' }}" id="queue-tab" href="{{ route('adminrequest.index') }}">All {{ $all }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link py-3" id="queue-tab" href="{{ route('adminrequest.index', ['customer_id' => $customer->id]) }}">All {{ $all }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('admin/requests/queue')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('admin/requests/queue')) ? 'active' : '' }}" id="queue-tab" href="{{ route('adminrequest.queue') }}">Queue {{ $queue }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link py-3" id="queue-tab" href="{{ route('adminrequest.queue', ['customer_id' => $customer->id]) }}">Queue {{ $queue }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('admin/requests/progress')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('admin/requests/progress')) ? 'active' : '' }}" id="progress-tab" href="{{ route('adminrequest.progress') }}">Progress {{ $requests->count()}}</a>
+                    <li class="nav-item border-bottom">
+                        <a class="nav-link py-3 active" id="progress-tab" href="{{ route('adminrequest.progress', ['customer_id' => $customer->id]) }}">Progress {{ $requests->count()}}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('admin/requests/review')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('admin/requests/review')) ? 'active' : '' }}" id="review-tab" href="{{ route('adminrequest.review') }}">Review {{ $review }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link py-3" id="review-tab" href="{{ route('adminrequest.review', ['customer_id' => $customer->id]) }}">Review {{ $review }}</a>
                     </li>
-                    <li class="nav-item {{ (request()->is('admin/requests/delivered')) ? 'border-bottom' : '' }}">
-                        <a class="nav-link py-3 {{ (request()->is('admin/requests/delivered')) ? 'active' : '' }}" id="delivered-tab" href="{{ route('adminrequest.delivered') }}">Completed {{ $completed }}</a>
+                    <li class="nav-item">
+                        <a class="nav-link py-3" id="delivered-tab" href="{{ route('adminrequest.delivered', ['customer_id' => $customer->id]) }}">Completed {{ $completed }}</a>
                     </li>
                 </ul>
             </div>

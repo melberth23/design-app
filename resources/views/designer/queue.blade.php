@@ -68,10 +68,6 @@
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="View Request">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('designer.status', ['request_id' => $request->id, 'status' => 3]) }}"
-                                            class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Add to Progress">
-                                            <i class="fa fa-list"></i>
-                                        </a>
                                         <a href="{{ route('request.comment', ['requests' => $request->id]) }}"
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>

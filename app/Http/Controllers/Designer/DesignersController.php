@@ -54,8 +54,8 @@ class DesignersController extends Controller
         if(!empty($customer) && $customer->count() > 0) {
             $userid = Auth::id();
 
-            $requests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('updated_at', 'DESC')->paginate(10);
-            $queue = Requests::where('status',2)->where('user_id', $customer_id)->count();
+            $requests = Requests::where('designer_id', $userid)->where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('updated_at', 'DESC')->paginate(10);
+            $queue = Requests::where('designer_id', $userid)->where('status',2)->where('user_id', $customer_id)->count();
             $progress = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->count();
             $review = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->count();
             $completed = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->count();
@@ -77,8 +77,8 @@ class DesignersController extends Controller
         if(!empty($customer) && $customer->count() > 0) {
             $userid = Auth::id();
 
-            $requests = Requests::where('status', 2)->where('user_id', $customer_id)->orderByRaw('-priority DESC')->paginate(10);
-            $allrequests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
+            $requests = Requests::where('designer_id', $userid)->where('status', 2)->where('user_id', $customer_id)->orderByRaw('-priority DESC')->paginate(10);
+            $allrequests = Requests::where('designer_id', $userid)->where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
             $progress = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->count();
             $review = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->count();
             $completed = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->count();
@@ -101,8 +101,8 @@ class DesignersController extends Controller
             $userid = Auth::id();
 
             $requests = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->orderBy('updated_at', 'DESC')->paginate(10);
-            $allrequests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
-            $queue = Requests::where('status',2)->where('user_id', $customer_id)->count();
+            $allrequests = Requests::where('designer_id', $userid)->where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
+            $queue = Requests::where('designer_id', $userid)->where('status',2)->where('user_id', $customer_id)->count();
             $review = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->count();
             $completed = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->count();
 
@@ -124,8 +124,8 @@ class DesignersController extends Controller
             $userid = Auth::id();
 
             $requests = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->orderBy('updated_at', 'DESC')->paginate(10);
-            $allrequests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
-            $queue = Requests::where('status',2)->where('user_id', $customer_id)->count();
+            $allrequests = Requests::where('designer_id', $userid)->where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
+            $queue = Requests::where('designer_id', $userid)->where('status',2)->where('user_id', $customer_id)->count();
             $progress = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->count();
             $completed = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->count();
 
@@ -147,8 +147,8 @@ class DesignersController extends Controller
             $userid = Auth::id();
 
             $requests = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 0)->orderBy('updated_at', 'DESC')->paginate(10);
-            $allrequests = Requests::where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
-            $queue = Requests::where('status',2)->where('user_id', $customer_id)->count();
+            $allrequests = Requests::where('designer_id', $userid)->where('status', '!=', 1)->where('user_id', $customer_id)->orderBy('user_id', 'ASC')->count();
+            $queue = Requests::where('designer_id', $userid)->where('status',2)->where('user_id', $customer_id)->count();
             $progress = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 3)->count();
             $review = Requests::where('designer_id', $userid)->where('user_id', $customer_id)->where('status', 4)->count();
 
@@ -171,17 +171,17 @@ class DesignersController extends Controller
                     });
 
         if($status == 'all') {
-            $users = $userrequest->select('users.id as uid','users.first_name', 'users.last_name', 'requests.status as rstatus')->where('requests.user_id', '!=', 1)->groupBy('users.id')->paginate(10);
+            $users = $userrequest->select('users.id as uid','users.first_name', 'users.last_name', 'requests.status as rstatus')->where('requests.designer_id', $userid)->groupBy('users.id')->paginate(10);
         } else {
-            $users = $userrequest->select('users.id as uid','users.first_name', 'users.last_name', 'requests.status as rstatus')->where('requests.user_id', '!=', 1)->where('requests.status', $status)->groupBy('users.id')->paginate(10);
+            $users = $userrequest->select('users.id as uid','users.first_name', 'users.last_name', 'requests.status as rstatus')->where('requests.designer_id', $userid)->where('requests.status', $status)->groupBy('users.id')->paginate(10);
         }
 
         $requests = User::leftJoin('requests', function($join) {
                         $join->on('users.id', '=', 'requests.user_id');
-                    })->where('requests.user_id', '!=', 1)->groupBy('users.id')->get();
+                    })->where('requests.designer_id', $userid)->groupBy('users.id')->get();
         $queue = User::leftJoin('requests', function($join) {
                         $join->on('users.id', '=', 'requests.user_id');
-                    })->where('requests.status', 2)->groupBy('users.id')->get();
+                    })->where('requests.designer_id', $userid)->where('requests.status', 2)->groupBy('users.id')->get();
         $progress = User::leftJoin('requests', function($join) {
                         $join->on('users.id', '=', 'requests.user_id');
                     })->where('requests.designer_id', $userid)->where('requests.status', 3)->groupBy('users.id')->get();

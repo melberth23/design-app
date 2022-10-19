@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use App\Models\StatusNotifications;
 use App\Models\Requests;
 use App\Models\Brand;
 use App\Models\User;
 use App\Models\Invoices;
 use App\Models\Activities;
 use App\Lib\SystemHelper;
+use App\Mail\DigitalMail;
 
 class SubscribersController extends Controller
 {
@@ -42,7 +44,7 @@ class SubscribersController extends Controller
     {
         $users = User::select('users.id as uid', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as full_name"), 'users.first_name', 'users.last_name', 'users.mobile_number', 'users.email', 'users.address_1', 'users.address_2', 'users.city', 'users.state', 'users.zip', 'users.country', 'payments.plan', 'payments.status as ustatus')->leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.status', 'active');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.status', 'active');
 
         if(!empty($type) && $type == 'date') {
             $users->orderByRaw('users.created_at '. $sort);
@@ -54,16 +56,16 @@ class SubscribersController extends Controller
 
         $usersObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active');
+                         })->where('users.role_id', 2)->where('payments.status', 'active');
         $basicObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'basic');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'basic');
         $premiumObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'premium');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'premium');
         $royalObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'royal');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'royal');
 
         // Date filter
         $filterdate = $request->date;
@@ -157,7 +159,7 @@ class SubscribersController extends Controller
     {
         $users = User::select('users.id as uid', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as full_name"), 'users.first_name', 'users.last_name', 'users.mobile_number', 'users.email', 'users.address_1', 'users.address_2', 'users.city', 'users.state', 'users.zip', 'users.country', 'payments.plan', 'payments.status as ustatus')->leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'basic');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'basic');
 
         if(!empty($type) && $type == 'date') {
             $users->orderByRaw('users.created_at '. $sort);
@@ -168,16 +170,16 @@ class SubscribersController extends Controller
 
         $usersObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active');
+                         })->where('users.role_id', 2)->where('payments.status', 'active');
         $basicObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'basic');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'basic');
         $premiumObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'premium');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'premium');
         $royalObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'royal');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'royal');
 
         // Date filter
         $filterdate = $request->date;
@@ -254,7 +256,7 @@ class SubscribersController extends Controller
     {
         $users = User::select('users.id as uid', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as full_name"), 'users.first_name', 'users.last_name', 'users.mobile_number', 'users.email', 'users.address_1', 'users.address_2', 'users.city', 'users.state', 'users.zip', 'users.country', 'payments.plan', 'payments.status as ustatus')->leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'premium');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'premium');
         
         if(!empty($type) && $type == 'date') {
             $users->orderByRaw('users.created_at '. $sort);
@@ -265,16 +267,16 @@ class SubscribersController extends Controller
 
         $usersObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active');
+                         })->where('users.role_id', 2)->where('payments.status', 'active');
         $basicObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'basic');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'basic');
         $premiumObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'premium');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'premium');
         $royalObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'royal');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'royal');
 
         // Date filter
         $filterdate = $request->date;
@@ -351,7 +353,7 @@ class SubscribersController extends Controller
     {
         $users = User::select('users.id as uid', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as full_name"), 'users.first_name', 'users.last_name', 'users.mobile_number', 'users.email', 'users.address_1', 'users.address_2', 'users.city', 'users.state', 'users.zip', 'users.country', 'payments.plan', 'payments.status as ustatus')->leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'royal');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'royal');
 
         if(!empty($type) && $type == 'date') {
             $users->orderByRaw('users.created_at '. $sort);
@@ -362,16 +364,16 @@ class SubscribersController extends Controller
 
         $usersObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active');
+                         })->where('users.role_id', 2)->where('payments.status', 'active');
         $basicObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'basic');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'basic');
         $premiumObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'premium');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'premium');
         $royalObj = User::leftJoin('payments', function($join) {
                              $join->on('users.id', '=', 'payments.user_id');
-                         })->where('users.role_id', 2)->where('users.status', 1)->where('payments.status', 'active')->where('payments.plan', 'royal');
+                         })->where('users.role_id', 2)->where('payments.status', 'active')->where('payments.plan', 'royal');
 
         // Date filter
         $filterdate = $request->date;
@@ -580,5 +582,57 @@ class SubscribersController extends Controller
         $records = $activities->get();
 
         return response()->json(array('data' => $records), 200);
+    }
+
+    /**
+     * Customers requests 
+     * @param $status
+     * @return Array $customers
+     */
+    public function customerLists($status)
+    {
+        $userrequest = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    });
+
+        if($status == 'all') {
+            $users = $userrequest->select('users.id as uid','users.first_name', 'users.last_name', 'requests.status as rstatus')->where('requests.user_id', '!=', 1)->groupBy('users.id')->paginate(10);
+        } else {
+            $users = $userrequest->select('users.id as uid','users.first_name', 'users.last_name', 'requests.status as rstatus')->where('requests.user_id', '!=', 1)->where('requests.status', $status)->groupBy('users.id')->paginate(10);
+        }
+
+        $requests = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.user_id', '!=', 1)->groupBy('users.id')->get();
+        $queue = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.status', 2)->groupBy('users.id')->get();
+        $progress = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.status', 3)->groupBy('users.id')->get();
+        $review = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.status', 4)->groupBy('users.id')->get();
+        $completed = User::leftJoin('requests', function($join) {
+                        $join->on('users.id', '=', 'requests.user_id');
+                    })->where('requests.status', 0)->groupBy('users.id')->get();
+
+        $templatebystatus = 'index';
+        $labelStatus = 'All requests';
+        if($status == 0) {
+            $templatebystatus = 'delivered';
+            $labelStatus = 'Delivered requests';
+        } elseif($status == 2) {
+            $templatebystatus = 'queue';
+            $labelStatus = 'Queue requests';
+        } elseif($status == 3) {
+            $templatebystatus = 'progress';
+            $labelStatus = 'Progress requests';
+        } elseif($status == 4) {
+            $templatebystatus = 'review';
+            $labelStatus = 'Review requests';
+        }
+
+        return view('admin.subscribers.customer-lists', ['users' => $users, 'status' => $templatebystatus, 'labelstatus' => $labelStatus, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
     }
 }

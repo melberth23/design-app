@@ -192,6 +192,20 @@ class RequestsController extends Controller
     {
         $userid = Auth::id();
 
+        // Get url by role
+        $backurl = route('request.index');
+        if(auth()->user()->hasRole('Admin')) {
+            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
+        }
+        if(auth()->user()->hasRole('Designer')) {
+            $backurl = route('designer.customers', ['status' => 'all']);
+            if(empty($requests->designer_id)) {
+                return redirect()->route('designer.customers', ['status' => 'all'])->with('error','You are not allowed to access this request.');
+            } elseif(!empty($requests->designer_id) && $requests->designer_id != $userid) {
+                return redirect()->route('designer.customers', ['status' => 'all'])->with('error','You are not allowed to access this request.');
+            }
+        }
+
         $designtype = RequestTypes::whereId($requests->design_type)->first();
         $brand = Brand::whereId($requests->brand_id)->first();
 
@@ -207,15 +221,6 @@ class RequestsController extends Controller
 
         // Update all file notifications to read
         $this->updateStatusNotifications($requests->id, $userid);
-
-        // Get url by role
-        $backurl = route('request.index');
-        if(auth()->user()->hasRole('Admin')) {
-            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
-        }
-        if(auth()->user()->hasRole('Designer')) {
-            $backurl = route('designer.customers', ['status' => 'all']);
-        }
 
         // All designers
         $designers = User::where('role_id', 3)->get();
@@ -513,6 +518,18 @@ class RequestsController extends Controller
     {
         $userid = Auth::id();
 
+        // Get url by role
+        $backurl = route('request.index');
+        if(auth()->user()->hasRole('Admin')) {
+            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
+        }
+        if(auth()->user()->hasRole('Designer')) {
+            $backurl = route('designer.customers', ['status' => 'all']);
+            if(!empty($requests->designer_id) && $requests->designer_id != $userid) {
+                return redirect()->$backurl->with('error','You are not allowed to access this request.');
+            }
+        }
+
         // get next and previous
         $previous = Requests::where('user_id', $userid)->where('id', '<', $requests->id)->max('id');
         $next = Requests::where('user_id', $userid)->where('id', '>', $requests->id)->min('id');
@@ -525,15 +542,6 @@ class RequestsController extends Controller
         $this->updateCommentNotifications($requests->id, $userid);
 
         $comments = Comments::where('request_id', $requests->id)->latest()->get();
-
-        // Get url by role
-        $backurl = route('request.index');
-        if(auth()->user()->hasRole('Admin')) {
-            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
-        }
-        if(auth()->user()->hasRole('Designer')) {
-            $backurl = route('designer.customers', ['status' => 'all']);
-        }
 
         // All designers
         $designers = User::where('role_id', 3)->get();
@@ -558,6 +566,18 @@ class RequestsController extends Controller
     public function files(Requests $requests)
     {
         $userid = Auth::id();
+
+        // Get url by role
+        $backurl = route('request.index');
+        if(auth()->user()->hasRole('Admin')) {
+            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
+        }
+        if(auth()->user()->hasRole('Designer')) {
+            $backurl = route('designer.customers', ['status' => 'all']);
+            if(!empty($requests->designer_id) && $requests->designer_id != $userid) {
+                return redirect()->$backurl->with('error','You are not allowed to access this request.');
+            }
+        }
 
         // get next and previous
         $previous = Requests::where('user_id', $userid)->where('id', '<', $requests->id)->max('id');
@@ -593,15 +613,6 @@ class RequestsController extends Controller
 
         // Update all file notifications to read
         $this->updateFilesNotifications($requests->id, $userid);
-
-        // Get url by role
-        $backurl = route('request.index');
-        if(auth()->user()->hasRole('Admin')) {
-            $backurl = route('subscribers.view', ['subscriber' => $requests->user_id]);
-        }
-        if(auth()->user()->hasRole('Designer')) {
-            $backurl = route('designer.customers', ['status' => 'all']);
-        }
 
         // All designers
         $designers = User::where('role_id', 3)->get();

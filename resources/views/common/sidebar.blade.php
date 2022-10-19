@@ -158,16 +158,16 @@
             </li>
 
             <!-- Requests -->
-            <li class="nav-item {{ (request()->is('admin/requests')) ? 'active' : '' }} {{ (request()->is('admin/requests/queue')) ? 'active' : '' }} {{ (request()->is('admin/requests/review')) ? 'active' : '' }} {{ (request()->is('admin/requests/delivered')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('adminrequest.index') }}">
+            <li class="nav-item {{ (str_contains(url()->current(), 'admin/requests')) ? 'active' : '' }} {{ (str_contains(url()->current(), 'admin/subscribers/list')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('subscribers.list', ['status' => 'all']) }}">
                     <img src="{{ asset('images/myrequest.svg') }}" class="menu-icons">
                     <span>Requests</span>
                 </a>
             </li>
 
             <!-- Brand Profiles -->
-            <li class="nav-item {{ (request()->is('admin/brands')) ? 'active' : '' }} {{ (request()->is('admin/brands/drafts')) ? 'active' : '' }} {{ (request()->is('admin/brands/archived')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('adminbrand.index') }}">
+            <li class="nav-item {{ (str_contains(url()->current(), 'admin/brands')) ? 'active' : '' }}">
+                <a class="nav-link text-dark" href="{{ route('adminbrand.list', ['status' => 'all']) }}">
                     <img src="{{ asset('images/brand-icon.svg') }}" class="menu-icons">
                     <span>Brand Profiles</span>
                 </a>

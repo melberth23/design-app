@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Activities;
+use App\Models\UserVerify;
+use App\Models\Payments;
 use App\Mail\DigitalMail;
+use App\Lib\PaymentHelper;
 use App\Lib\SystemHelper;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
@@ -16,6 +19,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -93,7 +97,17 @@ class UserController extends Controller
                 'mobile_number' => $request->mobile_number,
                 'role_id'       => $request->role_id,
                 'status'        => $request->status,
-                'password'      => $password
+                'password'      => $password,
+                'manual'        => 1
+            ]);
+
+            $token = Str::random(64);
+            $code = sprintf("%04d", mt_rand(1, 9999));
+  
+            UserVerify::create([
+                'user_id' => $user->id, 
+                'token' => $token,
+                'code' => $code
             ]);
 
             $message = 'You\'re account is created please refer credentials below.';
@@ -105,10 +119,59 @@ class UserController extends Controller
                 'fromname' => 'DesignsOwl',
                 'heading' => 'Hi '. $user->first_name,
                 'message' => $message,
-                'sub_message' => 'Please login using your email and this password '. $randomstring .'. Thank you!',
+                'sub_message' => 'Please login using your email and this password '. $randomstring .' and the code '. $code .'. Thank you!',
                 'template' => 'welcome'
             );
             Mail::to($user->email)->send(new DigitalMail($details));
+
+            if($request->role_id == 2) {
+                $customerfullname = $request->first_name .' '. $request->last_name;
+                $apikey = config('services.hitpay.key');
+                $isStg = config('services.hitpay.environment');
+                $selectedplan = $request->plan;
+                $selectedduration = $request->duration;
+                $planInfo = $this->helper->getPlanInformation($selectedplan, $selectedduration);
+                $payment = new PaymentHelper($apikey, $isStg);
+                $response = $payment->recurringRequestCreate(array(
+                    'plan_id'    =>  $planInfo['id'],
+                    'customer_email'  =>  $user->email,
+                    'customer_name'  =>  $customerfullname,
+                    'start_date'  =>  date('Y-m-d'),
+                    'redirect_url'  =>  url("payment-success"),
+                    'reference'  =>  time()
+                ));
+
+                if(!empty($response['status']) && $response['status'] == 'scheduled') {
+
+                    $payments = Payments::create([
+                        'user_id' => $user->id,
+                        'reference' => $response['id'],
+                        'business_recurring_plans_id' => $response['business_recurring_plans_id'],
+                        'plan' => $selectedplan,
+                        'cycle' => $response['cycle'],
+                        'currency' => $response['currency'],
+                        'price' => $response['price'],
+                        'status' => $response['status'],
+                        'payment_methods' => json_encode($response['payment_methods']),
+                        'payment_url' => $response['url'],
+                        'duration' => $selectedduration
+                    ]);
+
+                    // Send Email
+                    $details = array(
+                        'subject' => 'Payment Confirmation Details',
+                        'message' => 'Welcome '. $customerfullname .',',
+                        'extra_msg' => 'Please see details below:',
+                        'plan' => $planInfo['label'],
+                        'amount' => number_format($planInfo['amount']),
+                        'paymentlink' => 'Please pay to continue use your account '. $response['url'] .' or disregard if already paid.',
+                        'thank_msg' => 'Thank you!',
+                        'template' => 'payment'
+                    );
+
+                    Mail::to($user)->send(new DigitalMail($details));
+                }
+            }
 
             // Delete Any Existing Role
             DB::table('model_has_roles')->where('model_id',$user->id)->delete();
@@ -218,6 +281,7 @@ class UserController extends Controller
             // Save to Activities
             Activities::create([
                 'user_id' => auth()->user()->id,
+                'subscriber_id' => $user->id,
                 'activity_note' => auth()->user()->first_name ." edited an account of ". $request->first_name ." ". $request->last_name
             ]);
 

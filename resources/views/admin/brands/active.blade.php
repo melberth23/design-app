@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'All Brand Profiles')
+@section('title', 'Active Brand Profiles')
 
 @section('content')
     <div class="container">
@@ -32,10 +32,10 @@
                 <div class="card-body py-0 px-1">
                     <ul class="nav nav-tabs" id="brand-tabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link py-3 active" id="allbrand-tab" href="{{ route('adminbrand.index', ['customer_id' => $customer_id]) }}">All brand</a>
+                            <a class="nav-link py-3" id="allbrand-tab" href="{{ route('adminbrand.index', ['customer_id' => $customer_id]) }}">All brand</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link py-3" id="active-tab" href="{{ route('adminbrand.active', ['customer_id' => $customer_id]) }}">Active</a>
+                            <a class="nav-link py-3 active" id="drafts-tab" href="{{ route('adminbrand.active', ['customer_id' => $customer_id]) }}">Active</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link py-3" id="drafts-tab" href="{{ route('adminbrand.drafts', ['customer_id' => $customer_id]) }}">Drafts</a>

@@ -46,16 +46,17 @@ class RequestsAdminController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function index()
+    public function index($customer_id)
     {
+        $customer = User::whereId($customer_id)->first();
         $brands = Brand::count();
-        $requests = Requests::orderBy('created_at', 'DESC')->paginate(10);
-        $queue = Requests::where('status', 2)->count();
-        $progress = Requests::where('status', 3)->count();
-        $review = Requests::where('status', 4)->count();
-        $completed = Requests::where('status', 0)->count();
+        $requests = Requests::where('user_id', $customer_id)->orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('user_id', $customer_id)->where('status', 2)->count();
+        $progress = Requests::where('user_id', $customer_id)->where('status', 3)->count();
+        $review = Requests::where('user_id', $customer_id)->where('status', 4)->count();
+        $completed = Requests::where('user_id', $customer_id)->where('status', 0)->count();
 
-        return view('admin.requests.index', ['brands' => $brands, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+        return view('admin.requests.index', ['customer' => $customer, 'brands' => $brands, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
     }
 
     /**
@@ -63,16 +64,17 @@ class RequestsAdminController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function queue()
+    public function queue($customer_id)
     {
+        $customer = User::whereId($customer_id)->first();
         $brands = Brand::count();
-        $all = Requests::count();
-        $requests = Requests::where('status', 2)->orderByRaw('-priority DESC')->paginate(10);
-        $progress = Requests::where('status', 3)->count();
-        $review = Requests::where('status', 4)->count();
-        $completed = Requests::where('status', 0)->count();
+        $all = Requests::where('user_id', $customer_id)->count();
+        $requests = Requests::where('user_id', $customer_id)->where('status', 2)->orderByRaw('-priority DESC')->paginate(10);
+        $progress = Requests::where('user_id', $customer_id)->where('status', 3)->count();
+        $review = Requests::where('user_id', $customer_id)->where('status', 4)->count();
+        $completed = Requests::where('user_id', $customer_id)->where('status', 0)->count();
 
-        return view('admin.requests.queue', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+        return view('admin.requests.queue', ['customer' => $customer, 'brands' => $brands, 'all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
     }
 
     /**
@@ -80,16 +82,17 @@ class RequestsAdminController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function progress()
+    public function progress($customer_id)
     {
+        $customer = User::whereId($customer_id)->first();
         $brands = Brand::count();
-        $all = Requests::count();
-        $requests = Requests::where('status', 3)->orderBy('created_at', 'DESC')->paginate(10);
-        $queue = Requests::where('status', 2)->count();
-        $review = Requests::where('status', 4)->count();
-        $completed = Requests::where('status', 0)->count();
+        $all = Requests::where('user_id', $customer_id)->count();
+        $requests = Requests::where('user_id', $customer_id)->where('status', 3)->orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('user_id', $customer_id)->where('status', 2)->count();
+        $review = Requests::where('user_id', $customer_id)->where('status', 4)->count();
+        $completed = Requests::where('user_id', $customer_id)->where('status', 0)->count();
         
-        return view('admin.requests.progress', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
+        return view('admin.requests.progress', ['customer' => $customer, 'brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
     }
 
     /**
@@ -97,16 +100,17 @@ class RequestsAdminController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function review()
+    public function review($customer_id)
     {
+        $customer = User::whereId($customer_id)->first();
         $brands = Brand::count();
-        $all = Requests::count();
-        $requests = Requests::where('status', 4)->orderBy('created_at', 'DESC')->paginate(10);
-        $queue = Requests::where('status', 2)->count();
-        $progress = Requests::where('status', 3)->count();
-        $completed = Requests::where('status', 0)->count();
+        $all = Requests::where('user_id', $customer_id)->count();
+        $requests = Requests::where('user_id', $customer_id)->where('status', 4)->orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('user_id', $customer_id)->where('status', 2)->count();
+        $progress = Requests::where('user_id', $customer_id)->where('status', 3)->count();
+        $completed = Requests::where('user_id', $customer_id)->where('status', 0)->count();
 
-        return view('admin.requests.review', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
+        return view('admin.requests.review', ['customer' => $customer, 'brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
     }
 
     /**
@@ -114,16 +118,17 @@ class RequestsAdminController extends Controller
      * @param Nill
      * @return Array $requests
      */
-    public function delivered()
+    public function delivered($customer_id)
     {
+        $customer = User::whereId($customer_id)->first();
         $brands = Brand::count();
-        $all = Requests::count();
-        $requests = Requests::where('status', 0)->orderBy('created_at', 'DESC')->paginate(10);
-        $queue = Requests::where('status', 2)->count();
-        $progress = Requests::where('status', 3)->count();
-        $review = Requests::where('status', 4)->count();
+        $all = Requests::where('user_id', $customer_id)->count();
+        $requests = Requests::where('user_id', $customer_id)->where('status', 0)->orderBy('created_at', 'DESC')->paginate(10);
+        $queue = Requests::where('user_id', $customer_id)->where('status', 2)->count();
+        $progress = Requests::where('user_id', $customer_id)->where('status', 3)->count();
+        $review = Requests::where('user_id', $customer_id)->where('status', 4)->count();
 
-        return view('admin.requests.delivered', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
+        return view('admin.requests.delivered', ['customer' => $customer, 'brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
     }
 
     /**

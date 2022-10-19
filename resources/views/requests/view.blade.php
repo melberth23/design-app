@@ -30,9 +30,6 @@
             @endif
         </h1>
         <div class="actions d-flex align-items-center justify-content-end">
-            @if (auth()->user()->hasRole('Designer') && $requests->status == 2)
-                <a href="{{ route('designer.status', ['request_id' => $requests->id, 'status' => 3]) }}" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-success"><i class="fa fa-list"></i> Move to progress</a>
-            @endif
             @if (auth()->user()->hasRole('Designer') && $requests->status == 3)
                 <a href="#" data-toggle="modal" data-target="#movereviewModal" class="mx-2 d-sm-inline-block btn btn-sm btn-outline-dark"><i class="fas fa-check" aria-hidden="true"></i> Move to review</a>
             @endif

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Blogs List')
+@section('title', 'Archived Brand Profiles')
 
 @section('content')
     <div class="container">
@@ -19,10 +19,10 @@
                         <i class="fa fa-sliders" aria-hidden="true"></i> <span class="d-none d-md-inline-block">Sort</span>
                       </button>
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{{ route('adminbrand.archived.sort', ['type' => 'date', 'sort' => 'asc']) }}">Date added (Ascending)</a>
-                        <a class="dropdown-item" href="{{ route('adminbrand.archived.sort', ['type' => 'date', 'sort' => 'desc']) }}">Date added (Descending)</a>
-                        <a class="dropdown-item" href="{{ route('adminbrand.archived.sort', ['type' => 'name', 'sort' => 'asc']) }}">Name (A-Z)</a>
-                        <a class="dropdown-item" href="{{ route('adminbrand.archived.sort', ['type' => 'name', 'sort' => 'desc']) }}">Name (Z-A)</a>
+                        <a class="dropdown-item" href="{{ route('adminbrand.archived.sort', ['customer_id' => $customer_id, 'type' => 'date', 'sort' => 'asc']) }}">Date added (Ascending)</a>
+                        <a class="dropdown-item" href="{{ route('adminbrand.archived.sort', ['customer_id' => $customer_id, 'type' => 'date', 'sort' => 'desc']) }}">Date added (Descending)</a>
+                        <a class="dropdown-item" href="{{ route('adminbrand.archived.sort', ['customer_id' => $customer_id, 'type' => 'name', 'sort' => 'asc']) }}">Name (A-Z)</a>
+                        <a class="dropdown-item" href="{{ route('adminbrand.archived.sort', ['customer_id' => $customer_id, 'type' => 'name', 'sort' => 'desc']) }}">Name (Z-A)</a>
                       </div>
                     </div>
                 </div>
@@ -32,13 +32,16 @@
                 <div class="card-body py-0 px-1">
                     <ul class="nav nav-tabs" id="brand-tabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link py-3 {{ (request()->is('admin/brands')) ? 'active' : '' }}" id="allbrand-tab" href="{{ route('adminbrand.index') }}">All brand</a>
+                            <a class="nav-link py-3" id="allbrand-tab" href="{{ route('adminbrand.index', ['customer_id' => $customer_id]) }}">All brand</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link py-3 {{ (request()->is('admin/brands/drafts')) ? 'active' : '' }}" id="drafts-tab" href="{{ route('adminbrand.drafts') }}">Drafts</a>
+                            <a class="nav-link py-3" id="active-tab" href="{{ route('adminbrand.active', ['customer_id' => $customer_id]) }}">Active</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link py-3 {{ (request()->is('admin/brands/archived')) ? 'active' : '' }}" id="archived-tab" href="{{ route('adminbrand.archived') }}">Archived</a>
+                            <a class="nav-link py-3" id="drafts-tab" href="{{ route('adminbrand.drafts', ['customer_id' => $customer_id]) }}">Drafts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-3 active" id="archived-tab" href="{{ route('adminbrand.archived', ['customer_id' => $customer_id]) }}">Archived</a>
                         </li>
                     </ul>
                 </div>

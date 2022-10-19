@@ -78,12 +78,6 @@
                                             class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Messages">
                                             <i class="fa fa-comments"></i>
                                         </a>
-                                        @if ($request->status == 2)
-                                            <a href="{{ route('designer.status', ['request_id' => $request->id, 'status' => 3]) }}"
-                                                class="text-dark mx-2" data-toggle="tooltip" data-placement="top" title="Add to Progress">
-                                                <i class="fa fa-list"></i>
-                                            </a>
-                                        @endif
                                         @if ($request->status == 3)
                                             <a class="text-dark mx-2" href="#" data-ref="{{ $request->id }}" data-toggle="modal" data-target="#reviewModal" >
                                                 <i class="fa fa-check"></i>

@@ -858,6 +858,11 @@ class SystemHelper {
         return Requests::where('user_id', $userid)->where('status', $status)->count();
     }
 
+    public function getBrandsCount($userid, $status)
+    {
+        return Brand::where('user_id', $userid)->where('status', $status)->count();
+    }
+
     public function getUserPlanName($userid)
     {
         $user = User::whereId($userid)->first();

@@ -161,13 +161,9 @@ Route::middleware('auth')->prefix('admin/users')->name('users.')->group(function
     Route::put('/update/{user}', [UserController::class, 'update'])->name('update');
     Route::delete('/delete/{user}', [UserController::class, 'delete'])->name('destroy');
     Route::get('/update/status/{user_id}/{status}', [UserController::class, 'updateStatus'])->name('status');
-
-    
     Route::get('/import-users', [UserController::class, 'importUsers'])->name('import');
     Route::post('/upload-users', [UserController::class, 'uploadUsers'])->name('upload');
-
     Route::get('export/', [UserController::class, 'export'])->name('export');
-
 });
 
 // Admin Subscribers 
@@ -187,6 +183,7 @@ Route::middleware('auth')->prefix('admin/subscribers')->name('subscribers.')->gr
     // Profile pages
     Route::get('/account/{subscriber}', [App\Http\Controllers\Admin\SubscribersController::class, 'account'])->name('account');
     Route::get('/account/request/status/{request_id}/{status}/{designerid}', [App\Http\Controllers\Admin\SubscribersController::class, 'assignDesigner'])->name('requeststatus');
+    Route::get('/list/{status}', [App\Http\Controllers\Admin\SubscribersController::class, 'customerLists'])->name('list');
 });
 
 // Request Types
@@ -202,12 +199,12 @@ Route::middleware('auth')->prefix('admin/requesttypes')->name('requesttypes.')->
 
 // Admin Requests 
 Route::middleware('auth')->prefix('admin/requests')->name('adminrequest.')->group(function(){
-    Route::get('/', [App\Http\Controllers\Admin\RequestsAdminController::class, 'index'])->name('index');
+    Route::get('/all/{customer_id}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'index'])->name('index');
     Route::get('/view/{requests}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'view'])->name('view');
-    Route::get('/queue', [App\Http\Controllers\Admin\RequestsAdminController::class, 'queue'])->name('queue');
-    Route::get('/progress', [App\Http\Controllers\Admin\RequestsAdminController::class, 'progress'])->name('progress');
-    Route::get('/review', [App\Http\Controllers\Admin\RequestsAdminController::class, 'review'])->name('review');
-    Route::get('/delivered', [App\Http\Controllers\Admin\RequestsAdminController::class, 'delivered'])->name('delivered');
+    Route::get('/queue/{customer_id}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'queue'])->name('queue');
+    Route::get('/progress/{customer_id}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'progress'])->name('progress');
+    Route::get('/review/{customer_id}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'review'])->name('review');
+    Route::get('/delivered/{customer_id}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'delivered'])->name('delivered');
     Route::get('/comment/{requests}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'comment'])->name('comment');
     Route::post('/user-comment', [App\Http\Controllers\Admin\RequestsAdminController::class, 'addComment'])->name('addcomment');
     Route::delete('/delete/{requests}', [App\Http\Controllers\Admin\RequestsAdminController::class, 'delete'])->name('destroy');
@@ -224,10 +221,13 @@ Route::middleware('auth')->prefix('admin/payments')->name('adminpayment.')->grou
 
 // Admin Brand Profiles 
 Route::middleware('auth')->prefix('admin/brands')->name('adminbrand.')->group(function(){
-    Route::get('/', [App\Http\Controllers\Admin\BrandsController::class, 'index'])->name('index');
-    Route::get('/sort/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'index'])->name('index.sort');
-    Route::get('/drafts', [App\Http\Controllers\Admin\BrandsController::class, 'drafts'])->name('drafts');
-    Route::get('/drafts/sort/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'drafts'])->name('drafts.sort');
-    Route::get('/archived', [App\Http\Controllers\Admin\BrandsController::class, 'archived'])->name('archived');
-    Route::get('/archived/sort/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'archived'])->name('archived.sort');
+    Route::get('/all/{customer_id}', [App\Http\Controllers\Admin\BrandsController::class, 'index'])->name('index');
+    Route::get('/all/sort/{customer_id}/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'index'])->name('index.sort');
+    Route::get('/active/{customer_id}', [App\Http\Controllers\Admin\BrandsController::class, 'active'])->name('active');
+    Route::get('/active/sort/{customer_id}/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'active'])->name('active.sort');
+    Route::get('/drafts/{customer_id}', [App\Http\Controllers\Admin\BrandsController::class, 'drafts'])->name('drafts');
+    Route::get('/drafts/sort/{customer_id}/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'drafts'])->name('drafts.sort');
+    Route::get('/archived/{customer_id}', [App\Http\Controllers\Admin\BrandsController::class, 'archived'])->name('archived');
+    Route::get('/archived/sort/{customer_id}/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'archived'])->name('archived.sort');
+    Route::get('/list/{status}', [App\Http\Controllers\Admin\BrandsController::class, 'customerLists'])->name('list');
 });
