@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="col-md-9">
-            <div id="rightside-content" class="row justify-content-center mt-5">
+            <div id="rightside-content" class="row justify-content-center">
                 <div class="col-md-6">
                     <h1>Forgot password</h1>
                     <p>Enter the email address you used when you joined and we’ll send you instructions to reset your password.</p>
@@ -70,6 +70,8 @@
     }
     #rightside-content {
         min-height: 100vh;
+        display: flex;
+        align-items: center;
     }
 </style>
 @endsection

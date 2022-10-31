@@ -69,9 +69,9 @@
 
         @hasrole('User')
         <li class="nav-item">
-            <a class="btn btn-primary d-block m-3 shadow menu-btn-link" href="{{ route('request.create') }}">
+            <a class="btn btn-primary btn-large d-block m-3 shadow menu-btn-link" href="{{ route('request.create') }}">
                 <i class="fas fa-plus"></i>
-                <span>New Request</span>
+                <span class="text-white">New Request</span>
             </a>
         </li>
         @endhasrole

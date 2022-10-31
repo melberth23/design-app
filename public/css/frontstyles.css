@@ -237,10 +237,11 @@ sup {
 
 a {
   color: #2937f0;
-  text-decoration: underline;
+  text-decoration: none;
 }
 a:hover {
   color: #212cc0;
+  text-decoration: underline;
 }
 
 a:not([href]):not([class]), a:not([href]):not([class]):hover {
@@ -890,6 +891,31 @@ progress {
 .g-5,
 .gy-5 {
   --bs-gutter-y: 3rem;
+}
+
+.fix-size20 {
+  width: 20px;
+  height: 20px;
+}
+.fix-size25 {
+  width: 25px;
+  height: 25px;
+}
+.fix-size30 {
+  width: 30px;
+  height: 30px;
+}
+.fix-size35 {
+  width: 35px;
+  height: 35px;
+}
+.fix-size40 {
+  width: 40px;
+  height: 40px;
+}
+.fix-size45 {
+  width: 45px;
+  height: 45px;
 }
 
 @media (min-width: 576px) {
@@ -11853,4 +11879,8 @@ html, body {
 
 .hide-amount, .hide-per-duration {
   display: none;
+}
+
+#promotion-confirmation {
+    margin-right: 15px;
 }

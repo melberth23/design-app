@@ -42,11 +42,11 @@
 
         <!-- Number Of requests -->
         <div class="col span_1_of_5 mb-4">
-            <div class="card shadow h-100 py-2">
+            <div class="card h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $total_requests }}</div>
+                            <div class="dashboard-card-number pink-color">{{ $total_requests }}</div>
                         </div>
                         <div class="col-auto">
                             <img src="{{ asset('images/dash-request.svg') }}" class="dash-icons">
@@ -63,11 +63,11 @@
 
         <!-- Number of in progress -->
         <div class="col span_1_of_5 mb-4">
-            <div class="card shadow h-100 py-2">
+            <div class="card h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $inprogressreq }}</div>
+                            <div class="dashboard-card-number blue-color">{{ $inprogressreq }}</div>
                         </div>
                         <div class="col-auto">
                             <img src="{{ asset('images/dash-inprogress.svg') }}" class="dash-icons">
@@ -84,11 +84,11 @@
 
         <!-- Number of for review -->
         <div class="col span_1_of_5 mb-4">
-            <div class="card shadow h-100 py-2">
+            <div class="card h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $reqforreview }}</div>
+                            <div class="dashboard-card-number yellow-color">{{ $reqforreview }}</div>
                         </div>
                         <div class="col-auto">
                             <img src="{{ asset('images/dash-for-review.svg') }}" class="dash-icons">
@@ -105,11 +105,11 @@
 
         <!-- Number of in queue -->
         <div class="col span_1_of_5 mb-4">
-            <div class="card shadow h-100 py-2">
+            <div class="card h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $reqqueue }}</div>
+                            <div class="dashboard-card-number brown-color">{{ $reqqueue }}</div>
                         </div>
                         <div class="col-auto">
                             <img src="{{ asset('images/dash-queu.svg') }}" class="dash-icons">
@@ -126,11 +126,11 @@
 
         <!-- Number of completed -->
         <div class="col span_1_of_5 mb-4">
-            <div class="card shadow h-100 py-2">
+            <div class="card h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="dashboard-card-number">{{ $completed_req }}</div>
+                            <div class="dashboard-card-number light-green-color">{{ $completed_req }}</div>
                         </div>
                         <div class="col-auto">
                             <img src="{{ asset('images/dash-completed.svg') }}" class="dash-icons">

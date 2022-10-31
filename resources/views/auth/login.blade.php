@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="col-md-9">
-            <div id="rightside-content" class="row justify-content-center mt-5">
+            <div id="rightside-content" class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="d-block d-sm-none">
                         <div class="row pt-3 pb-5">
@@ -52,16 +52,16 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-12 d-flex justify-content-between align-items-center">
                                  <label for="password" class="col-form-label">{{ __('Password') }}</label>
+                                 @if (Route::has('password.request'))
+                                <span>
+                                    <a class="text-decoration-none" href="{{ route('password.request') }}">
+                                      {{ __('Forgot Your Password?') }}
+                                    </a>
+                                </span>
+                                @endif
                             </div>
-                            @if (Route::has('password.request'))
-                            <div class="col-md-8 text-end col-form-label">
-                              <a class="text-decoration-none" href="{{ route('password.request') }}">
-                                  {{ __('Forgot Your Password?') }}
-                              </a>
-                            </div>
-                            @endif
 
                             <div class="col-md-12">
                                 <input id="password" type="password" class="form-control form-control-user @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
@@ -101,6 +101,8 @@
     }
     #rightside-content {
         min-height: 100vh;
+        display: flex;
+        align-items: center;
     }
 </style>
 @endsection

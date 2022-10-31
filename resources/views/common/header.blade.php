@@ -22,13 +22,19 @@
 
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto">
+            <!-- Nav Item - Help -->
+            <li class="nav-item d-flex align-items-center justify-content-center">
+                <a href="https://designsowl.com/contact/" target="_blank" class="btn btn-link p-0 top-nav-icons d-flex align-items-center justify-content-center" data-toggle="tooltip" data-placement="bottom" title="Help">
+                    <img class="img-profile rounded-circle" src="{{asset('images/help.svg')}}">
+                </a>
+            </li>
             <?php 
                 $notifications = (new \App\Lib\SystemHelper)->getNotifications();
             ?>
-            <!-- Nav Item - User Information -->
-            <li class="nav-item d-flex align-items-center">
+            <!-- Nav Item - Notifications -->
+            <li class="nav-item d-flex align-items-center justify-content-center">
                 <div class="dropdown m-0">
-                    <button class="btn btn-link p-0" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-link p-0 top-nav-icons" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img class="img-profile rounded-circle" src="{{asset('images/bell.svg')}}"><span class="counter counter-lg bg-primary">{{ $notifications['counter'] }}</span>
                     </button>
                     @if(!empty($notifications['lists']))
@@ -40,7 +46,7 @@
                     @endif
                 </div>
             </li>
-            <li class="nav-item dropdown no-arrow">
+            <li class="nav-item dropdown no-arrow d-flex align-items-center justify-content-center">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @if(!empty(auth()->user()->profile_img))
@@ -74,7 +80,7 @@
 
     </nav>
     
-    <div class="d-md-none px-3 pb-2">
+    <div class="d-sm-none px-3 pb-2 topbar">
         <!-- Topbar Search -->
         <form class="form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="{{ route('search') }}" method="get">
             <div class="input-group">

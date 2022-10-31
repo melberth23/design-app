@@ -28,6 +28,34 @@ h1.page-heading span.badge {
   min-height: 780px;
 }
 
+.table-responsive .table {
+  width: 100%;
+}
+.table-responsive .table td {
+  white-space: nowrap;
+}
+
+.pink-color {
+  color: #F21189 !important;
+}
+.blue-color {
+  color: #2570F1 !important;
+}
+.yellow-color {
+  color: #FE8813 !important;
+}
+.brown-color {
+  color: #EC5B62 !important;
+}
+.light-green-color {
+  color: #2ECD6F !important;
+}
+
+.btn-large {
+  padding: 16px;
+  font-size: 14px;
+}
+
 .full-height {
     height: 100%;
 }
@@ -55,6 +83,31 @@ h1.page-heading span.badge {
 }
 .min-height-600 {
   min-height: 600px;
+}
+
+.fix-size20 {
+  width: 20px;
+  height: 20px;
+}
+.fix-size25 {
+  width: 25px;
+  height: 25px;
+}
+.fix-size30 {
+  width: 30px;
+  height: 30px;
+}
+.fix-size35 {
+  width: 35px;
+  height: 35px;
+}
+.fix-size40 {
+  width: 40px;
+  height: 40px;
+}
+.fix-size45 {
+  width: 45px;
+  height: 45px;
 }
 
 /* Custom Grid */
@@ -104,7 +157,7 @@ h1.page-heading span.badge {
 }
 
 .table {
-  border-radius: 9px;
+  border-radius: 8px;
   border: 1px solid #e3e6f0;
 }
 .table thead th {
@@ -323,6 +376,7 @@ h1.page-heading span.badge {
     max-width: 100%;
     width: 40px;
     height: 40px;
+    padding: 0;
 }
 img.action-icon {
     max-width: 100%;
@@ -369,9 +423,10 @@ img.action-icon {
 
 /* Add Request */
 .request-type-label {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   color: #28213A;
+  margin-top: 15px;
 }
 .request-assets input {
   display: none;
@@ -413,9 +468,9 @@ ul.pricing-details li {
   border: 1px solid #9672FB;
 }
 .counter.counter-lg {
-  position: relative;
-  top: -12px;
-  left: auto;
+  position: absolute;
+  top: 0px;
+  right: 0;
   z-index: 2;
   padding: 1px 7px;
   margin-left: -20px;
@@ -757,4 +812,24 @@ h3.customer-name {
 }
 #filter-actions .content-slide .sidebar .nav-item.action-apply {
     margin: 20px;
+}
+
+.topbar ul.navbar-nav li.nav-item {
+  min-width: 60px;
+}
+.top-nav-icons {
+  background: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+.top-nav-icons:hover {
+    background-color: #ddd;
+    border-radius: 50%;
+}
+
+@media screen and (max-width: 767px){
+  .sidebar .sidebar-brand {
+    border: none !important;
+  }
 }

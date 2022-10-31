@@ -44,12 +44,12 @@
                     <table class="table table-bordered bg-white border-0 table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th width="10%" class="border-left-0 border-right-0">REQUEST ID</th>
-                                <th width="25%" class="border-left-0 border-right-0">REQUEST NAME</th>
-                                <th width="25%" class="border-left-0 border-right-0">CATEGORY</th>
-                                <th width="10%" class="border-left-0 border-right-0">STATUS</th>
-                                <th width="10%" class="border-left-0 border-right-0">DATE CREATED</th>
-                                <th width="20%" class="border-left-0 border-right-0"></th>
+                                <th style="width:160px" class="border-left-0 border-right-0">REQUEST ID</th>
+                                <th style="width:400px" class="border-left-0 border-right-0">REQUEST NAME</th>
+                                <th style="width:400px" class="border-left-0 border-right-0">CATEGORY</th>
+                                <th style="width:160px" class="border-left-0 border-right-0">STATUS</th>
+                                <th style="width:160px" class="border-left-0 border-right-0">DATE CREATED</th>
+                                <th style="width:320px" class="border-left-0 border-right-0"></th>
                             </tr>
                         </thead>
                         <tbody>

@@ -18,7 +18,7 @@
         @foreach ($designtypes as $designtype)
             <div class="col-md-3 my-2">
                 <a class="text-decoration-none" href="{{ route('request.requesttype', ['type' => $designtype->id]) }}">
-                    <div class="card rounded text-center min-height-150 d-flex align-items-center justify-content-center">
+                    <div class="card shadow-custom rounded text-center min-height-200 d-flex align-items-center justify-content-center">
                         <div class="p-3">
                             <img src="{{ asset('images/request') }}/{{$designtype->name}}.svg" class="width-30 request-img py-3">
                             <h5 class="request-type-label text-dark">{{$designtype->name}}</h5>
