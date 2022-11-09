@@ -64,7 +64,7 @@ class SubscriptionCron extends Command
                     }
 
                     if($current_date >= $current_recurring_date && $payments->plan_status == 0) {
-                        // Increase 1 month
+                        // Increase 1 duration
                         $next_recurring_date = date("Y-m-d", strtotime($add1, $current_recurring_date));
                         Payments::whereId($payments->id)->update(['recurring_date' => $next_recurring_date]);
 

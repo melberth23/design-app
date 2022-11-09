@@ -26,24 +26,26 @@
                 <span>Security and Log in</span></a>
         </li>
         @hasrole('User')
-            @if(auth()->user()->payments->status == 'active' && auth()->user()->payments->plan_status == 0)
-            <li class="nav-item {{ (request()->is('profile/upgrade')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('profile.upgrade') }}">
-                    <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
-                    <span>{{ (auth()->user()->payments->plan=='royal')?'Upgraded':'Upgrade' }}</span></a>
-            </li>
-            @elseif(auth()->user()->payments->status == 'scheduled')
-            <li class="nav-item">
-                <a class="nav-link text-dark" href="{{ auth()->user()->payments->payment_url }}">
-                    <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
-                    <span>Pay</span></a>
-            </li>
-            @else
-            <li class="nav-item {{ (request()->is('profile/subscription')) ? 'active' : '' }}">
-                <a class="nav-link text-dark" href="{{ route('profile.subscription') }}">
-                    <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
-                    <span>Select Plan</span></a>
-            </li>
+            @if(auth()->user()->manual == 0)
+                @if(auth()->user()->payments->status == 'active' && auth()->user()->payments->plan_status == 0)
+                <li class="nav-item {{ (request()->is('profile/upgrade')) ? 'active' : '' }}">
+                    <a class="nav-link text-dark" href="{{ route('profile.upgrade') }}">
+                        <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
+                        <span>{{ (auth()->user()->payments->plan=='royal')?'Upgraded':'Upgrade' }}</span></a>
+                </li>
+                @elseif(auth()->user()->payments->status == 'scheduled')
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{{ auth()->user()->payments->payment_url }}">
+                        <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
+                        <span>Pay</span></a>
+                </li>
+                @else
+                <li class="nav-item {{ (request()->is('profile/subscription')) ? 'active' : '' }}">
+                    <a class="nav-link text-dark" href="{{ route('profile.subscription') }}">
+                        <img src="{{ asset('images/upgrade.svg') }}" class="menu-icons">
+                        <span>Select Plan</span></a>
+                </li>
+                @endif
             @endif
 
             <li class="nav-item {{ (request()->is('profile/invoices')) ? 'active' : '' }}">

@@ -116,7 +116,14 @@ class AccountController extends Controller
 
                     Auth::login($verifyUser->user);
 
-                    return redirect()->route('user.plan');
+                    // Check if paid
+                    $paymentinfo = Payments::where('user_id', $verifyUser->user->id)->first();
+                    if(empty($paymentinfo)) {
+                        return redirect()->route('user.plan');
+                    } else {
+                        return redirect()->route('dashboard');
+                    }
+
                 } else {
                     return Redirect::back()->with('error', 'Please try again! Something wen\'t wrong.');
                 }
