@@ -13,9 +13,15 @@
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800 page-heading">My requests</h1>
             <div class="actions d-flex align-items-center justify-content-between">
+                @if($limit)
                 <a href="{{ route('request.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> <span class="d-none d-md-inline-block">New</span>
                 </a>
+                @else
+                <a href="#" data-toggle="modal" data-target="#limitModal" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> <span class="d-none d-md-inline-block">New</span>
+                </a>
+                @endif
             </div>
         </div>
 
@@ -135,10 +141,29 @@
                 </div>
 
                 <div class="px-2 py-3">
+                    @if($limit)
                     <a class="text-decoration-none" href="{{ route('request.create') }}"><i class="fa fa-plus"></i> Add New</a>
+                    @else
+                    <a class="text-decoration-none" href="#" data-toggle="modal" data-target="#limitModal" ><i class="fa fa-plus"></i> Add New</a>
+                    @endif
                 </div>
                 
                 {{ $requests->links() }}
+            </div>
+        </div>
+
+        <div class="modal fade" id="limitModal" tabindex="-1" role="dialog" aria-labelledby="limitModalExample"
+    aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body py-5 text-center">
+                        <img src="{{ asset('images/designer-life-pana.svg') }}" class="limit-icon">
+                        <h5 class="text-dark pt-4 pb-3 font-weight-bold">Request Limit Reached</h5>
+                        <p class="text-dark">You've reached the maximum amount of requests for your plan. Do you want to upgrade your plan?</p>
+                        <div class=""><a href="{{ route('profile.upgrade') }}" class="btn btn-primary">Yes, Upgrade</a></div>
+                        <div class=""><a href="#" data-dismiss="modal" class="btn btn-link">No, Thanks</a></div>
+                    </div>
+                </div>
             </div>
         </div>
 

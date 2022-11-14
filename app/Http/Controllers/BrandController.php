@@ -188,7 +188,12 @@ class BrandController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            return view('brands.add');
+            $limit = $this->helper->userActionRules($userid, 'brand');
+            if(!$limit['allowed']) {
+                return redirect()->route('brand.index')->with('limiterror', 'Account limit: Please upgrade your account.');
+            } else {
+                return view('brands.add');
+            }
         } else {
             return redirect()->route('dashboard');
         }

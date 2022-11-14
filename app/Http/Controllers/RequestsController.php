@@ -55,6 +55,7 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $limit = $this->helper->userActionRules($userid);
             $brands = Brand::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->orderBy('created_at', 'DESC')->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
@@ -62,7 +63,7 @@ class RequestsController extends Controller
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.index', ['brands' => $brands, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+            return view('requests.index', ['brands' => $brands, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -79,6 +80,7 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $limit = $this->helper->userActionRules($userid);
             $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 2)->orderByRaw('-priority DESC')->get();
@@ -86,7 +88,7 @@ class RequestsController extends Controller
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.queue', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed]);
+            return view('requests.queue', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -103,6 +105,7 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $limit = $this->helper->userActionRules($userid);
             $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 3)->orderBy('created_at', 'DESC')->paginate(10);
@@ -110,7 +113,7 @@ class RequestsController extends Controller
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.progress', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed]);
+            return view('requests.progress', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -127,6 +130,7 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $limit = $this->helper->userActionRules($userid);
             $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 4)->orderBy('created_at', 'DESC')->paginate(10);
@@ -134,7 +138,7 @@ class RequestsController extends Controller
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.review', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed]);
+            return view('requests.review', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -151,6 +155,7 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $limit = $this->helper->userActionRules($userid);
             $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 0)->orderBy('created_at', 'DESC')->paginate(10);
@@ -158,7 +163,7 @@ class RequestsController extends Controller
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
 
-            return view('requests.delivered', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review]);
+            return view('requests.delivered', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -175,9 +180,10 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
+            $limit = $this->helper->userActionRules($userid);
             $brands = Brand::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 1)->orderBy('created_at', 'DESC')->paginate(10);
-            return view('requests.draft', ['brands' => $brands, 'requests' => $requests]);
+            return view('requests.draft', ['brands' => $brands, 'requests' => $requests, 'limit' => $limit['allowed']]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -250,8 +256,13 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
             $designtypes = RequestTypes::where('status', 1)->get();
+            $limit = $this->helper->userActionRules($userid);
 
-            return view('requests.add', ['designtypes' => $designtypes]);
+            if(!$limit['allowed'] && auth()->user()->payments->plan == 'free') {
+                return redirect()->route('request.index')->with('limiterror', 'Account limit: Please upgrade your account.');
+            } else {
+                return view('requests.add', ['designtypes' => $designtypes]);
+            }
         } else {
             return redirect()->route('dashboard');
         }
@@ -267,25 +278,30 @@ class RequestsController extends Controller
         $userid = Auth::id();
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $brands = Brand::where('user_id', $userid)->get();
-            $file_types = $this->helper->request_file_types();
-            $designtype = RequestTypes::whereId($type)->first();
-            $dimensions = Dimensions::where('request_type_id', $type)->where('status', 1)->get();
+            $limit = $this->helper->userActionRules($userid);
+            if(!$limit['allowed'] && auth()->user()->payments->plan == 'free') {
+                return redirect()->route('request.index')->with('limiterror', 'Account limit: Please upgrade your account.');
+            } else {
+                $brands = Brand::where('user_id', $userid)->get();
+                $file_types = $this->helper->request_file_types();
+                $designtype = RequestTypes::whereId($type)->first();
+                $dimensions = Dimensions::where('request_type_id', $type)->where('status', 1)->get();
 
-            $dimension_options = [];
-            foreach($dimensions as $dimension) {
-                if(!empty($dimension->parent_type)) {
-                    if(!empty($dimension_options[$dimension->parent_type])) {
-                        array_push($dimension_options[$dimension->parent_type], $dimension);
+                $dimension_options = [];
+                foreach($dimensions as $dimension) {
+                    if(!empty($dimension->parent_type)) {
+                        if(!empty($dimension_options[$dimension->parent_type])) {
+                            array_push($dimension_options[$dimension->parent_type], $dimension);
+                        } else {
+                            $dimension_options[$dimension->parent_type][] = $dimension;
+                        }
                     } else {
-                        $dimension_options[$dimension->parent_type][] = $dimension;
+                        $dimension_options[] = $dimension;
                     }
-                } else {
-                    $dimension_options[] = $dimension;
                 }
-            }
 
-            return view('requests.requesttype', ['brands' => $brands, 'designtype' => $designtype, 'types' => $file_types, 'dimensions' => $dimension_options]);
+                return view('requests.requesttype', ['brands' => $brands, 'designtype' => $designtype, 'types' => $file_types, 'dimensions' => $dimension_options]);
+            }
         } else {
             return redirect()->route('dashboard');
         }

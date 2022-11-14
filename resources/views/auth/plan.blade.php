@@ -47,7 +47,7 @@
     <div class="row justify-content-center mt-5 text-center">
         <div class="col-md-8">
             <div class="row">
-                <!-- <div class="col-md-3">
+                <div class="plan-item-col plan-item-free col-md-3">
                     <div class="shadow bg-white rounded card no-header">
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Free</h6>
@@ -98,8 +98,8 @@
                             </ul>
                         </div>
                     </div>
-                </div> -->
-                <div class="col-md-4">
+                </div>
+                <div class="plan-item-col col-md-3">
                     <div class="shadow bg-white rounded card no-header">
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Basic</h6>
@@ -156,7 +156,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="plan-item-col col-md-3">
                     <div class="shadow bg-white rounded card">
                         <div class="card-header">MOST POPULAR</div>
                         <div class="card-body pt-5 pb-5">
@@ -214,7 +214,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="plan-item-col col-md-3">
                     <div class="shadow bg-white rounded card no-header">
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Enterprise</h6>
@@ -309,6 +309,9 @@
             $('.monthly-amount').addClass('hide-amount');
             $('.yearly-per-duration').removeClass('hide-per-duration');
             $('.monthly-per-duration').addClass('hide-per-duration');
+            $('.plan-item-col').removeClass('col-md-3');
+            $('.plan-item-col').addClass('col-md-4');
+            $('.plan-item-free').hide();
             $(this).addClass('active');
             $('.duration').val('yearly');
         });
@@ -318,6 +321,9 @@
             $('.yearly-amount').addClass('hide-amount');
             $('.monthly-per-duration').removeClass('hide-per-duration');
             $('.yearly-per-duration').addClass('hide-per-duration');
+            $('.plan-item-col').removeClass('col-md-4');
+            $('.plan-item-col').addClass('col-md-3');
+            $('.plan-item-free').show();
             $(this).addClass('active');
             $('.duration').val('monthly');
         });

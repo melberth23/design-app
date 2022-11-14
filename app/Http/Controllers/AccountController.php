@@ -146,60 +146,94 @@ class AccountController extends Controller
             $last_name = $user->last_name;
             $email = $user->email;
 
-            // Get Payment Config
-            $apikey = config('services.hitpay.key');
-            $isStg = config('services.hitpay.environment');
             $customerfullname = $first_name .' '. $last_name;
             $selectedplan = $posts['plan'];
             $selectedduration = $posts['duration'];
             $planInfo = $this->helper->getPlanInformation($selectedplan, $selectedduration);
-            $payment = new PaymentHelper($apikey, $isStg);
-            $response = $payment->recurringRequestCreate(array(
-                'plan_id'    =>  $planInfo['id'],
-                'customer_email'  =>  $email,
-                'customer_name'  =>  $customerfullname,
-                'start_date'  =>  date('Y-m-d'),
-                'redirect_url'  =>  url("payment-success"),
-                'reference'  =>  time()
-            ));
 
-            if(!empty($response['status']) && $response['status'] == 'scheduled') {
+            if($selectedplan != 'free') {
+                // Get Payment Config
+                $apikey = config('services.hitpay.key');
+                $isStg = config('services.hitpay.environment');
 
+                $payment = new PaymentHelper($apikey, $isStg);
+                $response = $payment->recurringRequestCreate(array(
+                    'plan_id'    =>  $planInfo['id'],
+                    'customer_email'  =>  $email,
+                    'customer_name'  =>  $customerfullname,
+                    'start_date'  =>  date('Y-m-d'),
+                    'redirect_url'  =>  url("payment-success"),
+                    'reference'  =>  time()
+                ));
+
+                if(!empty($response['status']) && $response['status'] == 'scheduled') {
+
+                    $payments = Payments::create([
+                        'user_id' => $user->id,
+                        'reference' => $response['id'],
+                        'business_recurring_plans_id' => $response['business_recurring_plans_id'],
+                        'plan' => $selectedplan,
+                        'cycle' => $response['cycle'],
+                        'currency' => $response['currency'],
+                        'price' => $response['price'],
+                        'status' => $response['status'],
+                        'payment_methods' => json_encode($response['payment_methods']),
+                        'payment_url' => $response['url'],
+                        'duration' => $selectedduration
+                    ]);
+
+                    // Send Email
+                    $details = array(
+                        'subject' => 'Payment Confirmation Details',
+                        'message' => 'Welcome '. $customerfullname .',',
+                        'extra_msg' => 'Please see details below:',
+                        'plan' => $planInfo['label'],
+                        'amount' => number_format($planInfo['amount']),
+                        'paymentlink' => 'Please pay to continue use your account '. $response['url'] .' or disregard if already paid.',
+                        'thank_msg' => 'Thank you!',
+                        'template' => 'payment'
+                    );
+
+                    Mail::to($user)->send(new DigitalMail($details));
+
+                    return Redirect::away($response['url']);
+                } else {
+                    $errormsg = 'Please try again! Something wen\'t wrong.';
+                    if(!empty($response['errors'])) {
+                        $errormsg = $response['message'];
+                    }
+                    return Redirect::back()->with('error', $errormsg);
+                }
+            } else {
                 $payments = Payments::create([
                     'user_id' => $user->id,
-                    'reference' => $response['id'],
-                    'business_recurring_plans_id' => $response['business_recurring_plans_id'],
+                    'reference' => 'free_reference_'. time(),
+                    'business_recurring_plans_id' => 'free_business_recurring_'. time(),
                     'plan' => $selectedplan,
-                    'cycle' => $response['cycle'],
-                    'currency' => $response['currency'],
-                    'price' => $response['price'],
-                    'status' => $response['status'],
-                    'payment_methods' => json_encode($response['payment_methods']),
-                    'payment_url' => $response['url'],
+                    'cycle' => $selectedduration,
+                    'currency' => 'sgd',
+                    'price' => number_format($planInfo['amount']),
+                    'status' => 'active',
+                    'payment_methods' => 'free',
+                    'payment_url' => '',
                     'duration' => $selectedduration
                 ]);
 
                 // Send Email
                 $details = array(
-                    'subject' => 'Payment Confirmation Details',
+                    'subject' => 'Account Confirmation Details',
                     'message' => 'Welcome '. $customerfullname .',',
                     'extra_msg' => 'Please see details below:',
                     'plan' => $planInfo['label'],
                     'amount' => number_format($planInfo['amount']),
-                    'paymentlink' => 'Please pay to continue use your account '. $response['url'] .' or disregard if already paid.',
+                    'paymentlink' => 'Please upgrade your account to fully use our service.',
                     'thank_msg' => 'Thank you!',
                     'template' => 'payment'
                 );
 
                 Mail::to($user)->send(new DigitalMail($details));
 
-                return Redirect::away($response['url']);
-            } else {
-                $errormsg = 'Please try again! Something wen\'t wrong.';
-                if(!empty($response['errors'])) {
-                    $errormsg = $response['message'];
-                }
-                return Redirect::back()->with('error', $errormsg);
+                return redirect()->route('dashboard');
             }
         }
         catch (Exception $e) {

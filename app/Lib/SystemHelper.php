@@ -49,6 +49,15 @@ class SystemHelper {
         $duration = !empty($duration)?$duration:'monthly';
         $stageplans = array(
             'monthly' => array(
+                'free' => array(
+                    'label' => 'Free',
+                    'id' => '0000',
+                    'amount' => 0,
+                    'request' => 1,
+                    'turnaround' => 48,
+                    'backlog' => false,
+                    'brand' => 1
+                ),
                 'basic' => array(
                     'label' => 'Basic',
                     'id' => '95d369cc-7fbd-4608-b53f-562605eab522',
@@ -192,28 +201,37 @@ class SystemHelper {
     * @return array allowed information
     */
     public function userActionRules($userid, $type='request', $status=1) {
+        $user = User::whereId($userid)->first();
+        $planrule = $this->getPlanRules($user->payments->plan);
+
         $statusRules = array(3);
         $numberofitems = array();
         if($type == 'brand') {
             $numberofitems = Brand::where('user_id', $userid)->get();
         } elseif($type == 'request') {
-            if($status == 2 || $status == 3) {
-                $numberofitems = Requests::whereIn('status', $statusRules)->where('user_id', $userid)->get();
+            if($user->payments->plan == 'free') {
+                $numberofitems = Requests::where('user_id', $userid)->get();
+            } else {
+                if($status == 2 || $status == 3) {
+                    $numberofitems = Requests::whereIn('status', $statusRules)->where('user_id', $userid)->get();
+                }
             }
         }
 
         $numberofitems = count($numberofitems);
-        $user = User::whereId($userid)->first();
-        $planrule = $this->getPlanRules($user->payments->plan);
         $allowedrule = $planrule[$type];
 
         $allowed = false;
-        if($allowedrule > 0) {
-            if($allowedrule > $numberofitems) {
+        if($allowedrule == 9999) {
+            $allowed = true;
+        } else {
+            if($allowedrule > 0) {
+                if($allowedrule > $numberofitems) {
+                    $allowed = true;
+                }
+            } else {
                 $allowed = true;
             }
-        } else {
-            $allowed = true;
         }
 
         return array(
