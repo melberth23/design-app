@@ -178,37 +178,32 @@ class RequestsAdminController extends Controller
 
             // get current status of the request
             $requestrow = Requests::whereId($request_id)->first();
+            
+            // Update Status
+            Requests::whereId($request_id)->update(['status' => $status]);
 
-            $checkstatus = $this->helper->checkLockedStatus($requestrow->status);
-            if(!$checkstatus) {
-                // Update Status
-                Requests::whereId($request_id)->update(['status' => $status]);
+            if($status == 1 || $status == 4) {
+                // Get User Information
+                $user = User::where('id', $requestrow->user_id)->first();
+                $customerfullname = $user->first_name .' '. $user->last_name;
 
-                if($status == 1 || $status == 4) {
-                    // Get User Information
-                    $user = User::where('id', $requestrow->user_id)->first();
-                    $customerfullname = $user->first_name .' '. $user->last_name;
-
-                    // Send email
-                    $details = array(
-                        'subject' => 'Request status changed to '. $this->helper->statusLabel($status),
-                        'fromemail' => 'hello@designsowl.com',
-                        'fromname' => 'DesignsOwl',
-                        'heading' => 'Hi '. $customerfullname,
-                        'message' => 'Your request '. $requestrow->title .' status changed to '. $this->helper->statusLabel($status),
-                        'sub_message' => 'Please login using your login information to check. Thank you!',
-                        'template' => 'status'
-                    );
-                    Mail::to($user->email)->send(new DigitalMail($details));
-                }
-
-                // Commit And Redirect on index with Success Message
-                DB::commit();
-                return redirect()->route('subscribers.view', ['subscriber' => $requestrow->user_id])->with('success','Requests Status Updated Successfully!');
-            } else {
-                $statustext = $this->helper->statusLabel($requestrow->status);
-                return redirect()->back()->with('error', $requestrow->title .' is in '. $statustext .' status and you are not allowed to change it.');
+                // Send email
+                $details = array(
+                    'subject' => 'Request status changed to '. $this->helper->statusLabel($status),
+                    'fromemail' => 'hello@designsowl.com',
+                    'fromname' => 'DesignsOwl',
+                    'heading' => 'Hi '. $customerfullname,
+                    'message' => 'Your request '. $requestrow->title .' status changed to '. $this->helper->statusLabel($status),
+                    'sub_message' => 'Please login using your login information to check. Thank you!',
+                    'template' => 'status'
+                );
+                Mail::to($user->email)->send(new DigitalMail($details));
             }
+
+            // Commit And Redirect on index with Success Message
+            DB::commit();
+            return redirect()->route('subscribers.view', ['subscriber' => $requestrow->user_id])->with('success','Requests Status Updated Successfully!');
+
         } catch (\Throwable $th) {
 
             // Rollback & Return Error Message

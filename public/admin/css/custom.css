@@ -211,6 +211,7 @@ h1.page-heading span.badge {
 }
 
 #brand-tabs .nav-item a {
+  position: relative;
   font-size: 15px;
   color: #8D889A;
 }
