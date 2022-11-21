@@ -178,31 +178,42 @@ class RequestsAdminController extends Controller
 
             // get current status of the request
             $requestrow = Requests::whereId($request_id)->first();
+
+            $user = User::where('id', $requestrow->user_id)->first();
+            $customerfullname = $user->first_name .' '. $user->last_name;
+
+            $allowed = $this->helper->userActionRules($requestrow->user_id, 'request', $status);
+            if($allowed['allowed']) {
             
-            // Update Status
-            Requests::whereId($request_id)->update(['status' => $status]);
+                // Update Status
+                Requests::whereId($request_id)->update(['status' => $status]);
 
-            if($status == 1 || $status == 4) {
-                // Get User Information
-                $user = User::where('id', $requestrow->user_id)->first();
-                $customerfullname = $user->first_name .' '. $user->last_name;
+                if($status == 1 || $status == 4) {
+                    // Get User Information
+                    $user = User::where('id', $requestrow->user_id)->first();
+                    $customerfullname = $user->first_name .' '. $user->last_name;
 
-                // Send email
-                $details = array(
-                    'subject' => 'Request status changed to '. $this->helper->statusLabel($status),
-                    'fromemail' => 'hello@designsowl.com',
-                    'fromname' => 'DesignsOwl',
-                    'heading' => 'Hi '. $customerfullname,
-                    'message' => 'Your request '. $requestrow->title .' status changed to '. $this->helper->statusLabel($status),
-                    'sub_message' => 'Please login using your login information to check. Thank you!',
-                    'template' => 'status'
-                );
-                Mail::to($user->email)->send(new DigitalMail($details));
+                    // Send email
+                    $details = array(
+                        'subject' => 'Request status changed to '. $this->helper->statusLabel($status),
+                        'fromemail' => 'hello@designsowl.com',
+                        'fromname' => 'DesignsOwl',
+                        'heading' => 'Hi '. $customerfullname,
+                        'message' => 'Your request '. $requestrow->title .' status changed to '. $this->helper->statusLabel($status),
+                        'sub_message' => 'Please login using your login information to check. Thank you!',
+                        'template' => 'status'
+                    );
+                    Mail::to($user->email)->send(new DigitalMail($details));
+                }
+
+                // Commit And Redirect on index with Success Message
+                DB::commit();
+                return redirect()->route('subscribers.view', ['subscriber' => $requestrow->user_id])->with('success','Requests Status Updated Successfully!');
+            } else {
+                // Rollback & Return Error Message
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Account limit: '. $customerfullname .' has a limit of '. $allowed['allowedrequest'] .' requests to move in progress.');
             }
-
-            // Commit And Redirect on index with Success Message
-            DB::commit();
-            return redirect()->route('subscribers.view', ['subscriber' => $requestrow->user_id])->with('success','Requests Status Updated Successfully!');
 
         } catch (\Throwable $th) {
 

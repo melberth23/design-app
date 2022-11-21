@@ -209,12 +209,8 @@ class SystemHelper {
         if($type == 'brand') {
             $numberofitems = Brand::where('user_id', $userid)->get();
         } elseif($type == 'request') {
-            if($user->payments->plan == 'free') {
-                $numberofitems = Requests::where('user_id', $userid)->get();
-            } else {
-                if($status == 2 || $status == 3) {
-                    $numberofitems = Requests::whereIn('status', $statusRules)->where('user_id', $userid)->get();
-                }
+            if($status == 2 || $status == 3) {
+                $numberofitems = Requests::whereIn('status', $statusRules)->where('user_id', $userid)->get();
             }
         }
 

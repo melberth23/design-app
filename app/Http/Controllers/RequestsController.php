@@ -55,7 +55,12 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $limit = $this->helper->userActionRules($userid);
+            $limit = 1;
+            $numberofitems = Requests::where('user_id', $userid)->count();
+            if($numberofitems > 0 && auth()->user()->payments->plan == 'free') {
+                $limit = 0;
+            }
+
             $brands = Brand::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->orderBy('created_at', 'DESC')->paginate(10);
             $queue = Requests::where('user_id', $userid)->where('status', 2)->count();
@@ -63,7 +68,7 @@ class RequestsController extends Controller
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.index', ['brands' => $brands, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed, 'limit' => $limit['allowed']]);
+            return view('requests.index', ['brands' => $brands, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'completed' => $completed, 'limit' => $limit]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -80,7 +85,12 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $limit = $this->helper->userActionRules($userid);
+            $limit = 1;
+            $numberofitems = Requests::where('user_id', $userid)->count();
+            if($numberofitems > 0 && auth()->user()->payments->plan == 'free') {
+                $limit = 0;
+            }
+
             $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 2)->orderByRaw('-priority DESC')->get();
@@ -88,7 +98,7 @@ class RequestsController extends Controller
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.queue', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed, 'limit' => $limit['allowed']]);
+            return view('requests.queue', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'progress' => $progress, 'review' => $review, 'completed' => $completed, 'limit' => $limit]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -105,7 +115,12 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $limit = $this->helper->userActionRules($userid);
+            $limit = 1;
+            $numberofitems = Requests::where('user_id', $userid)->count();
+            if($numberofitems > 0 && auth()->user()->payments->plan == 'free') {
+                $limit = 0;
+            }
+
             $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 3)->orderBy('created_at', 'DESC')->paginate(10);
@@ -113,7 +128,7 @@ class RequestsController extends Controller
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.progress', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed, 'limit' => $limit['allowed']]);
+            return view('requests.progress', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'review' => $review, 'completed' => $completed, 'limit' => $limit]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -130,7 +145,12 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $limit = $this->helper->userActionRules($userid);
+            $limit = 1;
+            $numberofitems = Requests::where('user_id', $userid)->count();
+            if($numberofitems > 0 && auth()->user()->payments->plan == 'free') {
+                $limit = 0;
+            }
+
             $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 4)->orderBy('created_at', 'DESC')->paginate(10);
@@ -138,7 +158,7 @@ class RequestsController extends Controller
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $completed = Requests::where('user_id', $userid)->where('status', 0)->count();
 
-            return view('requests.review', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed, 'limit' => $limit['allowed']]);
+            return view('requests.review', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'completed' => $completed, 'limit' => $limit]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -155,7 +175,12 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $limit = $this->helper->userActionRules($userid);
+            $limit = 1;
+            $numberofitems = Requests::where('user_id', $userid)->count();
+            if($numberofitems > 0 && auth()->user()->payments->plan == 'free') {
+                $limit = 0;
+            }
+
             $brands = Brand::where('user_id', $userid)->count();
             $all = Requests::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 0)->orderBy('created_at', 'DESC')->paginate(10);
@@ -163,7 +188,7 @@ class RequestsController extends Controller
             $progress = Requests::where('user_id', $userid)->where('status', 3)->count();
             $review = Requests::where('user_id', $userid)->where('status', 4)->count();
 
-            return view('requests.delivered', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'limit' => $limit['allowed']]);
+            return view('requests.delivered', ['brands' => $brands, 'all' => $all, 'requests' => $requests, 'queue' => $queue, 'progress' => $progress, 'review' => $review, 'limit' => $limit]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -180,10 +205,15 @@ class RequestsController extends Controller
 
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $limit = $this->helper->userActionRules($userid);
+            $limit = 1;
+            $numberofitems = Requests::where('user_id', $userid)->count();
+            if($numberofitems > 0 && auth()->user()->payments->plan == 'free') {
+                $limit = 0;
+            }
+
             $brands = Brand::where('user_id', $userid)->count();
             $requests = Requests::where('user_id', $userid)->where('status', 1)->orderBy('created_at', 'DESC')->paginate(10);
-            return view('requests.draft', ['brands' => $brands, 'requests' => $requests, 'limit' => $limit['allowed']]);
+            return view('requests.draft', ['brands' => $brands, 'requests' => $requests, 'limit' => $limit]);
         } else {
             return redirect()->route('dashboard');
         }
@@ -256,9 +286,9 @@ class RequestsController extends Controller
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
             $designtypes = RequestTypes::where('status', 1)->get();
-            $limit = $this->helper->userActionRules($userid);
+            $numberofitems = Requests::where('user_id', $userid)->count();
 
-            if(!$limit['allowed'] && auth()->user()->payments->plan == 'free') {
+            if($numberofitems > 0 && auth()->user()->payments->plan == 'free') {
                 return redirect()->route('request.index')->with('limiterror', 'Account limit: Please upgrade your account.');
             } else {
                 return view('requests.add', ['designtypes' => $designtypes]);
@@ -278,8 +308,8 @@ class RequestsController extends Controller
         $userid = Auth::id();
         // Get payment link if not yet paid
         if(auth()->user()->payments->status == 'active') {
-            $limit = $this->helper->userActionRules($userid);
-            if(!$limit['allowed'] && auth()->user()->payments->plan == 'free') {
+            $numberofitems = Requests::where('user_id', $userid)->count();
+            if($numberofitems > 0 && auth()->user()->payments->plan == 'free') {
                 return redirect()->route('request.index')->with('limiterror', 'Account limit: Please upgrade your account.');
             } else {
                 $brands = Brand::where('user_id', $userid)->get();
