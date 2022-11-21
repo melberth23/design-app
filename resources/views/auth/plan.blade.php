@@ -68,7 +68,7 @@
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="bi bi-check-circle-fill mr-4 pr-3"></i>
-                                    <span class="c-black">1 Ongoing Request</span>
+                                    <span class="c-black">1 Design Request</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>
@@ -78,12 +78,7 @@
                                 <li>
                                     <div class="md-v-line"></div>
                                     <i class="bi bi-check-circle-fill mr-4 pr-3"></i>
-                                    <span class="c-black">1 Design Requests</span>
-                                </li>
-                                <li>
-                                    <div class="md-v-line"></div>
-                                    <i class="bi bi-check-circle-fill mr-4 pr-3"></i>
-                                    <span class="c-black">1 Revisions</span>
+                                    <span class="c-black">3 Revisions</span>
                                 </li>
                                 <li>
                                     <div class="md-v-line"></div>

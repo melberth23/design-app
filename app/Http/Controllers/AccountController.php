@@ -226,7 +226,7 @@ class AccountController extends Controller
                     'extra_msg' => 'Please see details below:',
                     'plan' => $planInfo['label'],
                     'amount' => number_format($planInfo['amount']),
-                    'paymentlink' => 'Please upgrade your account to fully use our service.',
+                    'paymentlink' => 'You only have 1 design request on the free plan. Please upgrade to a paid plan to unlock more features.',
                     'thank_msg' => 'Thank you!',
                     'template' => 'payment'
                 );
