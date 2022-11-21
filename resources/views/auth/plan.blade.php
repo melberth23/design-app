@@ -51,7 +51,7 @@
                     <div class="shadow bg-white rounded card no-header">
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Free</h6>
-                            <p class="card-text">The perfect starter plan for all your basic design needs.</p>
+                            <p class="card-text">For you to test us out at zero cost and risk.</p>
                             <h2 class="monthly-amount">S$0</h2>
                             <h2 class="yearly-amount hide-amount">S$0</h2>
                             <p>SGD / MONTH</p>
