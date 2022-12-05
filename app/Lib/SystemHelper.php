@@ -118,6 +118,15 @@ class SystemHelper {
         );
         $liveplans = array(
             'monthly' => array(
+                'free' => array(
+                    'label' => 'Free',
+                    'id' => '0000',
+                    'amount' => 0,
+                    'request' => 1,
+                    'turnaround' => 48,
+                    'backlog' => false,
+                    'brand' => 1
+                ),
                 'basic' => array(
                     'label' => 'Basic',
                     'id' => '96e46e05-e636-42b6-ab29-a02e7c5cb21e',
