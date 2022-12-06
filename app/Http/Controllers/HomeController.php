@@ -651,13 +651,8 @@ class HomeController extends Controller
 
         try {
             DB::beginTransaction();
-
-            // Get Payment Config
-            $apikey = config('services.hitpay.key');
-            $isStg = config('services.hitpay.environment');
-            $payment = new PaymentHelper($apikey, $isStg);
-            $response = $payment->recurringDeleteAccount(auth()->user()->payments->reference);
-            if(!empty($response['status']) && $response['status'] == 'canceled') {
+            
+            if(auth()->user()->payments->plan == 'free') {
                 $reason = $this->helper->reasons($request->reason);
 
                 // Save reason
@@ -675,8 +670,32 @@ class HomeController extends Controller
                 #Redirect To Login page with success
                 return redirect()->route('login')->with('message', 'Your account is successfully deleted!');
             } else {
-                DB::rollBack();
-                return back()->with('error', 'There was a problem deleting account. Please try again.');
+                // Get Payment Config
+                $apikey = config('services.hitpay.key');
+                $isStg = config('services.hitpay.environment');
+                $payment = new PaymentHelper($apikey, $isStg);
+                $response = $payment->recurringDeleteAccount(auth()->user()->payments->reference);
+                if(!empty($response['status']) && $response['status'] == 'canceled') {
+                    $reason = $this->helper->reasons($request->reason);
+
+                    // Save reason
+                    DeleteReason::create([
+                        'email' => auth()->user()->email,
+                        'reason' => $reason
+                    ]);
+
+                    // Delete Account
+                    User::whereId(auth()->user()->id)->delete();
+
+                    #Commit Transaction
+                    DB::commit();
+
+                    #Redirect To Login page with success
+                    return redirect()->route('login')->with('message', 'Your account is successfully deleted!');
+                } else {
+                    DB::rollBack();
+                    return back()->with('error', 'There was a problem deleting account. Please try again.');
+                }
             }
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -694,13 +713,7 @@ class HomeController extends Controller
         try {
             DB::beginTransaction();
 
-            // Get Payment Config
-            $apikey = config('services.hitpay.key');
-            $isStg = config('services.hitpay.environment');
-            $payment = new PaymentHelper($apikey, $isStg);
-            $response = $payment->recurringDeleteAccount(auth()->user()->payments->reference);
-            if(!empty($response['status']) && $response['status'] == 'canceled') {
-                
+            if(auth()->user()->payments->plan == 'free') {
                 Payments::whereId(auth()->user()->payments->id)->update(['plan_status' => 1]);
 
                 #Commit Transaction
@@ -709,8 +722,24 @@ class HomeController extends Controller
                 #Redirect To Login page with success
                 return redirect()->route('profile.upgrade')->with('success', 'Your subscription is successfully cancelled!');
             } else {
-                DB::rollBack();
-                return back()->with('error', 'There was a problem cancelling subscription. Please try again.');
+                // Get Payment Config
+                $apikey = config('services.hitpay.key');
+                $isStg = config('services.hitpay.environment');
+                $payment = new PaymentHelper($apikey, $isStg);
+                $response = $payment->recurringDeleteAccount(auth()->user()->payments->reference);
+                if(!empty($response['status']) && $response['status'] == 'canceled') {
+                    
+                    Payments::whereId(auth()->user()->payments->id)->update(['plan_status' => 1]);
+
+                    #Commit Transaction
+                    DB::commit();
+
+                    #Redirect To Login page with success
+                    return redirect()->route('profile.upgrade')->with('success', 'Your subscription is successfully cancelled!');
+                } else {
+                    DB::rollBack();
+                    return back()->with('error', 'There was a problem cancelling subscription. Please try again.');
+                }
             }
         } catch (\Throwable $th) {
             DB::rollBack();
