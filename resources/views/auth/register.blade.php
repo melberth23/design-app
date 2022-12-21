@@ -5,7 +5,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3 no-padding">
+        <div class="d-none d-md-block col-md-3 no-padding">
             <div id="leftside-content">
                 <div class="container">
                     <div class="row pt-3">
@@ -19,6 +19,13 @@
         <div class="col-md-9">
             <div id="rightside-content" class="row justify-content-center">
                 <div class="col-md-6">
+                    <div class="d-block d-sm-none">
+                        <div class="row pt-3 pb-5">
+                            <div class="col-md-12">
+                                <img src="{{ asset('images/logo-dark.svg') }}">
+                            </div>
+                        </div>
+                    </div>
                     <h1>Welcome to DesignsOwl</h1>
                     <p>Already have an account? <a href="{{ route('login') }}">Log in</a></p>
                     <form method="POST" action="{{ route('register') }}">

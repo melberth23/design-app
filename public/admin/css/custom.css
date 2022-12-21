@@ -829,6 +829,10 @@ h3.customer-name {
     border-radius: 50%;
 }
 
+#notificationDropdown {
+  position: relative;
+}
+
 @media screen and (max-width: 767px){
   .sidebar .sidebar-brand {
     border: none !important;
