@@ -187,7 +187,11 @@ class SystemHelper {
             )
         );
 
-        return (App::environment('production'))?$liveplans[$duration][$plan]:$stageplans[$duration][$plan];
+        if (!empty($plan)) {
+            return (App::environment('production'))?$liveplans[$duration][$plan]:$stageplans[$duration][$plan];
+        } else {
+            return (App::environment('production'))?$liveplans[$duration]:$stageplans[$duration];
+        }
     }
 
     /**

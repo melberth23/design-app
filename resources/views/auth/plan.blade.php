@@ -44,6 +44,43 @@
         </div>
     </div>
     @endif
+
+    <?php 
+        $monthlybasic = 399;
+        $yearlybasic = 359;
+        $monthlypremium = 599;
+        $yearlypremium = 539;
+        $monthlyenterprise = 1199;
+        $yearlyenterprise = 1079;
+        $withdiscount = '';
+        if(!empty($codediscout)) {
+            $withdiscount = $codediscout->code;
+            $codeamount = $codediscout->discount_amount;
+            if($codediscout->discount_amount == 'percent') {
+                $monthlybasic = 399;
+                $monthlybasic = $monthlybasic - ( $monthlybasic * ($codeamount / 100) );
+                $yearlybasic = 359;
+                $yearlybasic = $yearlybasic - ( $yearlybasic * ($codeamount / 100) );
+                $monthlypremium = 599;
+                $monthlypremium = $monthlypremium - ( $monthlypremium * ($codeamount / 100) );
+                $yearlypremium = 539;
+                $yearlypremium = $yearlypremium - ( $yearlypremium * ($codeamount / 100) );
+                $monthlyenterprise = 1199;
+                $monthlyenterprise = $monthlyenterprise - ( $monthlyenterprise * ($codeamount / 100) );
+                $yearlyenterprise = 1079;
+                $yearlyenterprise = $yearlyenterprise - ( $yearlyenterprise * ($codeamount / 100) );
+            } else {
+                $monthlybasic = 399 - $codeamount;
+                $yearlybasic = 359 - $codeamount;
+                $monthlypremium = 599 - $codeamount;
+                $yearlypremium = 539 - $codeamount;
+                $monthlyenterprise = 1199 - $codeamount;
+                $yearlyenterprise = 1079 - $codeamount;
+            }
+        }
+
+    ?>
+
     <div class="row justify-content-center mt-5 text-center">
         <div class="col-md-8">
             <div class="row">
@@ -99,12 +136,13 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Basic</h6>
                             <p class="card-text">The perfect starter plan for all your basic design needs.</p>
-                            <h2 class="monthly-amount">S$399</h2>
-                            <h2 class="yearly-amount hide-amount">S$359</h2>
+                            <h2 class="monthly-amount">S${{ $monthlybasic }}</h2>
+                            <h2 class="yearly-amount hide-amount">S${{ $yearlybasic }}</h2>
                             <p>SGD / MONTH</p>
                             <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
+                                <input type="hidden" name="withdiscount" value="{{ $withdiscount }}" />
                                 <input type="hidden" name="plan" value="basic" />
                                 <input type="hidden" name="duration" class="duration" value="monthly" />
                                 <button type="submit" class="btn btn-outline-primary btn-lg btn-block">
@@ -157,12 +195,13 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Premium</h6>
                             <p class="card-text">Get double the output and crush all your design needs.</p>
-                            <h2 class="monthly-amount">S$599</h2>
-                            <h2 class="yearly-amount hide-amount">S$539</h2>
+                            <h2 class="monthly-amount">S${{ $monthlypremium }}</h2>
+                            <h2 class="yearly-amount hide-amount">S${{ $yearlypremium }}</h2>
                             <p>SGD / MONTH</p>
                             <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
+                                <input type="hidden" name="withdiscount" value="{{ $withdiscount }}" />
                                 <input type="hidden" name="plan" value="premium" />
                                 <input type="hidden" name="duration" class="duration" value="monthly" />
                                 <button type="submit" class="btn btn-primary btn-lg btn-block">
@@ -214,12 +253,13 @@
                         <div class="card-body pt-5 pb-5">
                             <h6 class="card-title">Enterprise</h6>
                             <p class="card-text">Level up your content with the ultimate creative plan.</p>
-                            <h2 class="monthly-amount">S$1199</h2>
-                            <h2 class="yearly-amount hide-amount">S$1079</h2>
+                            <h2 class="monthly-amount">S${{ $monthlyenterprise }}</h2>
+                            <h2 class="yearly-amount hide-amount">S${{ $yearlyenterprise }}</h2>
                             <p>SGD / MONTH</p>
                             <div class="yearly-per-duration hide-per-duration pb-2">Save 10%</div>
                             <form method="POST" action="{{ route('user.addplan') }}">
                                 @csrf
+                                <input type="hidden" name="withdiscount" value="{{ $withdiscount }}" />
                                 <input type="hidden" name="plan" value="royal" />
                                 <input type="hidden" name="duration" class="duration" value="monthly" />
                                 <button type="submit" class="btn btn-outline-primary btn-lg btn-block">

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '0d651c39ba305f199ec363972b6dd8890bfaf44b',
+    'reference' => '7aa27221dba12b4445cea2d61a727a3214491bd4',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -489,7 +489,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '0d651c39ba305f199ec363972b6dd8890bfaf44b',
+      'reference' => '7aa27221dba12b4445cea2d61a727a3214491bd4',
     ),
     'laravel/sail' => 
     array (
@@ -1203,6 +1203,15 @@
       ),
       'reference' => 'd349854331789aba9205fd755e0c1d1934ef1463',
     ),
+    'spatie/laravel-package-tools' => 
+    array (
+      'pretty_version' => '1.12.1',
+      'version' => '1.12.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '09f80fa240d44fafb1c70657c74ee44ffa929357',
+    ),
     'spatie/laravel-permission' => 
     array (
       'pretty_version' => '5.5.1',
@@ -1211,6 +1220,15 @@
       array (
       ),
       'reference' => '6c46b4e7dc5445ebb36a44b00ee08d0838f580b0',
+    ),
+    'spatie/laravel-webhook-client' => 
+    array (
+      'pretty_version' => '3.1.6',
+      'version' => '3.1.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '45fecc3918bba6f8eac24a690566aecb3f75f0c0',
     ),
     'symfony/console' => 
     array (

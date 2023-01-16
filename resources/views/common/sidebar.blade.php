@@ -215,6 +215,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header text-dark">Others</h6>
                         <a class="collapse-item {{ (request()->is('admin/requesttypes')) ? 'active' : '' }}" href="{{ route('requesttypes.index') }}">List</a>
+                        <a class="collapse-item {{ (request()->is('admin/coupons')) ? 'active' : '' }}" href="{{ route('coupons.index') }}">Coupons</a>
                     </div>
                 </div>
             </li>

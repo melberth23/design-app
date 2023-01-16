@@ -123,6 +123,17 @@ class PaymentHelper {
     * @param array single PaymentRequest object.
     * @return array single PaymentRequest object.
     */
+    public function subscriptionRequestCreate(array $data) 
+    {
+        $response = $this->api_call('POST', 'subscription-plan', $data); 
+
+        return $response;
+    }
+
+    /**
+    * @param array single PaymentRequest object.
+    * @return array single PaymentRequest object.
+    */
     public function recurringRequestCreate(array $data) 
     {
         $response = $this->api_call('POST', 'recurring-billing', $data); 

@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Password;
 */
 
 Route::get('/payment-success', [App\Http\Controllers\PaymentsController::class, 'payment'])->name('payment');
+Route::post('/payment-confirmation/webhook', [App\Http\Controllers\PaymentsController::class, 'webhook'])->name('webhook');
+Route::webhooks('webhook-payment-actions');
 Route::get('/upgrade-payment-success', [App\Http\Controllers\PaymentsController::class, 'upgradepayment'])->name('upgrade.payment');
 Route::get('/change-payment-success', [App\Http\Controllers\PaymentsController::class, 'changepayment'])->name('change.payment');
 Route::get('/account/verify/{token}', [App\Http\Controllers\AccountController::class, 'verify'])->name('user.verify'); 
@@ -230,4 +232,15 @@ Route::middleware('auth')->prefix('admin/brands')->name('adminbrand.')->group(fu
     Route::get('/archived/{customer_id}', [App\Http\Controllers\Admin\BrandsController::class, 'archived'])->name('archived');
     Route::get('/archived/sort/{customer_id}/{type}/{sort}', [App\Http\Controllers\Admin\BrandsController::class, 'archived'])->name('archived.sort');
     Route::get('/list/{status}', [App\Http\Controllers\Admin\BrandsController::class, 'customerLists'])->name('list');
+});
+
+// Admin Coupons 
+Route::middleware('auth')->prefix('admin/coupons')->name('coupons.')->group(function() {
+    Route::get('/', [App\Http\Controllers\Admin\CouponsController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\Admin\CouponsController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\Admin\CouponsController::class, 'store'])->name('store');
+    Route::get('/edit/{coupon}', [App\Http\Controllers\Admin\CouponsController::class, 'edit'])->name('edit');
+    Route::put('/update/{coupon}', [App\Http\Controllers\Admin\CouponsController::class, 'update'])->name('update');
+    Route::delete('/delete/{coupon}', [App\Http\Controllers\Admin\CouponsController::class, 'delete'])->name('destroy');
+    // Route::get('/update/status/{request_id}/{status}', [App\Http\Controllers\Admin\CouponsController::class, 'updateStatus'])->name('status');
 });

@@ -11,6 +11,7 @@ use App\Models\Payments;
 use App\Models\UserVerify;
 use App\Models\Invoices;
 use App\Mail\DigitalMail;
+use App\Models\Admin\Coupons;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -82,10 +83,15 @@ class AccountController extends Controller
     /**
     * Plan View 
     */
-    public function plan()
+    public function plan(Request $request)
     {
         $email = Auth::user()->email;
-        return view('auth.plan', ['email' => $email]);
+        $codediscout = [];
+        if ( !empty($request->code) ) {
+           $codediscout = Coupons::where('code', $request->code)->first();
+        }
+
+        return view('auth.plan', ['email' => $email, 'codediscout' => $codediscout]);
     }
     
     /**
@@ -157,13 +163,42 @@ class AccountController extends Controller
                 $isStg = config('services.hitpay.environment');
 
                 $payment = new PaymentHelper($apikey, $isStg);
+
+                $planid = $planInfo['id'];
+                $planamount = $planInfo['amount'];
+                $planlabel = $planInfo['label'];
+
+                // For custom discouted coupon
+                if(!empty($posts['withdiscount'])) {
+                    $codediscout = Coupons::where('code', $posts['withdiscount'])->first();
+                    if(!empty($codediscout)) {
+                        $codeamount = $codediscout->discount_amount;
+                        if($codediscout->discount_amount == 'percent') {
+                            $planamount = $planamount - ( $planamount * ($codeamount / 100) );
+                        } else {
+                            $planamount = $planamount - $codeamount;
+                        }
+
+                        $subscriptionresponse = $payment->subscriptionRequestCreate(array(
+                            'name' =>  $planlabel .": Code = ". $codediscout->code,
+                            'cycle'  =>  $selectedduration,
+                            'amount'  =>  $planamount
+                        ));
+
+                        if(!empty($subscriptionresponse)) {
+                            $planid = $subscriptionresponse['id'];
+                        }
+                    }
+                }
+
                 $response = $payment->recurringRequestCreate(array(
-                    'plan_id'    =>  $planInfo['id'],
+                    'plan_id'    =>  $planid,
                     'customer_email'  =>  $email,
                     'customer_name'  =>  $customerfullname,
                     'start_date'  =>  date('Y-m-d'),
                     'redirect_url'  =>  url("payment-success"),
-                    'reference'  =>  time()
+                    'webhook'  =>  url("webhook-payment-actions"),
+                    'reference'  =>  $user->id
                 ));
 
                 if(!empty($response['status']) && $response['status'] == 'scheduled') {
@@ -187,8 +222,8 @@ class AccountController extends Controller
                         'subject' => 'Payment Confirmation Details',
                         'message' => 'Welcome '. $customerfullname .',',
                         'extra_msg' => 'Please see details below:',
-                        'plan' => $planInfo['label'],
-                        'amount' => number_format($planInfo['amount']),
+                        'plan' => $planlabel,
+                        'amount' => number_format($planamount),
                         'paymentlink' => 'Please pay to continue use your account '. $response['url'] .' or disregard if already paid.',
                         'thank_msg' => 'Thank you!',
                         'template' => 'payment'

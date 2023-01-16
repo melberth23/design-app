@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Lib\PaymentHelper;
 use App\Models\Payments;
 use App\Models\NewAttempt;
@@ -269,5 +270,13 @@ class PaymentsController extends Controller
         }
 
         return redirect()->route('profile.upgrade');
+    }
+
+    public function webhook(Request $request) {
+
+        Log::info('User failed to login.', $request->all());
+
+        sleep(50);
+        return response()->json('ok'); 
     }
 }

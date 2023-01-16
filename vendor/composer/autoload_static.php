@@ -88,7 +88,9 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'Svg\\' => 4,
+            'Spatie\\WebhookClient\\' => 21,
             'Spatie\\Permission\\' => 18,
+            'Spatie\\LaravelPackageTools\\' => 27,
             'Spatie\\LaravelIgnition\\' => 23,
             'Spatie\\Ignition\\' => 16,
             'Spatie\\FlareClient\\' => 19,
@@ -333,9 +335,17 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         array (
             0 => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg',
         ),
+        'Spatie\\WebhookClient\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src',
+        ),
         'Spatie\\Permission\\' => 
         array (
             0 => __DIR__ . '/..' . '/spatie/laravel-permission/src',
+        ),
+        'Spatie\\LaravelPackageTools\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/laravel-package-tools/src',
         ),
         'Spatie\\LaravelIgnition\\' => 
         array (
@@ -646,6 +656,7 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'App\\Exports\\UsersExport' => __DIR__ . '/../..' . '/app/Exports/UsersExport.php',
         'App\\Http\\Controllers\\AccountController' => __DIR__ . '/../..' . '/app/Http/Controllers/AccountController.php',
         'App\\Http\\Controllers\\Admin\\BrandsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BrandsController.php',
+        'App\\Http\\Controllers\\Admin\\CouponsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/CouponsController.php',
         'App\\Http\\Controllers\\Admin\\PaymentsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/PaymentsController.php',
         'App\\Http\\Controllers\\Admin\\RequestTypesController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/RequestTypesController.php',
         'App\\Http\\Controllers\\Admin\\RequestsAdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/RequestsAdminController.php',
@@ -686,6 +697,7 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'App\\Mail\\DigitalMail' => __DIR__ . '/../..' . '/app/Mail/DigitalMail.php',
         'App\\Mail\\DigitalPaymentMail' => __DIR__ . '/../..' . '/app/Mail/DigitalPaymentMail.php',
         'App\\Models\\Activities' => __DIR__ . '/../..' . '/app/Models/Activities.php',
+        'App\\Models\\Admin\\Coupons' => __DIR__ . '/../..' . '/app/Models/Admin/Coupons.php',
         'App\\Models\\Admin\\RequestTypes' => __DIR__ . '/../..' . '/app/Models/Admin/RequestTypes.php',
         'App\\Models\\Brand' => __DIR__ . '/../..' . '/app/Models/Brand.php',
         'App\\Models\\BrandAssets' => __DIR__ . '/../..' . '/app/Models/BrandAssets.php',
@@ -6754,6 +6766,9 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'Spatie\\LaravelIgnition\\Support\\StringComparator' => __DIR__ . '/..' . '/spatie/laravel-ignition/src/Support/StringComparator.php',
         'Spatie\\LaravelIgnition\\Views\\BladeSourceMapCompiler' => __DIR__ . '/..' . '/spatie/laravel-ignition/src/Views/BladeSourceMapCompiler.php',
         'Spatie\\LaravelIgnition\\Views\\ViewExceptionMapper' => __DIR__ . '/..' . '/spatie/laravel-ignition/src/Views/ViewExceptionMapper.php',
+        'Spatie\\LaravelPackageTools\\Exceptions\\InvalidPackage' => __DIR__ . '/..' . '/spatie/laravel-package-tools/src/Exceptions/InvalidPackage.php',
+        'Spatie\\LaravelPackageTools\\Package' => __DIR__ . '/..' . '/spatie/laravel-package-tools/src/Package.php',
+        'Spatie\\LaravelPackageTools\\PackageServiceProvider' => __DIR__ . '/..' . '/spatie/laravel-package-tools/src/PackageServiceProvider.php',
         'Spatie\\Permission\\Commands\\CacheReset' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Commands/CacheReset.php',
         'Spatie\\Permission\\Commands\\CreatePermission' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Commands/CreatePermission.php',
         'Spatie\\Permission\\Commands\\CreateRole' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Commands/CreateRole.php',
@@ -6781,6 +6796,22 @@ class ComposerStaticInite4a5b3056cadc893595776efd671263c
         'Spatie\\Permission\\Traits\\HasRoles' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Traits/HasRoles.php',
         'Spatie\\Permission\\Traits\\RefreshesPermissionCache' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Traits/RefreshesPermissionCache.php',
         'Spatie\\Permission\\WildcardPermission' => __DIR__ . '/..' . '/spatie/laravel-permission/src/WildcardPermission.php',
+        'Spatie\\WebhookClient\\Events\\InvalidWebhookSignatureEvent' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/Events/InvalidWebhookSignatureEvent.php',
+        'Spatie\\WebhookClient\\Exceptions\\InvalidConfig' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/Exceptions/InvalidConfig.php',
+        'Spatie\\WebhookClient\\Exceptions\\InvalidWebhookSignature' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/Exceptions/InvalidWebhookSignature.php',
+        'Spatie\\WebhookClient\\Http\\Controllers\\WebhookController' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/Http/Controllers/WebhookController.php',
+        'Spatie\\WebhookClient\\Jobs\\ProcessWebhookJob' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/Jobs/ProcessWebhookJob.php',
+        'Spatie\\WebhookClient\\Models\\WebhookCall' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/Models/WebhookCall.php',
+        'Spatie\\WebhookClient\\SignatureValidator\\DefaultSignatureValidator' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/SignatureValidator/DefaultSignatureValidator.php',
+        'Spatie\\WebhookClient\\SignatureValidator\\SignatureValidator' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/SignatureValidator/SignatureValidator.php',
+        'Spatie\\WebhookClient\\WebhookClientServiceProvider' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/WebhookClientServiceProvider.php',
+        'Spatie\\WebhookClient\\WebhookConfig' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/WebhookConfig.php',
+        'Spatie\\WebhookClient\\WebhookConfigRepository' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/WebhookConfigRepository.php',
+        'Spatie\\WebhookClient\\WebhookProcessor' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/WebhookProcessor.php',
+        'Spatie\\WebhookClient\\WebhookProfile\\ProcessEverythingWebhookProfile' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/WebhookProfile/ProcessEverythingWebhookProfile.php',
+        'Spatie\\WebhookClient\\WebhookProfile\\WebhookProfile' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/WebhookProfile/WebhookProfile.php',
+        'Spatie\\WebhookClient\\WebhookResponse\\DefaultRespondsTo' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/WebhookResponse/DefaultRespondsTo.php',
+        'Spatie\\WebhookClient\\WebhookResponse\\RespondsToWebhook' => __DIR__ . '/..' . '/spatie/laravel-webhook-client/src/WebhookResponse/RespondsToWebhook.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Svg\\DefaultStyle' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/DefaultStyle.php',
         'Svg\\Document' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Document.php',
