@@ -34,6 +34,7 @@
                         @if (session('error'))
                           <span class="text-danger"> {{ session('error') }}</span>
                         @endif
+                        <input type="hidden" name="withcode" value="{{ app('request')->input('code') }}" />
                         <input type="hidden" name="plan" value="<?php echo !empty($_GET['plan'])?$_GET['plan']:''; ?>" />
 
                         <div class="row mb-3">

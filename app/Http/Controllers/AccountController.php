@@ -85,10 +85,12 @@ class AccountController extends Controller
     */
     public function plan(Request $request)
     {
-        $email = Auth::user()->email;
+        $user = Auth::user();
+        $email = $user->email;
+        $code = $user->with_coupon;
         $codediscout = [];
-        if ( !empty($request->code) ) {
-           $codediscout = Coupons::where('code', $request->code)->first();
+        if ( !empty($code) ) {
+           $codediscout = Coupons::where('code', $code)->first();
         }
 
         return view('auth.plan', ['email' => $email, 'codediscout' => $codediscout]);

@@ -28,7 +28,8 @@ class User extends Authenticatable
         'status',
         'password',
         'is_email_verified',
-        'manual'
+        'manual',
+        'with_coupon'
     ];
 
     /**

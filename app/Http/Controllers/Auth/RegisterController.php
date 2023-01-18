@@ -152,6 +152,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'role_id' => 2,
             'status' => 0,
+            'with_coupon' => $data['withcode'],
             'password' => Hash::make($data['password'])
         ]);
     }
